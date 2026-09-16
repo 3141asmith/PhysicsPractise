@@ -3,7 +3,7 @@ const NotesView=(()=>{
     '0:2':{kind:'graph',title:'A best-fit line, not dot-to-dot',caption:'Vertical bars show measurement uncertainty. Use widely separated points on the best-fit line to calculate its gradient.'},
     '1:2':{kind:'levels',title:'An emission transition',caption:'An electron moves to a lower energy level. The emitted photon has energy equal to the difference between the two levels.'},
     '2:0':{kind:'wave',title:'One wavelength',caption:'A snapshot of displacement against distance. Wavelength is the distance between adjacent points in phase; amplitude is the maximum displacement from equilibrium.'},
-    '6:1':{kind:'decay',title:'Discharging a capacitor',caption:'At one time constant, t = RC, the voltage is about 37% of its initial value. The curve approaches zero without reaching it in the ideal model.'}
+    '6:1':{kind:'decay',title:'Capacitor charging and discharging',caption:'Adjust resistance and capacitance to change the time constant. The moving point shows the capacitor voltage as it charges or discharges.',interactive:'capacitor'}
   };
   const visualRules=[
     [/gravitational|electric field|magnetic field|induction|circular orbit|satellite/, 'field','A mass follows a gravitational field line','The moving marker shows the direction of a field around a central source.'],
@@ -40,7 +40,8 @@ const NotesView=(()=>{
     return '<button id="notes-home" class="notes-back">&larr; All topic notes</button><div class="heading notes-heading"><div><div class="section-label">TOPIC '+String(topic+1).padStart(2,'0')+' &middot; REVISION NOTES</div><h1>'+esc(title)+'</h1></div><button id="return-practice" class="secondary">'+(returnQuestion?'Back to question':'Practise this topic')+'</button></div><nav class="notes-toc" aria-label="Note sections">'+note.sections.map((s,i)=>'<a href="#note-section-'+i+'"><span>'+String(i+1).padStart(2,'0')+'</span>'+esc(s.title)+'</a>').join('')+'</nav><div class="notes-reading">'+note.sections.map((section,i)=>{
       const example=/worked example/i.test(section.title),diagram=diagramFor(section,topic,i);
       const guide=practicalGuide(section);
-      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(diagram?'<figure class="note-figure"><h3>'+esc(diagram.title)+'</h3><canvas data-note-diagram="'+diagram.kind+'" role="img" aria-label="'+esc(diagram.title+'. '+diagram.caption)+'"></canvas><figcaption>'+esc(diagram.caption)+'</figcaption></figure>':'')+'</div></section>';
+      const controls=diagram&&diagram.interactive==='capacitor'?'<div class="note-controls" data-capacitor-controls><div class="note-control-row"><label>Resistance <output data-cap-output="r">10 kΩ</output><input type="range" min="1" max="100" value="10" step="1" data-cap-input="r"></label><label>Capacitance <output data-cap-output="c">100 μF</output><input type="range" min="10" max="1000" value="100" step="10" data-cap-input="c"></label></div><div class="note-control-row note-control-actions"><span>Mode</span><div class="segmented"><button type="button" data-cap-mode="charge" aria-pressed="true">Charge</button><button type="button" data-cap-mode="discharge" aria-pressed="false">Discharge</button></div><strong data-cap-output="tau">τ = 1.00 s</strong></div></div>':'';
+      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(diagram?'<figure class="note-figure '+(diagram.interactive?'note-interactive':'')+'"><h3>'+esc(diagram.title)+'</h3>'+controls+'<canvas data-note-diagram="'+diagram.kind+'"'+(diagram.interactive?' data-note-interactive="'+diagram.interactive+'"':'')+' role="img" aria-label="'+esc(diagram.title+'. '+diagram.caption)+'"></canvas><figcaption>'+esc(diagram.caption)+'</figcaption></figure>':'')+'</div></section>';
     }).join('')+'</div><details class="notes-source"><summary>Sources and further reading</summary><p>'+esc(note.source)+'</p></details>';
   }
   function draw(canvas,now=0){
@@ -88,11 +89,17 @@ const NotesView=(()=>{
         arrow(65,220,65,45,muted);c.save();c.translate(35,175);c.rotate(-Math.PI/2);text('Energy',0,0);c.restore();break;
       case 'decay':{
         arrow(65,220,555,220,muted);arrow(65,220,65,32,muted);text('Voltage / V0',75,27);text('Time / RC',478,265);
-        curve(x=>220-170*Math.exp(-(x-65)/110),65,535);
+        const figure=canvas.closest('figure'),interactive=canvas.dataset.noteInteractive==='capacitor';
+        const resistance=interactive?Number(figure.querySelector('[data-cap-input="r"]').value):10;
+        const capacitance=interactive?Number(figure.querySelector('[data-cap-input="c"]').value):100;
+        const tau=interactive?resistance*capacitance/1000:1;
+        const charging=interactive?figure.querySelector('[data-cap-mode="charge"]').getAttribute('aria-pressed')==='true':false;
+        const graphWidth=470,graphHeight=170;
+        curve(x=>{const elapsed=((x-65)/graphWidth)*5*tau;const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);return 220-graphHeight*value;},65,535);
         c.setLineDash([5,5]);const y=220-170/Math.E;line(65,y,175,y,warm);line(175,y,175,220,warm);c.setLineDash([]);
         text('1',40,55);text('0',40,225);text('0.37',20,y+5,warm);
         for(let i=1;i<=4;i++){line(65+110*i,220,65+110*i,225);text(String(i),60+110*i,243);}
-        text('After one time constant',260,92);text('V = V0 / e',260,115,warm);break;}
+        if(interactive){const elapsed=(now/900%5)*tau;const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);const x=65+graphWidth*(elapsed/(5*tau));pulse(x,220-graphHeight*value,warm);text(charging?'Charging':'Discharging',260,92,warm);text('τ = RC = '+tau.toFixed(2)+' s',260,115,warm);}else{text('After one time constant',260,92);text('V = V0 / e',260,115,warm);}break;}
       case 'graph':
         arrow(65,225,550,225,muted);arrow(65,225,65,32,muted);text('Measured y',75,28);text('Independent variable x',360,260);
         [[115,195],[200,162],[290,126],[375,103],[465,67]].forEach(([x,y])=>{line(x,y-15,x,y+15,warm);line(x-6,y-15,x+6,y-15,warm);line(x-6,y+15,x+6,y+15,warm);c.fillStyle=ink;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();});
@@ -102,6 +109,7 @@ const NotesView=(()=>{
   let animationFrame=0;
   const drawAll=()=>{
     cancelAnimationFrame(animationFrame);
+    bindControls();
     const canvases=[...document.querySelectorAll('[data-note-diagram]')];
     const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const render=now=>{
@@ -110,6 +118,21 @@ const NotesView=(()=>{
     };
     render(0);
   };
+  function bindControls(){
+    document.querySelectorAll('[data-capacitor-controls]').forEach(controls=>{
+      controls.querySelectorAll('[data-cap-input]').forEach(input=>input.oninput=()=>{
+        const r=Number(controls.querySelector('[data-cap-input="r"]').value),c=Number(controls.querySelector('[data-cap-input="c"]').value);
+        controls.querySelector('[data-cap-output="r"]').textContent=r+' kΩ';
+        controls.querySelector('[data-cap-output="c"]').textContent=c+' μF';
+        controls.querySelector('[data-cap-output="tau"]').textContent='τ = '+(r*c/1000).toFixed(2)+' s';
+        drawAll();
+      });
+      controls.querySelectorAll('[data-cap-mode]').forEach(button=>button.onclick=()=>{
+        controls.querySelectorAll('[data-cap-mode]').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));
+        drawAll();
+      });
+    });
+  }
   new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
   return {index,topic,drawAll};
 })();
