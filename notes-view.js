@@ -26,6 +26,7 @@ const NotesView=(()=>{
     return {kind,title:heading,caption,interactive:kind==='field'?'field':undefined};
   }
   const esc=value=>School.escapeHtml(value);
+  const fieldStates=new WeakMap();
   function practicalGuide(section){
     if(!section.groups)return '';
     return '<p class="note-practical-source">'+esc(section.sourceReference)+'</p>'+section.groups.map(group=>{
@@ -41,7 +42,8 @@ const NotesView=(()=>{
       const example=/worked example/i.test(section.title),diagram=diagramFor(section,topic,i);
       const guide=practicalGuide(section);
       const controls=diagram&&diagram.interactive==='capacitor'?'<div class="note-controls" data-capacitor-controls><div class="note-control-row"><label>Resistance <output data-cap-output="r">10 kΩ</output><input type="range" min="1" max="100" value="10" step="1" data-cap-input="r"></label><label>Capacitance <output data-cap-output="c">100 μF</output><input type="range" min="10" max="1000" value="100" step="10" data-cap-input="c"></label></div><div class="note-control-row note-control-actions"><span>Mode</span><div class="segmented"><button type="button" data-cap-mode="charge" aria-pressed="true">Charge</button><button type="button" data-cap-mode="discharge" aria-pressed="false">Discharge</button></div><strong data-cap-output="tau">τ = 1.00 s</strong></div></div>':'';
-      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(diagram?'<figure class="note-figure '+(diagram.interactive?'note-interactive':'')+'"><h3>'+esc(diagram.title)+'</h3>'+controls+'<canvas data-note-diagram="'+diagram.kind+'"'+(diagram.interactive?' data-note-interactive="'+diagram.interactive+'"':'')+' role="img" aria-label="'+esc(diagram.title+'. '+diagram.caption)+'"></canvas><figcaption>'+esc(diagram.caption)+'</figcaption></figure>':'')+'</div></section>';
+      const fieldControls=diagram&&diagram.interactive==='field'?'<div class="note-controls" data-field-controls><label>Source mass <output data-field-output="mass">10 × 10²⁴ kg</output><input type="range" min="1" max="100" value="10" step="1" data-field-input="mass"></label><p class="answer-help">Newton&rsquo;s law: <span class="note-equation-inline">a = GM/r²</span>. Place the test mass in the field, then change the source mass to compare the motion.</p></div>':'';
+      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(diagram?'<figure class="note-figure '+(diagram.interactive?'note-interactive':'')+'"><h3>'+esc(diagram.title)+'</h3>'+controls+fieldControls+'<canvas data-note-diagram="'+diagram.kind+'"'+(diagram.interactive?' data-note-interactive="'+diagram.interactive+'"':'')+' role="img" aria-label="'+esc(diagram.title+'. '+diagram.caption)+'"></canvas><figcaption>'+esc(diagram.caption)+'</figcaption></figure>':'')+'</div></section>';
     }).join('')+'</div><details class="notes-source"><summary>Sources and further reading</summary><p>'+esc(note.source)+'</p></details>';
   }
   function draw(canvas,now=0){
@@ -57,10 +59,18 @@ const NotesView=(()=>{
     const pulse=(x,y,color=accent)=>{c.strokeStyle=color;c.globalAlpha=.35;c.beginPath();c.arc(x,y,11+8*Math.sin(now/240),0,Math.PI*2);c.stroke();c.globalAlpha=1;dot(x,y,5,color);};
     switch(canvas.dataset.noteDiagram){
       case 'field':{
-        const cx=300,cy=142,phase=now/2600;
+        const cx=300,cy=142,figure=canvas.closest('figure'),sourceMass=Number(figure.querySelector('[data-field-input="mass"]')?.value||10),storedX=Number(figure.dataset.massX||390),storedY=Number(figure.dataset.massY||100),stateKey=sourceMass+':'+storedX+':'+storedY;
+        let state=fieldStates.get(canvas);
+        if(!state||state.key!==stateKey){state={key:stateKey,x:storedX,y:storedY,vx:0,vy:0,lastNow:now};fieldStates.set(canvas,state);}
+        const dt=Math.min(Math.max((now-state.lastNow)/1000,0),.05),G=6.674e-11,metersPerPixel=1e9,simulationRate=100000000;
+        state.lastNow=now;
+        const dx=(state.x-cx)*metersPerPixel,dy=(state.y-cy)*metersPerPixel,r=Math.max(Math.hypot(dx,dy),28*metersPerPixel),acceleration=G*(sourceMass*1e24)/(r*r),ax=-acceleration*dx/r,ay=-acceleration*dy/r,simDt=dt*simulationRate;
+        state.vx+=ax*simDt;state.vy+=ay*simDt;state.x+=state.vx*simDt/metersPerPixel;state.y+=state.vy*simDt/metersPerPixel;
+        if(Math.hypot(state.x-cx,state.y-cy)<30){state.x=cx+(state.x-cx)*30/Math.max(Math.hypot(state.x-cx,state.y-cy),1);state.y=cy+(state.y-cy)*30/Math.max(Math.hypot(state.x-cx,state.y-cy),1);state.vx=0;state.vy=0;}
+        figure.dataset.currentMassX=state.x.toFixed(2);figure.dataset.currentMassY=state.y.toFixed(2);
         c.fillStyle=warm;c.beginPath();c.arc(cx,cy,22,0,Math.PI*2);c.fill();text('source',276,184,warm);
         for(let r=42;r<135;r+=24){for(let i=0;i<12;i++){const a=i*Math.PI/6;const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);arrow(x,y,cx+(r-12)*Math.cos(a),cy+(r-12)*Math.sin(a),accent);}}
-        const figure=canvas.closest('figure'),storedX=Number(figure.dataset.massX||390),storedY=Number(figure.dataset.massY||100);pulse(storedX,storedY);text('test mass',storedX-25,storedY-14);text('field direction: towards mass',365,45,accent);break;}
+        pulse(state.x,state.y);text('test mass',state.x-25,state.y-14);text('field direction: towards mass',365,45,accent);break;}
       case 'motion':{
         const x=90+((now/9)%410),y=205-75*Math.sin((x-90)/410*Math.PI);arrow(62,220,550,220,muted);arrow(62,220,62,35,muted);text('position',72,32);text('time',515,245);dot(x,y,7);arrow(x,y,x+35,y-18,warm);text('velocity',x+40,y-20,warm);c.setLineDash([4,5]);line(x,y,x,220,muted);c.setLineDash([]);break;}
       case 'circuit':{
@@ -114,9 +124,10 @@ const NotesView=(()=>{
     bindFieldInteractions();
     const canvases=[...document.querySelectorAll('[data-note-diagram]')];
     const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasInteractive=canvases.some(canvas=>canvas.dataset.noteInteractive);
     const render=now=>{
-      canvases.forEach(canvas=>draw(canvas,reduced?0:now));
-      if(!reduced&&canvases.length)animationFrame=requestAnimationFrame(render);
+      canvases.forEach(canvas=>draw(canvas,reduced&&!hasInteractive?0:now));
+      if((!reduced||hasInteractive)&&canvases.length)animationFrame=requestAnimationFrame(render);
     };
     render(0);
   };
@@ -133,6 +144,13 @@ const NotesView=(()=>{
         controls.querySelectorAll('[data-cap-mode]').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));
         drawAll();
       });
+    });
+    document.querySelectorAll('[data-field-controls]').forEach(controls=>{
+      const input=controls.querySelector('[data-field-input="mass"]');
+      input.oninput=()=>{
+        controls.querySelector('[data-field-output="mass"]').textContent=input.value+' × 10²⁴ kg';
+        drawAll();
+      };
     });
   }
   function bindFieldInteractions(){
