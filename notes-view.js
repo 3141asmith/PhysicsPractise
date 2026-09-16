@@ -1,7 +1,7 @@
 const NotesView=(()=>{
   const diagrams={
     '0:2':{kind:'graph',title:'A best-fit line, not dot-to-dot',caption:'Vertical bars show measurement uncertainty. Use widely separated points on the best-fit line to calculate its gradient.',axisX:'Independent variable / s',axisY:'Measured quantity / m'},
-    '1:2':{kind:'levels',title:'An emission transition',caption:'An electron moves to a lower energy level. The emitted photon has energy equal to the difference between the two levels.'},
+    '1:2':{kind:'levels',title:'An interactive emission transition',caption:'Set the energy difference between E2 and E1. The electron drops to the lower level and emits a photon whose energy and frequency are shown.',interactive:'levels'},
     '2:0':{kind:'wave',title:'One wavelength',caption:'A snapshot of displacement against distance. Wavelength is the distance between adjacent points in phase; amplitude is the maximum displacement from equilibrium.'},
     '6:1':{kind:'decay',title:'Capacitor charging and discharging',caption:'Adjust resistance and capacitance to change the time constant. The moving point shows the capacitor voltage as it charges or discharges.',interactive:'capacitor'}
   };
@@ -69,7 +69,8 @@ const NotesView=(()=>{
       const guide=practicalGuide(section);
       const controls=visual&&visual.interactive==='capacitor'?'<div class="note-controls" data-capacitor-controls><div class="note-control-row"><label>Resistance <output data-cap-output="r">10 kΩ</output><input type="range" min="1" max="100" value="10" step="1" data-cap-input="r"></label><label>Capacitance <output data-cap-output="c">100 μF</output><input type="range" min="10" max="1000" value="100" step="10" data-cap-input="c"></label></div><div class="note-control-row note-control-actions"><span>Mode</span><div class="segmented"><button type="button" data-cap-mode="charge" aria-pressed="true">Charge</button><button type="button" data-cap-mode="discharge" aria-pressed="false">Discharge</button></div><strong data-cap-output="tau">τ = 1.00 s</strong></div></div>':'';
       const fieldControls=visual&&visual.interactive==='field'?'<div class="note-controls" data-field-controls><label>Source mass <output data-field-output="mass">10 × 10²⁴ kg</output><input type="range" min="1" max="100" value="10" step="1" data-field-input="mass"></label><p class="answer-help">Newton&rsquo;s law: <span class="note-equation-inline">a = GM/r²</span>. Place the test mass in the field, then change the source mass to compare the motion.</p></div>':'';
-      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(visual?'<figure class="note-figure '+(visual.interactive?'note-interactive':'')+'"><h3>'+esc(visual.title)+'</h3>'+controls+fieldControls+'<canvas data-note-diagram="'+visual.kind+'"'+(visual.interactive?' data-note-interactive="'+visual.interactive+'"':'')+' role="img" aria-label="'+esc(visual.title+'. '+visual.caption)+'"></canvas><figcaption>'+esc(visual.caption)+'</figcaption></figure>':'')+'</div></section>';
+      const levelControls=visual&&visual.interactive==='levels'?'<div class="note-controls" data-level-controls><label>Energy difference <output data-level-output="gap">3.0 eV</output><input type="range" min="1" max="10" value="3" step="0.5" data-level-input="gap"></label><div class="note-control-row note-control-actions"><strong data-level-output="energy">Ephoton = 3.0 eV</strong><strong data-level-output="frequency">f = 7.25 × 10^14 Hz</strong></div></div>':'';
+      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(visual?'<figure class="note-figure '+(visual.interactive?'note-interactive':'')+'"><h3>'+esc(visual.title)+'</h3>'+controls+fieldControls+levelControls+'<canvas data-note-diagram="'+visual.kind+'"'+(visual.interactive?' data-note-interactive="'+visual.interactive+'"':'')+' role="img" aria-label="'+esc(visual.title+'. '+visual.caption)+'"></canvas><figcaption>'+esc(visual.caption)+'</figcaption></figure>':'')+'</div></section>';
     }).join('')+'</div><details class="notes-source"><summary>Sources and further reading</summary><p>'+esc(note.source)+'</p></details>';
   }
   function draw(canvas,now=0){
@@ -118,9 +119,10 @@ const NotesView=(()=>{
         c.setLineDash([4,5]);line(120,60,120,85);line(340,60,340,85);c.setLineDash([]);
         c.setLineDash([4,5]);line(340,85,395,85);c.setLineDash([]);arrow(395,145,395,85,warm);text('Amplitude',405,100,warm);text('0',35,150);break;
       case 'levels':
-        line(100,65,440,65,accent);line(100,205,440,205,accent);text('Higher energy, E2',105,45);text('Lower energy, E1',105,238);
-        const levelY=72+63*(1+Math.sin(now/500));arrow(235,levelY,235,198,warm);dot(235,levelY,7,warm);text('Electron',125,132);text('transition',125,151);
-        curve(x=>133+9*Math.sin((x-270)/8),270,440,warm);arrow(440,133,475,133,warm);text('Emitted photon',325,173);text('Energy = E2 - E1',325,195);
+        const levelFigure=canvas.closest('figure'),gap=Number(levelFigure.querySelector('[data-level-input="gap"]')?.value||3),photonEnergy=gap*1.602e-19,frequency=photonEnergy/6.626e-34,levelPhase=(now/1800)%1;
+        line(100,65,440,65,accent);line(100,205,440,205,accent);text('E2 = E1 + '+gap.toFixed(1)+' eV',105,45);text('E1',105,238);
+        const levelY=72+63*Math.min(levelPhase*2,1);arrow(235,levelY,235,198,warm);dot(235,levelY,7,warm);text('Electron',125,132);text('transition',125,151);
+        const photonX=280+190*levelPhase;curve(x=>133+9*Math.sin((x-photonX)/8),photonX,Math.min(photonX+75,540),warm);arrow(photonX+55,133,Math.min(photonX+85,555),133,warm);text('Photon leaves',340,173);text('Eγ = '+gap.toFixed(1)+' eV',325,195);text('f = '+(frequency/1e14).toFixed(2)+' × 10^14 Hz',325,215);
         arrow(65,220,65,45,muted);c.save();c.translate(35,175);c.rotate(-Math.PI/2);text('Energy',0,0);c.restore();break;
       case 'decay':{
         arrow(65,220,555,220,muted);arrow(65,220,65,32,muted);text('Voltage / V0',75,27);
@@ -175,6 +177,16 @@ const NotesView=(()=>{
       const input=controls.querySelector('[data-field-input="mass"]');
       input.oninput=()=>{
         controls.querySelector('[data-field-output="mass"]').textContent=input.value+' × 10²⁴ kg';
+        drawAll();
+      };
+    });
+    document.querySelectorAll('[data-level-controls]').forEach(controls=>{
+      const input=controls.querySelector('[data-level-input="gap"]');
+      input.oninput=()=>{
+        const gap=Number(input.value),frequency=gap*1.602e-19/6.626e-34;
+        controls.querySelector('[data-level-output="gap"]').textContent=gap.toFixed(1)+' eV';
+        controls.querySelector('[data-level-output="energy"]').textContent='Ephoton = '+gap.toFixed(1)+' eV';
+        controls.querySelector('[data-level-output="frequency"]').textContent='f = '+(frequency/1e14).toFixed(2)+' × 10^14 Hz';
         drawAll();
       };
     });
