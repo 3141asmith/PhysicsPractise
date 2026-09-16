@@ -88,18 +88,19 @@ const NotesView=(()=>{
         curve(x=>133+9*Math.sin((x-270)/8),270,440,warm);arrow(440,133,475,133,warm);text('Emitted photon',325,173);text('Energy = E2 - E1',325,195);
         arrow(65,220,65,45,muted);c.save();c.translate(35,175);c.rotate(-Math.PI/2);text('Energy',0,0);c.restore();break;
       case 'decay':{
-        arrow(65,220,555,220,muted);arrow(65,220,65,32,muted);text('Voltage / V0',75,27);text('Time / RC',478,265);
+        arrow(65,220,555,220,muted);arrow(65,220,65,32,muted);text('Voltage / V0',75,27);
         const figure=canvas.closest('figure'),interactive=canvas.dataset.noteInteractive==='capacitor';
         const resistance=interactive?Number(figure.querySelector('[data-cap-input="r"]').value):10;
         const capacitance=interactive?Number(figure.querySelector('[data-cap-input="c"]').value):100;
         const tau=interactive?resistance*capacitance/1000:1;
         const charging=interactive?figure.querySelector('[data-cap-mode="charge"]').getAttribute('aria-pressed')==='true':false;
-        const graphWidth=470,graphHeight=170;
-        curve(x=>{const elapsed=((x-65)/graphWidth)*5*tau;const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);return 220-graphHeight*value;},65,535);
+        const graphWidth=470,graphHeight=170,graphDuration=interactive?10:5*tau;
+        curve(x=>{const elapsed=((x-65)/graphWidth)*graphDuration;const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);return 220-graphHeight*value;},65,535);
         c.setLineDash([5,5]);const y=220-170/Math.E;line(65,y,175,y,warm);line(175,y,175,220,warm);c.setLineDash([]);
         text('1',40,55);text('0',40,225);text('0.37',20,y+5,warm);
-        for(let i=1;i<=4;i++){line(65+110*i,220,65+110*i,225);text(String(i),60+110*i,243);}
-        if(interactive){const elapsed=(now/900%5)*tau;const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);const x=65+graphWidth*(elapsed/(5*tau));pulse(x,220-graphHeight*value,warm);text(charging?'Charging':'Discharging',260,92,warm);text('τ = RC = '+tau.toFixed(2)+' s',260,115,warm);}else{text('After one time constant',260,92);text('V = V0 / e',260,115,warm);}break;}
+        for(let i=1;i<=4;i++){const tick=graphDuration*i/4;line(65+graphWidth*i/4,220,65+graphWidth*i/4,225);text(tick.toFixed(tick<10?1:0),57+graphWidth*i/4,243);}
+        text(interactive?'Time / s':'Time / RC',478,265);
+        if(interactive){const elapsed=(now/900%graphDuration);const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);const x=65+graphWidth*(elapsed/graphDuration);pulse(x,220-graphHeight*value,warm);text(charging?'Charging':'Discharging',260,92,warm);text('τ = RC = '+tau.toFixed(2)+' s',260,115,warm);}else{text('After one time constant',260,92);text('V = V0 / e',260,115,warm);}break;}
       case 'graph':
         arrow(65,225,550,225,muted);arrow(65,225,65,32,muted);text('Measured y',75,28);text('Independent variable x',360,260);
         [[115,195],[200,162],[290,126],[375,103],[465,67]].forEach(([x,y])=>{line(x,y-15,x,y+15,warm);line(x-6,y-15,x+6,y-15,warm);line(x-6,y+15,x+6,y+15,warm);c.fillStyle=ink;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();});
