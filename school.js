@@ -136,8 +136,8 @@ const School = {
    const message=$('enquiry-message').value.trim();
    if(!message){$('enquiries-error').textContent='Please describe the bug, question or change request.';return;}
    const type=$('enquiry-type').value,topic=$('enquiry-topic').value.trim()||'Not specified',contact=$('enquiry-contact').value.trim()||'Not provided';
-   const body=['Hello Physics Forge,','',`Type: ${type}`,`Topic/page: ${topic}`,`Reply-to: ${contact}`,'',message,'','---','Sent from Physics Practice','Page: '+location.href].join('\n');
-   location.href='mailto:enquiry@physicsforge.co.uk?subject='+encodeURIComponent('[Physics Practice] '+type+': '+topic)+'&body='+encodeURIComponent(body);
+  const body=['Hello Physics Forge,','',`Type: ${type}`,`Topic/page: ${topic}`,`Reply-to: ${contact}`,'',message,'','---','Sent from Physics Forge','Page: '+location.href].join('\n');
+  location.href='mailto:enquiry@physicsforge.co.uk?subject='+encodeURIComponent('[Physics Forge] '+type+': '+topic)+'&body='+encodeURIComponent(body);
    closeEnquiries();
  };
  let mode='login',microsoftEnabled=false,setupToken=location.hash.startsWith('#setup=')?location.hash.slice(7):'';
