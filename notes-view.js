@@ -1,7 +1,7 @@
 const NotesView=(()=>{
   const diagrams={
     '0:2':{kind:'graph',title:'A best-fit line, not dot-to-dot',caption:'Vertical bars show measurement uncertainty. Use widely separated points on the best-fit line to calculate its gradient.',axisX:'Independent variable / s',axisY:'Measured quantity / m'},
-    '1:0':{kind:'beta',title:'Beta-minus decay: a Feynman-style diagram',caption:'A neutron changes into a proton by emitting a virtual W− boson. The W− produces an electron and an electron antineutrino, while charge, baryon number and lepton number are conserved.'},
+    '1:0':{kind:'beta',title:'Beta-minus decay: a Feynman-style diagram',caption:'Drag any of the four particles. The other output particle adjusts so the momentum-vector balance remains consistent with neutron → proton + electron + antineutrino.' ,interactive:'beta'},
     '1:2':{kind:'levels',title:'An interactive emission transition',caption:'Set the energy difference between E2 and E1. The electron drops to the lower level and emits a photon whose energy and frequency are shown.',interactive:'levels'},
     '2:0':{kind:'wave',title:'One wavelength',caption:'A snapshot of displacement against distance. Wavelength is the distance between adjacent points in phase; amplitude is the maximum displacement from equilibrium.'},
     '6:1':{kind:'decay',title:'Capacitor charging and discharging',caption:'Adjust resistance and capacitance to change the time constant. The moving point shows the capacitor voltage as it charges or discharges.',interactive:'capacitor'}
@@ -54,6 +54,7 @@ const NotesView=(()=>{
   }
   const esc=value=>School.escapeHtml(value);
   const fieldStates=new WeakMap();
+  const betaStates=new WeakMap();
   function practicalGuide(section){
     if(!section.groups)return '';
     return '<p class="note-practical-source">'+esc(section.sourceReference)+'</p>'+section.groups.map(group=>{
@@ -110,13 +111,23 @@ const NotesView=(()=>{
       case 'particles':{
         const phase=(now/1200)%1;const x1=150+120*phase,y1=170-75*phase,x2=450-120*phase,y2=170-75*phase;dot(x1,y1,7,accent);dot(x2,y2,7,warm);if(phase>.45){arrow(x1,y1,270,105,accent);arrow(x2,y2,330,105,warm);}else{arrow(x1,y1,x1+42,-22+y1,accent);arrow(x2,y2,x2-42,-22+y2,warm);}text('before',115,225);text('after interaction',395,225);break;}
       case 'beta':{
-        const phase=(now/1600)%1,vertexX=285,vertexY=142;
-        arrow(70,vertexY,vertexX,vertexY,accent);arrow(vertexX,vertexY,520,vertexY,accent);dot(vertexX,vertexY,5,warm);
-        text('n',105,128,accent);text('p',500,128,accent);text('n → p',220,245);
+        const vertexX=285,vertexY=142,figure=canvas.closest('figure');
+        let state=betaStates.get(canvas);
+        if(!state){state={n:{x:75,y:142},p:{x:520,y:142},e:{x:500,y:65},nu:{x:490,y:220},drag:null};betaStates.set(canvas,state);}
+        const input={x:2*vertexX-state.n.x-state.p.x,y:2*vertexY-state.n.y-state.p.y};
+        if(state.lastInput&&(state.lastInput.x!==input.x||state.lastInput.y!==input.y)&&state.drag!=='e'&&state.drag!=='nu'){state.nu.x=vertexX+input.x-(state.e.x-vertexX);state.nu.y=vertexY+input.y-(state.e.y-vertexY);}
+        state.lastInput=input;
+        figure.dataset.particlePositions=JSON.stringify({n:state.n,p:state.p,e:state.e,nu:state.nu});
+        if(state.drag==='e'){state.nu.x=vertexX+input.x-(state.e.x-vertexX);state.nu.y=vertexY+input.y-(state.e.y-vertexY);}
+        if(state.drag==='nu'){state.e.x=vertexX+input.x-(state.nu.x-vertexX);state.e.y=vertexY+input.y-(state.nu.y-vertexY);}
+        const clampParticle=particle=>{particle.x=Math.max(28,Math.min(572,particle.x));particle.y=Math.max(28,Math.min(252,particle.y));};
+        clampParticle(state.n);clampParticle(state.p);clampParticle(state.e);clampParticle(state.nu);
+        arrow(state.n.x,state.n.y,vertexX,vertexY,accent);arrow(vertexX,vertexY,state.p.x,state.p.y,accent);dot(vertexX,vertexY,5,warm);
+        text('n',state.n.x-8,state.n.y-14,accent);text('p',state.p.x+8,state.p.y-14,accent);
         c.setLineDash([6,5]);line(vertexX,vertexY,390,75,warm);c.setLineDash([]);text('W−',330,94,warm);
-        arrow(390,75,535,55,warm);arrow(390,75,535,115,warm);text('e−',495,47,warm);text('ν̄e',480,140,warm);
-        dot(390+145*phase,75-20*phase,5,warm);dot(390+145*phase,75+40*phase,5,accent);
-        text('d → u + W−',215,265,muted);break;}
+        arrow(vertexX,vertexY,state.e.x,state.e.y,warm);arrow(vertexX,vertexY,state.nu.x,state.nu.y,accent);dot(state.e.x,state.e.y,6,warm);dot(state.nu.x,state.nu.y,6,accent);
+        text('e−',state.e.x+8,state.e.y-8,warm);text('ν̄e',state.nu.x+8,state.nu.y+14,accent);text('Drag n, p, e− or ν̄e',205,265,muted);
+        text('p⃗n = p⃗p + p⃗e + p⃗ν',350,245,accent);break;}
       case 'optics':{
         const x=85+((now/10)%410),focus=320;line(65,140,550,140,muted);line(focus,52,focus,228,muted);for(let i=-1;i<=1;i++){const y=105+i*35;line(65,y,x,y,accent);line(x,y,focus,140,accent);}text('incident rays',75,76,accent);text('focus',focus-16,244,warm);break;}
       case 'astro':{
@@ -212,6 +223,22 @@ const NotesView=(()=>{
       canvas.onpointerdown=event=>{canvas.setPointerCapture(event.pointerId);placeMass(event);};
       canvas.onpointermove=event=>{if(canvas.hasPointerCapture(event.pointerId))placeMass(event);};
       canvas.onpointerup=event=>{if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);};
+    });
+    document.querySelectorAll('[data-note-interactive="beta"]').forEach(canvas=>{
+      const figure=canvas.closest('figure'),state=betaStates.get(canvas);
+      const particles=()=>betaStates.get(canvas);
+      const placeParticle=event=>{
+        const current=particles(),bounds=canvas.getBoundingClientRect(),x=Math.max(28,Math.min(572,(event.clientX-bounds.left)/bounds.width*600)),y=Math.max(28,Math.min(252,(event.clientY-bounds.top)/bounds.height*280));
+        current[current.drag].x=x;current[current.drag].y=y;drawAll();
+      };
+      canvas.onpointerdown=event=>{
+        const bounds=canvas.getBoundingClientRect(),x=(event.clientX-bounds.left)/bounds.width*600,y=(event.clientY-bounds.top)/bounds.height*280,current=particles();
+        const nearest=Object.entries({n:current.n,p:current.p,e:current.e,nu:current.nu}).sort((a,b)=>Math.hypot(a[1].x-x,a[1].y-y)-Math.hypot(b[1].x-x,b[1].y-y))[0];
+        if(Math.hypot(nearest[1].x-x,nearest[1].y-y)>42)return;
+        current.drag=nearest[0];canvas.setPointerCapture(event.pointerId);placeParticle(event);
+      };
+      canvas.onpointermove=event=>{if(canvas.hasPointerCapture(event.pointerId))placeParticle(event);};
+      canvas.onpointerup=event=>{if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);particles().drag=null;};
     });
   }
   new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
