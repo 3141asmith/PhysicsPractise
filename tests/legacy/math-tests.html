@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Math rendering checks</title><link rel="stylesheet" href="vendor/katex/dist/katex.min.css"><h1>Math rendering checks</h1><pre id="results">Running...</pre><pre id="audit"></pre>
+<script src="vendor/katex/dist/katex.min.js"></script><script src="math-format.js"></script><script src="questions.js"></script><script src="extra-calculations.js"></script><script src="extra-explanations.js"></script>
+<script>
+const results=[],remaining=new Set();
+let count=0;
+for(const q of QUESTIONS){
+ for(const value of [q.prompt,...q.steps,...(q.options||[])]){
+  try{
+   const element=document.createElement('div');element.innerHTML=PhysicsMath.format(value);count++;
+   element.querySelectorAll('.katex').forEach(el=>el.remove());
+   if(/\^|\b(?:squared|cubed|square root|pi|omega|lambda|gamma|theta)\b| = /.test(element.textContent))remaining.add(q.id+': '+element.textContent);
+  }catch(e){results.push('FAIL '+q.id+': '+e.message+' IN '+value);}
+ }
+ if(q.unit){try{PhysicsMath.unit(q.unit);}catch(e){results.push('FAIL unit '+q.id+': '+e.message);}}
+}
+function test(name,fn){try{if(!fn())throw Error('assertion');results.push('PASS '+name);}catch(e){results.push('FAIL '+name+': '+e.message);}}
+test('KaTeX loaded locally',()=>katex.version==='0.16.22');
+test('Fraction markup',()=>PhysicsMath.format('E = hc / wavelength').includes('mfrac'));
+test('Scientific notation powers',()=>PhysicsMath.format('6.63 x 10^-34 J s').includes('msup'));
+test('Authored LaTeX',()=>PhysicsMath.format(String.raw`Energy: \(E=\frac12mv^2\)`).includes('mfrac'));
+test('Display LaTeX',()=>PhysicsMath.format(String.raw`\[T=2\pi\sqrt{L/g}\]`).includes('katex-display'));
+test('HTML stays escaped',()=>!PhysicsMath.format('<img src=x onerror=alert(1)>').includes('<img'));
+document.getElementById('results').textContent=`Checked ${count} text fields\n`+results.join('\n');
+document.getElementById('audit').textContent=[...remaining].join('\n');
+</script></html>

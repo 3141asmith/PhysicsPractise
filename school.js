@@ -78,9 +78,13 @@ const School = {
   setView(view){
     if(view==='gradebook'&&!this.isTeacherView())return;
     this.view=view;
+    const landing=document.getElementById('landing-screen');
+    const school=document.getElementById('school-screen');
+    landing.hidden=view!=='landing';
+    school.hidden=view==='landing';
     for(const name of ['practice','notes','challenge','gradebook'])document.getElementById(name+'-view').hidden=name!==view;
-    document.querySelector('aside').hidden=['gradebook','challenge'].includes(view);
-    document.querySelector('.layout').classList.toggle('gradebook-layout',['gradebook','challenge'].includes(view));
+    document.querySelector('aside').hidden=['landing','gradebook','challenge'].includes(view);
+    document.querySelector('.layout').classList.toggle('gradebook-layout',['landing','gradebook','challenge'].includes(view));
     document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===view?'page':'false'));
   },
   showNotes(topic=null,returnQuestion=null){
@@ -93,6 +97,11 @@ const School = {
     host.querySelectorAll('.notes-toc a').forEach(link=>link.onclick=event=>{event.preventDefault();document.getElementById(link.getAttribute('href').slice(1)).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
     document.getElementById('notes-home').onclick=()=>this.showNotes();
     document.getElementById('return-practice').onclick=()=>{history.replaceState(null,'','#practice');this.setView('practice');if(returnQuestion)this.practice.open(returnQuestion);else this.practice.setTopic(topic);};
+  },
+  openLanding(target='practice'){
+    if(target==='practice'){this.setView('practice');this.practice?.render();history.replaceState(null,'','#practice');return;}
+    if(target==='notes'){this.showNotes();return;}
+    if(target==='challenge'){Challenge.open();return;}
   },
   async gradebook(){
     if(!this.isTeacherView())return;
@@ -156,9 +165,32 @@ const School = {
  $('microsoft-signin').onclick=()=>microsoftSignIn(false);
  $('microsoft-connect').onclick=()=>microsoftSignIn(true);
  function theme(value){document.documentElement.dataset.theme=value;$('theme-toggle').setAttribute('aria-label','Switch to '+(value==='dark'?'light':'dark')+' mode');$('theme-toggle').title=$('theme-toggle').getAttribute('aria-label');}
+ function applyPalette(value){
+   const palette=['forge','amber','ocean','violet'].includes(value)?value:'forge';
+   document.documentElement.dataset.palette=palette;
+   document.querySelectorAll('.palette-option').forEach(option=>{
+     const active=option.dataset.palette===palette;
+     option.classList.toggle('active',active);
+     option.setAttribute('aria-checked',String(active));
+   });
+   const swatch=$('theme-palette-button')?.querySelector('.theme-palette-dot');
+   if(swatch){
+     const colors={forge:'#156b59',amber:'#9d5d2d',ocean:'#0d5d92',violet:'#5a4a9a'};
+     swatch.style.background=colors[palette];
+   }
+   try{localStorage.setItem('physics-palette',palette);}catch{}
+ }
  let preferred;try{preferred=localStorage.getItem('physics-theme');}catch{}
  theme(preferred==='dark'||(!preferred&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');
  $('theme-toggle').onclick=()=>{const value=document.documentElement.dataset.theme==='dark'?'light':'dark';theme(value);try{localStorage.setItem('physics-theme',value);}catch{}};
+ let preferredPalette;try{preferredPalette=localStorage.getItem('physics-palette');}catch{}
+ applyPalette(preferredPalette||'forge');
+ const paletteMenu=$('theme-palette-menu');
+ const paletteButton=$('theme-palette-button');
+ const closePaletteMenu=()=>{if(!paletteMenu)return;paletteMenu.hidden=true;paletteButton?.setAttribute('aria-expanded','false');};
+ paletteButton.onclick=()=>{if(!paletteMenu)return;const open=paletteMenu.hidden;paletteMenu.hidden=!open;paletteButton.setAttribute('aria-expanded',String(!paletteMenu.hidden));};
+ document.addEventListener('click',event=>{if(!event.target.closest('.theme-picker'))closePaletteMenu();});
+ document.querySelectorAll('.palette-option').forEach(option=>option.onclick=()=>{applyPalette(option.dataset.palette);closePaletteMenu();});
  function setMode(value){
    const teacher=value==='register'&&$('account-role').value==='teacher',student=value==='register'&&!teacher;
    $('microsoft-option').hidden=value==='setup'||teacher;$('microsoft-signin').textContent=value==='register'?'Join with Microsoft 365':'Sign in with Microsoft 365';
@@ -179,7 +211,7 @@ const School = {
    let roleView=School.user.role==='teacher'?'teacher':'student';
    try{if(School.user.role==='teacher'&&sessionStorage.getItem('physics-role-view:'+School.user.id)==='student')roleView='student';}catch{}
    School.setRoleView(roleView);
-   if(location.hash.startsWith('#notes/'))School.showNotes(Number(location.hash.slice(7)));else if(location.hash==='#notes')School.showNotes();else if(location.hash==='#challenge')Challenge.open();else School.setView('practice');
+   if(location.hash.startsWith('#notes/'))School.showNotes(Number(location.hash.slice(7)));else if(location.hash==='#notes')School.showNotes();else if(location.hash==='#challenge')Challenge.open();else if(location.hash==='#landing'||!location.hash||location.hash==='#')School.setView('landing');else School.setView('practice');
  }
  $('account-tabs').onclick=e=>{if(e.target.dataset.mode)setMode(e.target.dataset.mode);};
  $('account-role').onchange=()=>setMode(mode);
@@ -187,7 +219,7 @@ const School = {
  $('skip-login').onclick=async()=>{
    $('skip-login').disabled=true;$('account-error').textContent='';
    if(location.protocol==='file:'){location.assign($('local-app-link').href+'#guest');return;}
-   try{const existing=await School.api('/api/session');const session=existing.user?existing:await School.api('/api/guest',{});history.replaceState(null,'','#practice');await enter(session);}
+   try{const existing=await School.api('/api/session');const session=existing.user?existing:await School.api('/api/guest',{});history.replaceState(null,'','#landing');await enter(session);}
    catch(e){$('account-error').textContent=e.message;if(e.serverUnavailable&&['localhost','127.0.0.1','[::1]'].includes(location.hostname))$('server-help').hidden=false;}finally{$('skip-login').disabled=false;}
  };
  $('account-form').onsubmit=async event=>{
@@ -195,12 +227,36 @@ const School = {
    try{
      const body={name:$('account-name').value,email:$('account-email').value,password:$('account-password').value,role:$('account-role').value,invitation:$('teacher-invitation').value,classCode:$('class-code').value,token:setupToken};
      const session=await School.api('/api/'+(mode==='setup'?'setup':mode==='register'?'register':'login'),body);
-     if(mode==='setup')history.replaceState(null,'','#practice');
+     if(mode==='setup')history.replaceState(null,'','#landing');
      $('account-password').value='';await enter(session);
    }catch(e){$('account-error').textContent=e.message;}finally{$('account-submit').disabled=false;}
  };
  $('logout').onclick=async()=>{try{await School.practice?.flushAll();await School.api('/api/logout',{});location.reload();}catch(e){$('global-status').textContent=e.message;}};
  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{if(b.dataset.view==='gradebook')School.gradebook();else if(b.dataset.view==='notes')School.showNotes();else if(b.dataset.view==='challenge')Challenge.open();else{School.setView('practice');School.practice.render();history.replaceState(null,'','#practice');}});
+ document.querySelectorAll('[data-landing]').forEach(button=>button.onclick=()=>School.openLanding(button.dataset.landing));
+ document.querySelectorAll('[data-carousel]').forEach(carousel=>{
+   const track=carousel.querySelector('.landing-track');
+   const slides=[...carousel.querySelectorAll('.landing-slide')];
+   if(!track||!slides.length)return;
+   let index=0; let timer=null;
+   const sync=()=>{
+     track.style.transform='translateX(-'+(index*100)+'%)';
+     document.querySelectorAll('.carousel-dot').forEach((dot,i)=>dot.classList.toggle('active',i===index));
+     slides.forEach((slide,i)=>{
+       const card=slide.querySelector('.landing-card');
+       if(card)card.style.animation=i===index?'cardReveal .6s ease both':'none';
+     });
+   };
+   const go=(nextIndex)=>{index=(nextIndex+slides.length)%slides.length;sync();};
+   const startAuto=()=>{clearInterval(timer);timer=setInterval(()=>go(index+1),4200);};
+   document.querySelectorAll('.carousel-button').forEach(button=>button.onclick=()=>{go(index+(button.dataset.carouselDir==='next'?1:-1));startAuto();});
+   document.querySelectorAll('.carousel-dot').forEach(dot=>dot.onclick=()=>{go(Number(dot.dataset.slide)||0);startAuto();});
+   carousel.addEventListener('mouseenter',()=>clearInterval(timer));
+   carousel.addEventListener('mouseleave',startAuto);
+   document.addEventListener('visibilitychange',()=>document.hidden?clearInterval(timer):startAuto());
+   sync();
+   startAuto();
+ });
  if(School.staticMode){
    $('account-screen').hidden=true;$('account-tabs').hidden=true;$('account-form').hidden=true;
    $('skip-login').click();return;

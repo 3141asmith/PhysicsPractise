@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Question bank validation</title><h1>Question bank validation</h1><pre id="results">Running...</pre>
+<script src="questions.js"></script><script src="extra-calculations.js"></script><script src="extra-explanations.js"></script>
+<script>
+const results=[];
+function test(name,fn){try{if(!fn())throw Error('Assertion failed');results.push('PASS '+name);}catch(e){results.push('FAIL '+name+': '+e.message);}}
+test('1442 unique question IDs and prompts',()=>QUESTIONS.length===1442 && new Set(QUESTIONS.map(q=>q.id)).size===1442 && new Set(QUESTIONS.map(q=>q.prompt)).size===1442);
+test('Original 42 IDs preserved',()=>Array.from({length:42},(_,i)=>QUESTIONS.some(q=>q.id===`q${i+1}`)).every(Boolean));
+test('103 per topic with at least 30 written and 70 numerical',()=>TOPICS.every((_,i)=>QUESTIONS.filter(q=>q.topic===i).length===103 && QUESTIONS.filter(q=>q.topic===i && q.type==='written').length>=30 && QUESTIONS.filter(q=>q.topic===i && q.type==='numeric').length>=70));
+test('31 Foundation, 41 Standard, 31 Challenge per topic',()=>TOPICS.every((_,i)=>['Foundation','Standard','Challenge'].every((level,j)=>QUESTIONS.filter(q=>q.topic===i && q.level===level).length===[31,41,31][j])));
+test('Valid solutions, finite answers and no broken interpolations',()=>QUESTIONS.every(q=>q.steps.length>0 && q.steps.every(s=>typeof s==='string' && s.length>0) && (q.type!=='numeric' || Number.isFinite(q.answer)) && !/(undefined|NaN|Infinity)/.test(q.prompt+' '+q.steps.join(' '))));
+test('Written marking points match marks',()=>QUESTIONS.filter(q=>q.id.startsWith('explain-')).every(q=>q.steps.length===q.marks));
+const references=[['calc-0-absolute-1',1.28],['calc-1-annihilation-1',516],['calc-2-string-1',100],['calc-3-stress-1',5e7],['calc-4-cells-1',32],['calc-5-shmspeed-1',0.48],['calc-6-dischargetime-1',2.07944154168],['calc-7-reactor-1',4.6875e18],['calc-8-magnitude-1',25.1188643151],['calc-9-effective-1',2.4],['calc-10-angularmomentum-1',6],['calc-11-contraction-1',1.9773719933],['calc-12-saturation-1',2],['calc-13-resistivitygradient-1',1.413716694e-7]];
+for(const [id,expected] of references)test('Independent reference '+id,()=>Math.abs(QUESTIONS.find(q=>q.id===id).answer/expected-1)<1e-7);
+document.getElementById('results').textContent=results.join('\n')+'\n'+results.filter(r=>r.startsWith('PASS')).length+'/'+results.length+' passed';
+</script></html>

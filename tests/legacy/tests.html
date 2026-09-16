@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Physics Practice tests</title></head><body><h1>Browser checks</h1><pre id="results">Running...</pre><iframe id="app" src="index.html" style="width:1200px;height:900px" title="Application under test"></iframe><script>
+document.getElementById('app').onload = function () {
+ const w=this.contentWindow, d=w.document, results=[];
+ function test(name, fn) { try { if(!fn()) throw Error('Assertion failed'); results.push('PASS '+name); } catch(e) { results.push('FAIL '+name+': '+e.message); } }
+ test('1442 unique questions',()=>w.eval('QUESTIONS.length === 1442 && new Set(QUESTIONS.map(q=>q.id)).size === 1442'));
+ test('Initial overview shows all questions and their prompts',()=>d.querySelectorAll('.question-preview').length===1442 && d.getElementById('question').hidden && w.getComputedStyle(d.getElementById('question-list')).maxHeight==='none');
+ test('Each topic has all difficulty levels',()=>w.eval('TOPICS.every((_,i)=>new Set(QUESTIONS.filter(q=>q.topic===i).map(q=>q.level)).size===3)'));
+ test('All questions have solutions and valid numeric answers',()=>w.eval('QUESTIONS.every(q=>q.steps.length > 0 && (q.type !== "numeric" || Number.isFinite(q.answer)))'));
+ test('Scientific notation',()=>w.parseAnswer('4.42 x 10^-19')===4.42e-19 && w.parseAnswer('4.42e-19')===4.42e-19);
+ test('Reject invalid and incomplete numbers',()=>['','1abc','1/2','Infinity','2e'].every(v=>Number.isNaN(w.parseAnswer(v))));
+ test('Tiny answers reject zero',()=>!w.isCorrect({type:'numeric',answer:4.42e-19},'0'));
+ test('Signed answers are checked',()=>w.isCorrect({type:'numeric',answer:-0.94},'-.94') && !w.isCorrect({type:'numeric',answer:-0.94},'.94'));
+ test('All numeric model answers accepted',()=>w.eval('QUESTIONS.filter(q=>q.type==="numeric").every(q=>isCorrect(q,String(q.answer)))'));
+ test('Difficulty filter',()=>{d.querySelector('[data-level="Challenge"]').click(); return d.querySelectorAll('.question-link').length===434;});
+ test('Topic filter',()=>{d.querySelector('[data-topic="2"]').click();return d.querySelectorAll('.question-link').length===31;});
+ test('Empty search state',()=>{d.getElementById('search').value='no-match-xyz';d.getElementById('search').dispatchEvent(new Event('input'));return !!d.getElementById('clear');});
+ test('Clear filters',()=>{d.getElementById('clear').click();return d.querySelectorAll('.question-link').length===1442;});
+ test('Search finds question titles',()=>{d.getElementById('search').value='450 nm';d.getElementById('search').dispatchEvent(new Event('input'));return d.querySelectorAll('.question-link').length===1 && d.querySelector('.question-link strong').textContent==='Photon energy';});
+ test('Search and difficulty combine',()=>{d.querySelector('[data-level="Foundation"]').click();return d.querySelectorAll('.question-link').length===0;});
+ test('Search updates when difficulty changes',()=>{d.querySelector('[data-level="Standard"]').click();return d.querySelectorAll('.question-link').length===1;});
+ test('Search accepts mixed case and extra spaces',()=>{d.getElementById('search').value='  450   NM ';d.getElementById('search').dispatchEvent(new Event('input'));return d.querySelectorAll('.question-link').length===1;});
+ test('Persistent clear button restores overview',()=>{d.getElementById('clear-filters').click();return d.querySelectorAll('.question-link').length===1442 && d.getElementById('search').value==='' && d.querySelector('[data-level="All"]').getAttribute('aria-pressed')==='true';});
+ test('Question opens from overview',()=>{d.querySelector('[data-id="q1"]').click();return !d.getElementById('question').hidden && !!d.getElementById('answer-form');});
+ test('Blank answer validation',()=>{d.getElementById('answer-form').dispatchEvent(new Event('submit',{cancelable:true}));return d.getElementById('feedback').textContent.includes('Enter an answer');});
+ test('Wrong answer feedback',()=>{d.getElementById('answer').value='5';d.getElementById('answer-form').dispatchEvent(new Event('submit',{cancelable:true}));return d.getElementById('feedback').textContent.includes('Not quite');});
+ test('Correct answer and solution',()=>{d.getElementById('answer').value='0.8';d.getElementById('answer-form').dispatchEvent(new Event('submit',{cancelable:true}));return d.getElementById('feedback').textContent.includes('Correct answer') && d.getElementById('solution').textContent.includes('0.80%');});
+ test('Back returns to overview',()=>{d.getElementById('back-to-questions').click();return d.getElementById('question').hidden && d.querySelectorAll('.question-link').length===1442;});
+ test('Written answer checklist',()=>{d.querySelector('[data-topic="13"]').click();d.querySelector('[data-level="Standard"]').click();d.querySelector('.question-link').click();d.getElementById('answer').value='Measure dimensions and resistance.';d.getElementById('answer-form').dispatchEvent(new Event('submit',{cancelable:true}));return d.querySelectorAll('.mark-point').length===4;});
+ test('Wave canvas renders',()=>{d.querySelector('[data-topic="2"]').click();d.querySelector('[data-level="Foundation"]').click();d.querySelector('.question-link').click();const c=d.getElementById('wave');return c.getContext('2d').getImageData(0,0,c.width,c.height).data.some(v=>v!==0);});
+ this.style.width='390px';
+ setTimeout(()=>{
+ test('Mobile page fits viewport',()=>d.documentElement.scrollWidth <= d.documentElement.clientWidth);
+ test('Mobile question fits viewport',()=>d.getElementById('question').getBoundingClientRect().right <= d.documentElement.clientWidth);
+ test('Mobile overview fits viewport',()=>{d.getElementById('clear-filters').click();return d.documentElement.scrollWidth <= d.documentElement.clientWidth && d.querySelectorAll('.question-link').length===1442;});
+ document.getElementById('results').textContent=results.join('\n')+'\n'+results.filter(r=>r.startsWith('PASS')).length+'/'+results.length+' passed';
+ },100);
+};
+</script></body></html>

@@ -1,0 +1,16 @@
+.browser-*/
+artifacts/
+test-output.txt
+bank-output.txt
+browser-log.txt
+desktop.png
+mobile.png
+data/
+server-output.txt
+server-error.txt
+node_modules/
+.env
+.env.*
+!.env.example
+server-microsoft-output.txt
+server-microsoft-error.txt

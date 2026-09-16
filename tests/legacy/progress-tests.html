@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Progress persistence checks</title>
+<h1>Progress persistence checks</h1><pre id="results">Running...</pre>
+<iframe id="app" src="index.html" title="Application under test"></iframe>
+<script>
+const frame = document.getElementById('app'), results = [];
+let phase = 0, original;
+function test(name, condition) { results.push((condition ? 'PASS ' : 'FAIL ') + name); }
+frame.onload = () => {
+  const w = frame.contentWindow, d = w.document;
+  const open = id => { d.getElementById('clear-filters').click(); d.querySelector(`[data-id="${id}"]`).click(); };
+  const enter = value => { d.getElementById('answer').value = value; d.getElementById('answer').dispatchEvent(new w.Event('input', {bubbles:true})); };
+  try {
+    if (phase === 0) {
+      original = w.localStorage.getItem('physics-practice-v1');
+      w.confirm = () => true; d.getElementById('reset').click();
+      open('q1'); enter('0.8'); d.getElementById('answer-form').requestSubmit();
+      open('q2'); enter('unfinished calculation');
+      open('q4'); const radio = d.querySelector('input[name="answer"][value="1"]'); radio.click();
+      open('q41'); enter('Measure the wire diameter at several positions.'); d.getElementById('answer-form').requestSubmit(); d.querySelector('.mark-point').click();
+      open('calc-0-absolute-1'); enter('1.28'); d.getElementById('answer-form').requestSubmit();
+      open('explain-4-current-extended'); enter('Current is charge per unit time.'); d.getElementById('answer-form').requestSubmit(); d.querySelector('.mark-point').click();
+      phase = 1; w.location.reload(); return;
+    }
+    if (phase === 1) {
+      test('Mastered total survives reload', d.getElementById('completed').textContent === '2');
+      open('calc-0-absolute-1'); test('New calculation answer survives reload', d.getElementById('answer').value === '1.28');
+      open('explain-4-current-extended'); d.getElementById('reveal').click(); test('New explanation draft and checklist survive reload', d.getElementById('answer').value.includes('charge') && d.querySelectorAll('.mark-point:checked').length === 1);
+      open('q1'); test('Checked answer survives reload', d.getElementById('answer').value === '0.8');
+      open('q2'); test('Unsubmitted draft survives reload', d.getElementById('answer').value === 'unfinished calculation');
+      open('q4'); test('Choice survives reload', d.querySelector('input[name="answer"]:checked')?.value === '1');
+      open('q41'); test('Written draft survives reload', d.getElementById('answer').value.includes('diameter'));
+      d.getElementById('reveal').click(); test('Checklist survives reload', d.querySelectorAll('.mark-point:checked').length === 1);
+      w.confirm = () => true; d.getElementById('reset').click();
+      phase = 2; w.location.reload(); return;
+    }
+    test('Reset clears persisted mastery', d.getElementById('completed').textContent === '0');
+    open('q2'); test('Reset clears persisted drafts', d.getElementById('answer').value === '');
+    w.Storage.prototype.setItem = () => { throw new Error('Storage blocked'); };
+    enter('draft'); test('Storage failure is visible', d.getElementById('save-status').textContent.includes('Saving unavailable'));
+  } catch (e) { results.push('FAIL ' + e.message); }
+  delete w.Storage.prototype.setItem;
+  // Restore the original storage through the parent window's unmodified API.
+  if (original === null) localStorage.removeItem('physics-practice-v1');
+  else if (original !== undefined) localStorage.setItem('physics-practice-v1', original);
+  document.getElementById('results').textContent = results.join('\n');
+};
+</script></html>
