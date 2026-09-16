@@ -1,7 +1,7 @@
 const School = {
   user:null,csrf:null,practice:null,view:'practice',bank:null,
   roleView:'student',gradebookRequest:0,
-  staticMode:!!window.STATIC_BANK&&(location.protocol==='file:'||location.hostname.endsWith('.github.io')||new URLSearchParams(location.search).has('static')),
+  staticMode:!!window.STATIC_BANK&&(location.protocol==='file:'||location.hostname.endsWith('.github.io')||location.hostname==='physicsforge.co.uk'||location.hostname==='www.physicsforge.co.uk'||new URLSearchParams(location.search).has('static')),
   isTeacherView(){return this.user?.role==='teacher'&&this.roleView==='teacher';},
   setRoleView(value){
     if(!['student','teacher'].includes(value))return;
