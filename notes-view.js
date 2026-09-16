@@ -96,8 +96,9 @@ const NotesView=(()=>{
         const charging=interactive?figure.querySelector('[data-cap-mode="charge"]').getAttribute('aria-pressed')==='true':false;
         const graphWidth=470,graphHeight=170,graphDuration=interactive?10:5*tau;
         curve(x=>{const elapsed=((x-65)/graphWidth)*graphDuration;const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);return 220-graphHeight*value;},65,535);
-        c.setLineDash([5,5]);const y=220-170/Math.E;line(65,y,175,y,warm);line(175,y,175,220,warm);c.setLineDash([]);
-        text('1',40,55);text('0',40,225);text('0.37',20,y+5,warm);
+        const tauX=65+graphWidth*Math.min(tau/graphDuration,1),oneTauValue=charging?1-1/Math.E:1/Math.E,oneTauY=220-graphHeight*oneTauValue;
+        c.setLineDash([5,5]);line(65,oneTauY,tauX,oneTauY,warm);line(tauX,oneTauY,tauX,220,warm);c.setLineDash([]);
+        text('1',40,55);text('0',40,225);text(oneTauValue.toFixed(2),12,oneTauY+5,warm);
         for(let i=1;i<=4;i++){const tick=graphDuration*i/4;line(65+graphWidth*i/4,220,65+graphWidth*i/4,225);text(tick.toFixed(tick<10?1:0),57+graphWidth*i/4,243);}
         text(interactive?'Time / s':'Time / RC',478,265);
         if(interactive){const elapsed=(now/900%graphDuration);const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);const x=65+graphWidth*(elapsed/graphDuration);pulse(x,220-graphHeight*value,warm);text(charging?'Charging':'Discharging',260,92,warm);text('τ = RC = '+tau.toFixed(2)+' s',260,115,warm);}else{text('After one time constant',260,92);text('V = V0 / e',260,115,warm);}break;}
