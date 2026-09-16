@@ -1,6 +1,7 @@
 function startPractice(bank) {
   const $=id=>document.getElementById(id), QUESTIONS=bank.questions, TOPICS=bank.topics;
   const escapeHtml=School.escapeHtml, math=PhysicsMath.format;
+  const topicIcons=['◈','◉','∿','↗','⎓','◌','⌁','☢','✦','⌂','⚙','↻','▣','⌘'];
   const savedMessage=School.user.guest?'Progress saved for this temporary guest session':'Progress saved to your account';
   let saved=bank.progress,topic='all',level='All',selected=null;
   const feedback={},timers=new Map(),pending=new Map();
@@ -37,7 +38,7 @@ function startPractice(bank) {
     timers.set(q.id,setTimeout(()=>flush(q.id).catch(()=>{}),400));
   }
   function renderTopics(){
-    $('topics').innerHTML='<button class="topic-button '+(topic==='all'?'active':'')+'" data-topic="all">All topics <small>'+QUESTIONS.length+'</small></button>'+TOPICS.map((name,i)=>'<button class="topic-button '+(topic===i?'active':'')+'" data-topic="'+i+'" aria-pressed="'+(topic===i)+'"><span>'+escapeHtml(name)+'</span><small>'+QUESTIONS.filter(q=>q.topic===i).length+'</small></button>').join('');
+    $('topics').innerHTML='<button class="topic-button '+(topic==='all'?'active':'')+'" data-topic="all"><span class="topic-icon" aria-hidden="true">◆</span><span class="topic-name">All topics</span><small>'+QUESTIONS.length+'</small></button>'+TOPICS.map((name,i)=>'<button class="topic-button '+(topic===i?'active':'')+'" data-topic="'+i+'" aria-pressed="'+(topic===i)+'"><span class="topic-icon" aria-hidden="true">'+topicIcons[i]+'</span><span class="topic-name">'+escapeHtml(name)+'</span><small>'+QUESTIONS.filter(q=>q.topic===i).length+'</small></button>').join('');
     $('topics').querySelectorAll('button').forEach(b=>b.onclick=()=>{topic=b.dataset.topic==='all'?'all':Number(b.dataset.topic);selected=null;if(School.view==='notes')School.showNotes(topic==='all'?null:topic);else{School.setView('practice');render();}renderTopics();});
   }
   function renderList(list){
