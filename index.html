@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AQA A Level Physics practice, topic notes and class progress.">
+  <title>Physics Practice | A Level</title>
+  <link rel="stylesheet" href="vendor/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="style.css?v=10">
+  <script defer src="vendor/katex/dist/katex.min.js"></script>
+  <script defer src="math-format.js?v=3"></script>
+  <script defer src="notes.js"></script>
+  <script defer src="notes-view.js"></script>
+  <script defer src="questions.js"></script>
+  <script defer src="extra-calculations.js"></script>
+  <script defer src="extra-explanations.js"></script>
+  <script defer src="practical-questions.js"></script>
+  <script defer src="static-bank.js"></script>
+  <script defer src="app.js?v=10"></script>
+  <script defer src="challenge.js"></script>
+  <script defer src="school.js?v=10"></script>
+</head>
+<body>
+<header><a class="brand" href="./"><span class="brand-symbol" aria-hidden="true">P<span>+</span></span>Physics Practice</a><div class="header-actions"><span id="user-name"></span><button id="theme-toggle" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">&#9680;</button><button id="logout" class="secondary" hidden>Sign out</button></div></header>
+<div id="global-status" role="status"></div>
+<div id="role-view-switch" class="role-view-switch" hidden><div class="segmented" role="group" aria-label="View as"><button type="button" data-role-view="student" aria-pressed="false">Student view</button><button type="button" data-role-view="teacher" aria-pressed="true">Teacher view</button></div></div>
+<div class="account-connections"><button id="microsoft-connect" class="secondary" hidden>Connect Microsoft 365</button></div>
+<section id="account-screen" class="account-screen">
+  <div class="section-label">AQA A LEVEL PHYSICS &middot; 7408</div>
+  <h1>Your physics study space</h1>
+  <div class="account-panel">
+    <div class="segmented" id="account-tabs"><button data-mode="login" aria-pressed="true">Sign in</button><button data-mode="register" aria-pressed="false">Create account</button></div>
+    <h2 id="account-title">Sign in</h2>
+    <form id="account-form">
+      <div id="role-field"><label for="account-role">Account type</label><select id="account-role"><option value="student">Student</option><option value="teacher">Teacher</option></select></div>
+      <div id="invitation-field" hidden><label for="teacher-invitation">Teacher invitation or setup key</label><input id="teacher-invitation" autocomplete="off" maxlength="100"><p class="answer-help">Request an invitation from an existing teacher, or use the server's setup key for the first teacher.</p></div>
+      <div id="class-field" hidden><label for="class-code">Class code</label><input id="class-code" autocomplete="off" maxlength="20"></div>
+      <div id="microsoft-option"><button id="microsoft-signin" type="button" class="secondary" disabled>Sign in with Microsoft 365</button><p id="microsoft-status" class="answer-help">Microsoft sign-in is not configured.</p></div>
+      <div id="name-field" hidden><label for="account-name">Full name</label><input id="account-name" autocomplete="name" maxlength="100"></div>
+      <label for="account-email">Email address</label><input id="account-email" type="email" autocomplete="username" required maxlength="200">
+      <label for="account-password">Password</label><input id="account-password" type="password" autocomplete="current-password" required maxlength="128">
+      <p id="password-rule" class="answer-help" hidden>Use at least 12 characters.</p>
+      <button id="account-submit" class="primary" type="submit">Sign in</button>
+      <p id="account-error" role="alert"></p>
+    </form>
+    <p id="server-help" class="answer-help" hidden>Open the running app: <a id="local-app-link" href="http://127.0.0.1:3001/">http://127.0.0.1:3001/</a>. If it is unavailable, run start.ps1 with PORT set to 3001.</p>
+    <button id="skip-login" type="button" class="secondary">Skip for now</button>
+  </div>
+</section>
+<div id="school-screen" hidden>
+  <nav class="view-tabs" aria-label="Study views"><button data-view="practice" aria-current="page">Questions</button><button data-view="notes">Topic notes</button><button data-view="challenge">Challenge mode</button><button data-view="gradebook" id="gradebook-tab" hidden>Gradebook</button></nav>
+  <div class="layout">
+    <aside aria-label="Topic filters"><div class="section-label">AQA A LEVEL &middot; 7408</div><h2>Topics</h2><nav id="topics" aria-label="Physics topics"></nav><div class="aside-note">Independent practice resource.<br>Original questions, not official AQA papers.</div></aside>
+    <main>
+      <section id="practice-view">
+        <div class="heading"><div><div class="section-label">STUDY SPACE</div><h1>Physics question bank</h1></div><div class="progress-summary"><strong id="completed">0</strong><span>questions mastered</span></div></div>
+        <section class="controls" aria-label="Question filters">
+          <div><label for="search">Find a question</label><input id="search" type="search" placeholder="Search questions..."></div>
+          <fieldset><legend>Difficulty</legend><div class="segmented" id="difficulty"><button data-level="All" aria-pressed="true">All</button><button data-level="Foundation" aria-pressed="false">Foundation</button><button data-level="Standard" aria-pressed="false">Standard</button><button data-level="Challenge" aria-pressed="false">Challenge</button></div></fieldset>
+          <label class="toggle"><input id="unfinished" type="checkbox"> To practise</label>
+        </section>
+        <div class="workspace-heading"><h2 id="topic-title">All topics</h2><span id="count" role="status"></span><button id="clear-filters" class="secondary">Clear filters</button></div>
+        <button id="back-to-questions" class="secondary" hidden>&larr; All matching questions</button>
+        <div class="practice-layout browsing"><nav id="question-list" aria-label="Questions"></nav><section id="question" aria-label="Selected question"></section></div>
+      </section>
+      <section id="notes-view" hidden></section>
+      <section id="gradebook-view" hidden></section>
+      <section id="challenge-view" hidden></section>
+      <footer><span id="save-status" role="status">Progress saved to your account</span><a href="https://www.aqa.org.uk/subjects/physics/a-level/physics-7408/specification/specification-at-a-glance" target="_blank" rel="noopener">AQA specification &nearr;</a></footer>
+    </main>
+  </div>
+</div>
+<noscript><p>JavaScript is required. Open this website in a browser with JavaScript enabled.</p></noscript>
+</body>
+</html>
