@@ -1,6 +1,6 @@
 const NotesView=(()=>{
   const diagrams={
-    '0:2':{kind:'graph',title:'A best-fit line, not dot-to-dot',caption:'Vertical bars show measurement uncertainty. Use widely separated points on the best-fit line to calculate its gradient.'},
+    '0:2':{kind:'graph',title:'A best-fit line, not dot-to-dot',caption:'Vertical bars show measurement uncertainty. Use widely separated points on the best-fit line to calculate its gradient.',axisX:'Independent variable / s',axisY:'Measured quantity / m'},
     '1:2':{kind:'levels',title:'An emission transition',caption:'An electron moves to a lower energy level. The emitted photon has energy equal to the difference between the two levels.'},
     '2:0':{kind:'wave',title:'One wavelength',caption:'A snapshot of displacement against distance. Wavelength is the distance between adjacent points in phase; amplitude is the maximum displacement from equilibrium.'},
     '6:1':{kind:'decay',title:'Capacitor charging and discharging',caption:'Adjust resistance and capacitance to change the time constant. The moving point shows the capacitor voltage as it charges or discharges.',interactive:'capacitor'}
@@ -22,8 +22,34 @@ const NotesView=(()=>{
     if(fixed)return fixed;
     const title=section.title.toLowerCase();
     const match=visualRules.find(([rule])=>rule.test(title));
-    const [,kind,heading,caption]=match||[null,'graph','A visual model for this section','The diagram is a compact visual reminder of the relationship described above.'];
+    if(!match)return graphFor(section.title,topic);
+    const [,kind,heading,caption]=match;
     return {kind,title:heading,caption,interactive:kind==='field'?'field':undefined};
+  }
+  function graphFor(sectionTitle,topic){
+    const title=sectionTitle.toLowerCase();
+    const graph={kind:'graph',interactive:undefined};
+    if(/worked example/.test(title)){
+      if(topic===0)return {...graph,title:'Percentage uncertainty in a measurement',caption:'A larger measured quantity can have the same absolute uncertainty but a smaller percentage uncertainty.',axisX:'Measured length / cm',axisY:'Percentage uncertainty / %'};
+      return {...graph,title:'Worked calculation: input and result',caption:'The plotted relationship keeps the input quantity and calculated result in explicit units.',axisX:'Input quantity / unit',axisY:'Calculated result / unit'};
+    }
+    if(/measurement|uncertainty|data/.test(title))return {...graph,title:'Repeated readings and uncertainty',caption:'Plot each reading against its repeat number. The spread of the points shows random uncertainty.',axisX:'Repeat number',axisY:'Measured length / cm'};
+    if(/prefix|si units|estimation/.test(title))return {...graph,title:'Unit scale and conversion',caption:'The same physical quantity is shown on a consistent unit scale before a calculation is made.',axisX:'Length / m',axisY:'Area / m²'};
+    if(/graphs|gradient|linearising|evaluation/.test(title))return {...graph,title:'A best-fit line with physical units',caption:'Use widely separated points on the best-fit line to calculate a gradient with units.',axisX:'Time / s',axisY:'Distance / m'};
+    if(/excitation|ionisation|evidence/.test(title))return {...graph,title:'Photoelectron energy threshold',caption:'Below the threshold frequency no electrons are emitted; above it, maximum kinetic energy rises with frequency.',axisX:'Frequency / Hz',axisY:'Maximum energy / J'};
+    if(/practical method|fringe/.test(title))return {...graph,title:'Fringe position and order',caption:'Successive bright or dark fringes are separated by a near-constant distance in the small-angle approximation.',axisX:'Fringe order / n',axisY:'Position / mm'};
+    if(/characteristics|superconduct/.test(title))return {...graph,title:'Current-voltage characteristic',caption:'The gradient and curvature show how a component responds as potential difference changes.',axisX:'Potential difference / V',axisY:'Current / A'};
+    if(/charging|transformer|ac/.test(title))return {...graph,title:'Alternating voltage',caption:'An alternating potential difference changes sign periodically; its period and peak value define the waveform.',axisX:'Time / ms',axisY:'Voltage / V'};
+    if(/resolution|hr diagram/.test(title))return {...graph,title:'Stars on a Hertzsprung-Russell diagram',caption:'Surface temperature and luminosity identify the main sequence, giants and stellar remnants.',axisX:'Surface temperature / K',axisY:'Luminosity / L☉'};
+    if(/eye and ear|vision|hearing|medical images/.test(title))return {...graph,title:'Hearing response across frequency',caption:'Sensitivity depends on frequency, so equal physical intensities do not always produce equal perceived loudness.',axisX:'Frequency / Hz',axisY:'Sound level / dB'};
+    if(/electron properties/.test(title))return {...graph,title:'Electron deflection',caption:'Changing the magnetic field changes the curvature of an electron beam, allowing its specific charge to be investigated.',axisX:'Magnetic field / T',axisY:'Orbit radius / m'};
+    if(/comparator|limits/.test(title))return {...graph,title:'Amplifier frequency response',caption:'Gain remains approximately constant over a working band before the bandwidth limit causes it to fall.',axisX:'Frequency / Hz',axisY:'Voltage gain'};
+    if(/planning|contexts|transfer|revision checkpoints/.test(title))return {...graph,title:'A measured result with uncertainty',caption:'Compare an experimental result with a model or prediction using the uncertainty interval, not only the central value.',axisX:'Independent variable / unit',axisY:'Measured result / unit'};
+    if(/young modulus/.test(title))return {...graph,title:'Force-extension relationship',caption:'The gradient of the initial straight-line region gives stiffness; the area under the graph is work done.',axisX:'Extension / mm',axisY:'Force / N'};
+    if(/resistivity/.test(title))return {...graph,title:'Potential difference and current',caption:'A potential-difference against current graph gives resistance from its gradient for an ohmic wire.',axisX:'Current / A',axisY:'Potential difference / V'};
+    if(/boyle|charles/.test(title))return {...graph,title:'Gas law relationship',caption:'Use kelvin for temperature and consistent units when testing the relationship between pressure, volume and temperature.',axisX:'Volume / m³',axisY:'Pressure / Pa'};
+    if(/search coil|flux linkage/.test(title))return {...graph,title:'Induced emf from changing flux',caption:'Induced emf depends on how quickly magnetic flux linkage changes through the search coil.',axisX:'Time / s',axisY:'Induced emf / V'};
+    return {...graph,title:sectionTitle+' relationship',caption:'The axes name the physical quantities being compared; use the gradient, intercept or curve shape to test the model.',axisX:'Independent variable / unit',axisY:'Measured quantity / unit'};
   }
   const esc=value=>School.escapeHtml(value);
   const fieldStates=new WeakMap();
@@ -43,7 +69,8 @@ const NotesView=(()=>{
       const guide=practicalGuide(section);
       const controls=diagram&&diagram.interactive==='capacitor'?'<div class="note-controls" data-capacitor-controls><div class="note-control-row"><label>Resistance <output data-cap-output="r">10 kΩ</output><input type="range" min="1" max="100" value="10" step="1" data-cap-input="r"></label><label>Capacitance <output data-cap-output="c">100 μF</output><input type="range" min="10" max="1000" value="100" step="10" data-cap-input="c"></label></div><div class="note-control-row note-control-actions"><span>Mode</span><div class="segmented"><button type="button" data-cap-mode="charge" aria-pressed="true">Charge</button><button type="button" data-cap-mode="discharge" aria-pressed="false">Discharge</button></div><strong data-cap-output="tau">τ = 1.00 s</strong></div></div>':'';
       const fieldControls=diagram&&diagram.interactive==='field'?'<div class="note-controls" data-field-controls><label>Source mass <output data-field-output="mass">10 × 10²⁴ kg</output><input type="range" min="1" max="100" value="10" step="1" data-field-input="mass"></label><p class="answer-help">Newton&rsquo;s law: <span class="note-equation-inline">a = GM/r²</span>. Place the test mass in the field, then change the source mass to compare the motion.</p></div>':'';
-      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(diagram?'<figure class="note-figure '+(diagram.interactive?'note-interactive':'')+'"><h3>'+esc(diagram.title)+'</h3>'+controls+fieldControls+'<canvas data-note-diagram="'+diagram.kind+'"'+(diagram.interactive?' data-note-interactive="'+diagram.interactive+'"':'')+' role="img" aria-label="'+esc(diagram.title+'. '+diagram.caption)+'"></canvas><figcaption>'+esc(diagram.caption)+'</figcaption></figure>':'')+'</div></section>';
+      const graphAxes=diagram&&diagram.kind==='graph'?' data-note-axis-x="'+esc(diagram.axisX)+'" data-note-axis-y="'+esc(diagram.axisY)+'"':'';
+      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(diagram?'<figure class="note-figure '+(diagram.interactive?'note-interactive':'')+'"><h3>'+esc(diagram.title)+'</h3>'+controls+fieldControls+'<canvas data-note-diagram="'+diagram.kind+'"'+graphAxes+(diagram.interactive?' data-note-interactive="'+diagram.interactive+'"':'')+' role="img" aria-label="'+esc(diagram.title+'. '+diagram.caption)+'"></canvas><figcaption>'+esc(diagram.caption)+'</figcaption></figure>':'')+'</div></section>';
     }).join('')+'</div><details class="notes-source"><summary>Sources and further reading</summary><p>'+esc(note.source)+'</p></details>';
   }
   function draw(canvas,now=0){
@@ -112,7 +139,7 @@ const NotesView=(()=>{
         text(interactive?'Time / s':'Time / RC',478,265);
         if(interactive){const elapsed=(now/900%graphDuration);const value=charging?1-Math.exp(-elapsed/tau):Math.exp(-elapsed/tau);const x=65+graphWidth*(elapsed/graphDuration);pulse(x,220-graphHeight*value,warm);text(charging?'Charging':'Discharging',260,92,warm);text('τ = RC = '+tau.toFixed(2)+' s',260,115,warm);}else{text('After one time constant',260,92);text('V = V0 / e',260,115,warm);}break;}
       case 'graph':
-        arrow(65,225,550,225,muted);arrow(65,225,65,32,muted);text('Measured y',75,28);text('Independent variable x',360,260);
+        arrow(65,225,550,225,muted);arrow(65,225,65,32,muted);text(canvas.dataset.noteAxisY||'Measured quantity / unit',75,28);text(canvas.dataset.noteAxisX||'Independent variable / unit',360,260);
         [[115,195],[200,162],[290,126],[375,103],[465,67]].forEach(([x,y])=>{line(x,y-15,x,y+15,warm);line(x-6,y-15,x+6,y-15,warm);line(x-6,y+15,x+6,y+15,warm);c.fillStyle=ink;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();});
         line(90,207,510,51,accent);text('Best fit',360,45,accent);text('Arbitrary units',82,249);break;
     }
