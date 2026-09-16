@@ -6,7 +6,7 @@ const NotesView=(()=>{
     '6:1':{kind:'decay',title:'Capacitor charging and discharging',caption:'Adjust resistance and capacitance to change the time constant. The moving point shows the capacitor voltage as it charges or discharges.',interactive:'capacitor'}
   };
   const visualRules=[
-    [/gravitational|electric field|magnetic field|induction|circular orbit|satellite/, 'field','A mass follows a gravitational field line','The moving marker shows the direction of a field around a central source.'],
+    [/gravitational|electric field|magnetic field|induction|circular orbit|satellite/, 'field','A mass follows a gravitational field line','Click or drag the smaller test mass anywhere in the field. The arrows point towards the central mass.'],
     [/capacitor|decay|activity|radioactive|tracer/, 'decay','A changing quantity over time','The curve shows exponential change; the moving marker makes the time dependence visible.'],
     [/wave|interference|stationary|diffraction|string harmonic|ultrasound|sound/, 'wave','A travelling wave','The oscillation moves across the medium while neighbouring points remain coupled.'],
     [/refraction|telescope|optical|lens|x-ray|imaging|light|photon/, 'optics','Rays reveal the geometry','The animated rays make the path, focus or spreading angle easier to follow.'],
@@ -23,7 +23,7 @@ const NotesView=(()=>{
     const title=section.title.toLowerCase();
     const match=visualRules.find(([rule])=>rule.test(title));
     const [,kind,heading,caption]=match||[null,'graph','A visual model for this section','The diagram is a compact visual reminder of the relationship described above.'];
-    return {kind,title:heading,caption};
+    return {kind,title:heading,caption,interactive:kind==='field'?'field':undefined};
   }
   const esc=value=>School.escapeHtml(value);
   function practicalGuide(section){
@@ -59,9 +59,8 @@ const NotesView=(()=>{
       case 'field':{
         const cx=300,cy=142,phase=now/2600;
         c.fillStyle=warm;c.beginPath();c.arc(cx,cy,22,0,Math.PI*2);c.fill();text('source',276,184,warm);
-        for(let r=42;r<135;r+=24){for(let i=0;i<12;i++){const a=i*Math.PI/6;const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);arrow(cx+(r-9)*Math.cos(a),cy+(r-9)*Math.sin(a),x,y,accent);}}
-        const radius=82+28*Math.sin(phase),angle=phase*1.8;const x=cx+radius*Math.cos(angle),y=cy+radius*.62*Math.sin(angle);
-        pulse(x,y);text('test mass',x-25,y-14);text('field direction',426,45,accent);arrow(426,55,493,55,accent);break;}
+        for(let r=42;r<135;r+=24){for(let i=0;i<12;i++){const a=i*Math.PI/6;const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);arrow(x,y,cx+(r-12)*Math.cos(a),cy+(r-12)*Math.sin(a),accent);}}
+        const figure=canvas.closest('figure'),storedX=Number(figure.dataset.massX||390),storedY=Number(figure.dataset.massY||100);pulse(storedX,storedY);text('test mass',storedX-25,storedY-14);text('field direction: towards mass',365,45,accent);break;}
       case 'motion':{
         const x=90+((now/9)%410),y=205-75*Math.sin((x-90)/410*Math.PI);arrow(62,220,550,220,muted);arrow(62,220,62,35,muted);text('position',72,32);text('time',515,245);dot(x,y,7);arrow(x,y,x+35,y-18,warm);text('velocity',x+40,y-20,warm);c.setLineDash([4,5]);line(x,y,x,220,muted);c.setLineDash([]);break;}
       case 'circuit':{
@@ -112,6 +111,7 @@ const NotesView=(()=>{
   const drawAll=()=>{
     cancelAnimationFrame(animationFrame);
     bindControls();
+    bindFieldInteractions();
     const canvases=[...document.querySelectorAll('[data-note-diagram]')];
     const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const render=now=>{
@@ -133,6 +133,20 @@ const NotesView=(()=>{
         controls.querySelectorAll('[data-cap-mode]').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));
         drawAll();
       });
+    });
+  }
+  function bindFieldInteractions(){
+    document.querySelectorAll('[data-note-interactive="field"]').forEach(canvas=>{
+      const figure=canvas.closest('figure');
+      const placeMass=event=>{
+        const bounds=canvas.getBoundingClientRect();
+        figure.dataset.massX=Math.max(28,Math.min(572,(event.clientX-bounds.left)/bounds.width*600));
+        figure.dataset.massY=Math.max(28,Math.min(252,(event.clientY-bounds.top)/bounds.height*280));
+        drawAll();
+      };
+      canvas.onpointerdown=event=>{canvas.setPointerCapture(event.pointerId);placeMass(event);};
+      canvas.onpointermove=event=>{if(canvas.hasPointerCapture(event.pointerId))placeMass(event);};
+      canvas.onpointerup=event=>{if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);};
     });
   }
   new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
