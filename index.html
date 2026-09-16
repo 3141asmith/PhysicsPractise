@@ -18,6 +18,7 @@
   <script defer src="app.js?v=10"></script>
   <script defer src="challenge.js"></script>
   <script defer src="school.js?v=10"></script>
+  <script>if(location.hostname.endsWith('.github.io')||location.hostname==='physicsforge.co.uk'||location.hostname==='www.physicsforge.co.uk'||new URLSearchParams(location.search).has('static'))document.documentElement.classList.add('static-host');</script>
 </head>
 <body>
 <header><a class="brand" href="./"><span class="brand-symbol" aria-hidden="true">P<span>+</span></span>Physics Practice</a><div class="header-actions"><span id="user-name"></span><button id="enquiries-open" type="button" class="secondary">Enquiries</button><button id="theme-toggle" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">&#9680;</button><button id="logout" class="secondary" hidden>Sign out</button></div></header>

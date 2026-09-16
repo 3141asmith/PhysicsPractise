@@ -33,6 +33,7 @@ aside{align-self:start;position:sticky;top:0;max-height:100vh;overflow-y:auto}
   aside{position:static;max-height:none;overflow:visible}
 }
 [hidden]{display:none!important}
+.static-host #account-screen{display:none!important}
 .view-tabs{flex-wrap:wrap}
 #challenge-view{max-width:880px;margin:0 auto}.challenge-toggle{display:flex;align-items:center;gap:10px;font-size:14px;white-space:nowrap}
 .challenge-progress{border-block:1px solid var(--line);padding:22px 0;margin-bottom:30px}.challenge-progress>div{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:13px}.challenge-progress strong{font-size:24px;color:var(--green)}

@@ -171,9 +171,10 @@ const School = {
    School.user=session.user;School.csrf=session.csrf;
    $('microsoft-connect').hidden=!microsoftEnabled||session.user.microsoftLinked||session.user.guest;
    if(session.user.guest)$('global-status').textContent='Guest mode. Progress is temporary and is removed when you leave or after 12 hours.';
-   $('logout').textContent=session.user.guest?'Leave guest mode':'Sign out';
+  $('logout').textContent=session.user.guest?'Leave guest mode':'Sign out';
+  if(School.staticMode){$('logout').hidden=true;$('user-name').textContent='';$('global-status').textContent='';}
    const bank=await School.api('/api/questions');School.bank=bank;
-   $('account-screen').hidden=true;$('school-screen').hidden=false;$('logout').hidden=false;$('user-name').textContent=School.user.name+' ('+School.user.role+')';$('gradebook-tab').hidden=School.user.role!=='teacher';
+  $('account-screen').hidden=true;$('school-screen').hidden=false;$('logout').hidden=School.staticMode;$('user-name').textContent=School.staticMode?'':School.user.name+' ('+School.user.role+')';$('gradebook-tab').hidden=School.user.role!=='teacher';
    School.practice=startPractice(bank);
    let roleView=School.user.role==='teacher'?'teacher':'student';
    try{if(School.user.role==='teacher'&&sessionStorage.getItem('physics-role-view:'+School.user.id)==='student')roleView='student';}catch{}
@@ -201,9 +202,7 @@ const School = {
  $('logout').onclick=async()=>{try{await School.practice?.flushAll();await School.api('/api/logout',{});location.reload();}catch(e){$('global-status').textContent=e.message;}};
  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{if(b.dataset.view==='gradebook')School.gradebook();else if(b.dataset.view==='notes')School.showNotes();else if(b.dataset.view==='challenge')Challenge.open();else{School.setView('practice');School.practice.render();history.replaceState(null,'','#practice');}});
  if(School.staticMode){
-   $('account-tabs').hidden=true;$('account-form').hidden=true;$('account-title').textContent='Local browser mode';
-   $('account-error').textContent='Accounts, teacher tools and shared progress require the school server.';
-   $('skip-login').textContent='Start practising';$('global-status').textContent='Local browser mode. Progress is saved only in this browser.';
+   $('account-screen').hidden=true;$('account-tabs').hidden=true;$('account-form').hidden=true;
    $('skip-login').click();return;
  }
  if(location.protocol==='file:'){$('account-error').textContent='This is a file preview. Skip for now will open guest practice on the local app server.';$('server-help').hidden=false;return;}
