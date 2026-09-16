@@ -127,6 +127,19 @@ const School = {
 
 (() => {
  const $=id=>document.getElementById(id);
+ const enquiries=$('enquiries-dialog'),enquiryForm=$('enquiries-form');
+ const closeEnquiries=()=>{if(enquiries.open)enquiries.close();};
+ $('enquiries-open').onclick=()=>{enquiries.showModal();$('enquiry-message').focus();};
+ $('enquiries-close').onclick=closeEnquiries;$('enquiries-cancel').onclick=closeEnquiries;
+ enquiryForm.onsubmit=event=>{
+   event.preventDefault();
+   const message=$('enquiry-message').value.trim();
+   if(!message){$('enquiries-error').textContent='Please describe the bug, question or change request.';return;}
+   const type=$('enquiry-type').value,topic=$('enquiry-topic').value.trim()||'Not specified',contact=$('enquiry-contact').value.trim()||'Not provided';
+   const body=['Hello Physics Forge,','',`Type: ${type}`,`Topic/page: ${topic}`,`Reply-to: ${contact}`,'',message,'','---','Sent from Physics Practice','Page: '+location.href].join('\n');
+   location.href='mailto:enquiry@physicsforge.co.uk?subject='+encodeURIComponent('[Physics Practice] '+type+': '+topic)+'&body='+encodeURIComponent(body);
+   closeEnquiries();
+ };
  let mode='login',microsoftEnabled=false,setupToken=location.hash.startsWith('#setup=')?location.hash.slice(7):'';
  const microsoftResult=location.hash.startsWith('#microsoft=')?location.hash.slice(11):'';
  const microsoftMessages={expired:'Microsoft sign-in expired. Please try again.',cancelled:'Microsoft sign-in was cancelled.',tenant:'Use an account from the school Microsoft tenant.','already-linked':'This Microsoft account or site account is already connected.','join-or-link':'For an existing account, sign in with your password and choose Connect Microsoft 365. New students should select Create account, choose Student and enter their class code.',failed:'Microsoft sign-in could not be completed. Please try again or contact your school administrator.',success:'Microsoft sign-in completed.'};

@@ -46,6 +46,7 @@ aside{align-self:start;position:sticky;top:0;max-height:100vh;overflow-y:auto}
 select{font:inherit;max-width:100%}
 header{height:auto;min-height:86px;gap:20px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
 .header-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12px}
+dialog{width:min(620px,calc(100% - 32px));border:1px solid var(--line);border-radius:6px;padding:0;color:inherit;background:white;box-shadow:0 20px 70px #15251d33}dialog::backdrop{background:#15251d66}.dialog-content{padding:0}#enquiries-form{padding:28px}#enquiries-form .heading{margin-bottom:12px}#enquiries-form h2{margin:0;font-size:24px}#enquiries-form label{display:grid;gap:8px;margin:18px 0;font-size:13px}#enquiries-form input,#enquiries-form select,#enquiries-form textarea{width:100%;border:1px solid #bdcbc6;border-radius:4px;padding:11px;background:white;color:inherit;resize:vertical}#enquiries-form textarea{min-height:130px}#enquiries-error{color:#a23434;font-size:13px;line-height:1.5;min-height:1.5em}.enquiries-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
 .role-view-switch{display:flex;justify-content:flex-end;padding:8px 24px;border-bottom:1px solid var(--line)}
 .icon-button{width:38px;height:38px;border:1px solid var(--line);border-radius:4px;background:transparent;color:inherit;font-size:22px}
 .account-panel{max-width:440px;margin:50px auto;padding:0 24px}
@@ -113,6 +114,7 @@ td small{display:block;color:#667773;margin-top:5px}
 [data-theme=dark] .primary,[data-theme=dark] .segmented button[aria-pressed=true]{background:#76d6b1;color:#13261d;border-color:#76d6b1}
 [data-theme=dark] .primary:hover{background:#a1e8c9}
 [data-theme=dark] input,[data-theme=dark] textarea,[data-theme=dark] select,[data-theme=dark] .secondary,[data-theme=dark] .segmented{background:#252c28!important;color:#e1e9e5!important;border-color:#526459!important}
+[data-theme=dark] dialog{background:#222724;box-shadow:0 20px 70px #0008}
 [data-theme=dark] .answer-help,[data-theme=dark] .section-label,[data-theme=dark] .course,[data-theme=dark] .source-note,[data-theme=dark] .controls label,[data-theme=dark] .controls legend,[data-theme=dark] .progress-summary,[data-theme=dark] .question-link small,[data-theme=dark] .mini-meta,[data-theme=dark] td small,[data-theme=dark] footer,[data-theme=dark] #count{color:#aebfb5}
 [data-theme=dark] .badge{background:#244736;color:#a9e9c5}
 [data-theme=dark] .badge.Standard{background:#283c56;color:#bfd3f4}

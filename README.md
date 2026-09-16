@@ -74,6 +74,8 @@ Before school-wide use, arrange approved hosting, data retention and account adm
 
 GitHub Pages can host a static, local-browser version of this project. Publish the repository with GitHub Pages and open its `*.github.io` URL. The page automatically enters local browser mode: questions, notes, challenge mode and progress work, but progress is stored only in that browser. There are no accounts, shared classes, teacher gradebook, server-checked answers or Microsoft sign-in in this mode. Do not use it for private student data.
 
+The Enquiries form on the static site opens a pre-addressed email to `enquiry@physicsforge.co.uk`; students need a configured mail app to send it. Direct server-side email requires an approved form provider or SMTP service and must not expose credentials in GitHub Pages files.
+
 The full account-based application still requires the Node server and persistent SQLite storage described above. GitHub Pages does not run `server.cjs`.
 
 ## Tests
