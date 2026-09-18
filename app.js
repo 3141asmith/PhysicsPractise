@@ -81,7 +81,7 @@ function startPractice(bank) {
   }
   function renderHints(q){
     const count=saved[q.id]?.hintCount||0;
-    $('hint').textContent=count>=3?'3 of 3 hints used':'Hint ('+count+'/3 used)';$('hint').disabled=count>=3;
+    $('hint').textContent=count>=3?'3 of 3 hints used':count===0?'Free hint (0/3 used)':'Use 1 hint credit ('+count+'/3 used)';$('hint').disabled=count>=3;
     $('hints').innerHTML=count?'<h3>Hints</h3><ol>'+q.revealedHints.map(h=>'<li>'+math(h)+'</li>').join('')+'</ol>':'';
   }
   function renderSolution(q){

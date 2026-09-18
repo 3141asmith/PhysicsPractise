@@ -22,6 +22,9 @@ const School = {
   },
   escapeHtml:value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
   async api(url,body){
+    return Rewards.perform(url,body,()=>this.request(url,body));
+  },
+  async request(url,body){
     if(this.staticMode)return this.staticApi(url,body);
     let response;
     const unavailable=()=>Object.assign(new Error('Cannot reach the Physics Practice server. Open the running app rather than index.html or a static preview, and check that the server is running.'),{serverUnavailable:true});

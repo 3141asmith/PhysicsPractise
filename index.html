@@ -2,137 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Physics Forge: interactive AQA A Level Physics practice, topic notes and simulations.">
-  <title>Physics Forge | A Level Physics</title>
-  <link rel="stylesheet" href="vendor/katex/dist/katex.min.css">
+  <title>Physics Forge | Explore, understand, discover</title>
+  <meta name="description" content="Explore the ideas that explain our universe. Build your understanding of physics and choose your path through GCSE or A Level study.">
   <link rel="stylesheet" href="style.css?v=10">
-  <script defer src="vendor/katex/dist/katex.min.js"></script>
-  <script defer src="math-format.js?v=3"></script>
-  <script defer src="notes.js"></script>
-  <script defer src="notes-view.js"></script>
-  <script defer src="questions.js"></script>
-  <script defer src="extra-calculations.js"></script>
-  <script defer src="extra-explanations.js"></script>
-  <script defer src="practical-questions.js"></script>
-  <script defer src="static-bank.js"></script>
-  <script defer src="app.js?v=10"></script>
-  <script defer src="challenge.js"></script>
-  <script defer src="school.js?v=10"></script>
-  <script>if(location.hostname.endsWith('.github.io')||location.hostname==='physicsforge.co.uk'||location.hostname==='www.physicsforge.co.uk'||new URLSearchParams(location.search).has('static'))document.documentElement.classList.add('static-host');</script>
+  <link rel="stylesheet" href="courses.css?v=3">
+  <script defer src="home.js?v=2"></script>
 </head>
 <body>
-<header><a class="brand" href="./"><span class="brand-symbol" aria-hidden="true"><span class="brand-sparks">✦</span><b>PF</b></span>Physics Forge</a><div class="header-actions"><span id="user-name"></span><button id="enquiries-open" type="button" class="secondary">Enquiries</button><div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary theme-palette-button" title="Choose colour theme" aria-label="Choose colour theme" aria-expanded="false"><span>Theme</span><span class="theme-palette-dot" aria-hidden="true"></span></button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button type="button" class="palette-option active" data-palette="forge" role="menuitemradio" aria-checked="true"><span class="palette-pill forge" aria-hidden="true"></span>Forge</button><button type="button" class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false"><span class="palette-pill amber" aria-hidden="true"></span>Amber</button><button type="button" class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false"><span class="palette-pill ocean" aria-hidden="true"></span>Ocean</button><button type="button" class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false"><span class="palette-pill violet" aria-hidden="true"></span>Violet</button></div></div><button id="theme-toggle" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">&#9680;</button><button id="logout" class="secondary" hidden>Sign out</button></div></header>
-<div id="global-status" role="status"></div>
-<dialog id="enquiries-dialog" aria-labelledby="enquiries-title"><form id="enquiries-form" method="dialog"><div class="heading"><div><div class="section-label">FEEDBACK</div><h2 id="enquiries-title">Enquiries</h2></div><button id="enquiries-close" type="button" class="secondary" aria-label="Close enquiry form">Close</button></div><p class="answer-help">Report a bug or suggest a change. Your email app will open with the enquiry formatted for Physics Forge.</p><label for="enquiry-type">Enquiry type<select id="enquiry-type"><option>Bug report</option><option>Change request</option><option>Question</option></select></label><label for="enquiry-topic">Topic or page<input id="enquiry-topic" maxlength="120" placeholder="For example: capacitor simulation"></label><label for="enquiry-message">What would you like to tell us?<textarea id="enquiry-message" rows="6" maxlength="3000" required placeholder="Describe what happened or what you would like changed..."></textarea></label><label for="enquiry-contact">Reply-to email (optional)<input id="enquiry-contact" type="email" maxlength="200" placeholder="student@example.com"></label><p id="enquiries-error" role="alert"></p><div class="enquiries-actions"><button id="enquiries-cancel" type="button" class="secondary">Cancel</button><button class="primary" type="submit">Open email</button></div></form></dialog>
-<div id="role-view-switch" class="role-view-switch" hidden><div class="segmented" role="group" aria-label="View as"><button type="button" data-role-view="student" aria-pressed="false">Student view</button><button type="button" data-role-view="teacher" aria-pressed="true">Teacher view</button></div></div>
-<div class="account-connections"><button id="microsoft-connect" class="secondary" hidden>Connect Microsoft 365</button></div>
-<section id="account-screen" class="account-screen">
-  <div class="section-label">AQA A LEVEL PHYSICS &middot; 7408</div>
-  <h1>Your physics study space</h1>
-  <div class="account-panel">
-    <div class="segmented" id="account-tabs"><button data-mode="login" aria-pressed="true">Sign in</button><button data-mode="register" aria-pressed="false">Create account</button></div>
-    <h2 id="account-title">Sign in</h2>
-    <form id="account-form">
-      <div id="role-field"><label for="account-role">Account type</label><select id="account-role"><option value="student">Student</option><option value="teacher">Teacher</option></select></div>
-      <div id="invitation-field" hidden><label for="teacher-invitation">Teacher invitation or setup key</label><input id="teacher-invitation" autocomplete="off" maxlength="100"><p class="answer-help">Request an invitation from an existing teacher, or use the server's setup key for the first teacher.</p></div>
-      <div id="class-field" hidden><label for="class-code">Class code</label><input id="class-code" autocomplete="off" maxlength="20"></div>
-      <div id="microsoft-option"><button id="microsoft-signin" type="button" class="secondary" disabled>Sign in with Microsoft 365</button><p id="microsoft-status" class="answer-help">Microsoft sign-in is not configured.</p></div>
-      <div id="name-field" hidden><label for="account-name">Full name</label><input id="account-name" autocomplete="name" maxlength="100"></div>
-      <label for="account-email">Email address</label><input id="account-email" type="email" autocomplete="username" required maxlength="200">
-      <label for="account-password">Password</label><input id="account-password" type="password" autocomplete="current-password" required maxlength="128">
-      <p id="password-rule" class="answer-help" hidden>Use at least 12 characters.</p>
-      <button id="account-submit" class="primary" type="submit">Sign in</button>
-      <p id="account-error" role="alert"></p>
-    </form>
-    <p id="server-help" class="answer-help" hidden>Open the running app: <a id="local-app-link" href="http://127.0.0.1:3001/">http://127.0.0.1:3001/</a>. If it is unavailable, run start.ps1 with PORT set to 3001.</p>
-    <button id="skip-login" type="button" class="secondary">Skip for now</button>
-  </div>
-</section>
-<section id="landing-screen" class="landing-screen" hidden>
-  <div class="landing-hero">
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <span class="spark" aria-hidden="true"></span>
-    <div class="hero-badge">AQA A Level Physics</div>
+<header><a class="brand" href="index.html"><span class="brand-symbol" aria-hidden="true"><b>PF</b></span><span class="brand-copy"><span>Physics Forge</span><span class="brand-tagline">Forging a path through Physics</span></span></a><div class="header-actions"><div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary theme-palette-button" title="Choose colour theme" aria-label="Choose colour theme" aria-expanded="false"><span>Theme</span><span class="theme-palette-dot" aria-hidden="true"></span></button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button type="button" class="palette-option active" data-palette="forge" role="menuitemradio" aria-checked="true"><span class="palette-pill forge" aria-hidden="true"></span>Forge</button><button type="button" class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false"><span class="palette-pill amber" aria-hidden="true"></span>Amber</button><button type="button" class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false"><span class="palette-pill ocean" aria-hidden="true"></span>Ocean</button><button type="button" class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false"><span class="palette-pill violet" aria-hidden="true"></span>Violet</button></div></div><button id="theme-toggle" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">&#9680;</button></div></header>
+<main class="landing-screen combined-landing">
+  <section class="landing-hero" aria-labelledby="home-title">
+    <span class="spark" aria-hidden="true"></span><span class="spark" aria-hidden="true"></span><span class="spark" aria-hidden="true"></span><span class="spark" aria-hidden="true"></span>
+    <div class="hero-badge">Explore · Understand · Discover</div>
     <div class="section-label">WELCOME TO</div>
-    <h1>Physics Forge</h1>
-    <p>Build confidence with structured practice, revision notes, and challenge rounds designed to help you move from concept to exam-ready problem solving.</p>
+    <h1 id="home-title">Physics Forge</h1>
+    <p>From the smallest particles to the furthest galaxies, physics helps us understand how the universe works. Explore the ideas, ask questions and build your confidence, one discovery at a time.</p>
     <div class="landing-actions">
-      <button type="button" class="primary" data-landing="practice">Start questions</button>
-      <button type="button" class="secondary" data-landing="notes">Browse topic notes</button>
-      <button type="button" class="secondary" data-landing="challenge">Try challenge mode</button>
+      <a class="primary" href="a-level.html">Explore A Level</a>
+      <a class="secondary" href="combined-science.html">Explore GCSE</a>
     </div>
-    <div class="landing-metrics" aria-label="Study statistics">
-      <div><strong>1,458</strong><span>Questions</span></div>
-      <div><strong>13</strong><span>Topics</span></div>
-      <div><strong>3</strong><span>Study modes</span></div>
-    </div>
-  </div>
-  <div class="landing-showcase" aria-label="Study options">
-    <div class="landing-carousel" data-carousel>
-      <div class="landing-track">
-        <div class="landing-slide">
-          <button type="button" class="landing-card" data-landing="practice">
-            <span class="landing-icon" aria-hidden="true">Q</span>
-            <span class="landing-card-title">Questions</span>
-            <span class="landing-card-copy">Filter by topic, difficulty, and mastery to practise the right questions.</span>
-          </button>
-        </div>
-        <div class="landing-slide">
-          <button type="button" class="landing-card" data-landing="notes">
-            <span class="landing-icon" aria-hidden="true">N</span>
-            <span class="landing-card-title">Topic notes</span>
-            <span class="landing-card-copy">Use concise explanations, worked examples, and linked practice questions.</span>
-          </button>
-        </div>
-        <div class="landing-slide">
-          <button type="button" class="landing-card" data-landing="challenge">
-            <span class="landing-icon" aria-hidden="true">C</span>
-            <span class="landing-card-title">Challenge</span>
-            <span class="landing-card-copy">Push your accuracy with timed, cumulative challenge rounds and instant feedback.</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="landing-carousel-controls">
-      <button type="button" class="carousel-button" data-carousel-dir="prev" aria-label="Previous section">&#8592;</button>
-      <div class="carousel-dots" aria-label="Choose study mode">
-        <button type="button" class="carousel-dot active" data-slide="0" aria-label="Questions"></button>
-        <button type="button" class="carousel-dot" data-slide="1" aria-label="Topic notes"></button>
-        <button type="button" class="carousel-dot" data-slide="2" aria-label="Challenge"></button>
-      </div>
-      <button type="button" class="carousel-button" data-carousel-dir="next" aria-label="Next section">&#8594;</button>
-    </div>
-  </div>
-</section>
-<div id="school-screen" hidden>
-  <nav class="view-tabs" aria-label="Study views"><button data-view="practice" aria-current="page">Questions</button><button data-view="notes">Topic notes</button><button data-view="challenge">Challenge mode</button><button data-view="gradebook" id="gradebook-tab" hidden>Gradebook</button></nav>
-  <div class="layout">
-    <aside aria-label="Topic filters"><div class="section-label">AQA A LEVEL &middot; 7408</div><h2>Topics</h2><nav id="topics" aria-label="Physics topics"></nav><div class="aside-note">Independent practice resource.<br>Original questions, not official AQA papers.</div></aside>
-    <main>
-      <section id="practice-view">
-        <div class="heading"><div><div class="section-label">STUDY SPACE</div><h1>Physics question bank</h1></div><div class="progress-summary"><strong id="completed">0</strong><span>questions mastered</span></div></div>
-        <section class="controls" aria-label="Question filters">
-          <div><label for="search">Find a question</label><input id="search" type="search" placeholder="Search questions..."></div>
-          <fieldset><legend>Difficulty</legend><div class="segmented" id="difficulty"><button data-level="All" aria-pressed="true">All</button><button data-level="Foundation" aria-pressed="false">Foundation</button><button data-level="Standard" aria-pressed="false">Standard</button><button data-level="Challenge" aria-pressed="false">Challenge</button></div></fieldset>
-          <label class="toggle"><input id="unfinished" type="checkbox"> To practise</label>
-        </section>
-        <div class="workspace-heading"><h2 id="topic-title">All topics</h2><span id="count" role="status"></span><button id="clear-filters" class="secondary">Clear filters</button></div>
-        <button id="back-to-questions" class="secondary" hidden>&larr; All matching questions</button>
-        <div class="practice-layout browsing"><nav id="question-list" aria-label="Questions"></nav><section id="question" aria-label="Selected question"></section></div>
-      </section>
-      <section id="notes-view" hidden></section>
-      <section id="gradebook-view" hidden></section>
-      <section id="challenge-view" hidden></section>
-      <footer><span id="save-status" role="status">Progress saved to your account</span><a href="https://www.aqa.org.uk/subjects/physics/a-level/physics-7408/specification/specification-at-a-glance" target="_blank" rel="noopener">AQA specification &nearr;</a></footer>
-    </main>
-  </div>
-</div>
-<noscript><p>JavaScript is required. Open this website in a browser with JavaScript enabled.</p></noscript>
+  </section>
+  <h2>Choose your path</h2>
+  <nav class="combined-options course-options" aria-label="Choose your path">
+    <a class="landing-card" href="a-level.html"><span class="landing-icon" aria-hidden="true">A</span><span class="landing-card-title">A Level Physics</span><span class="landing-card-copy">Take your understanding further with questions, topic notes, simulations and challenge rounds.</span></a>
+    <a class="landing-card" href="combined-science.html"><span class="landing-icon" aria-hidden="true">G</span><span class="landing-card-title">GCSE</span><span class="landing-card-copy">Start with the foundations. Explore the course guide and preview the physics study resources coming soon.</span></a>
+  </nav>
+  <footer>Independent practice resource. Not affiliated with or endorsed by AQA.</footer>
+</main>
 </body>
 </html>
