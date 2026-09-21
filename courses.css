@@ -41,3 +41,6 @@ html[data-theme=dark] .course-switch a{background:#182c29;color:#e3eeea}html[dat
 #coin-shop::backdrop{background:rgba(0,0,0,.45)}
 [data-theme=dark] #coin-shop{background:#252c28;color:#e1e9e5}
 @media(max-width:600px){.rewards-bar{padding:12px 18px;gap:10px}}
+[data-theme=dark] .gcse-comparison,[data-theme=dark] .gcse-card,[data-theme=dark] .gcse-controls{background:#252c28;color:#e1e9e5;border-color:#526459}
+[data-theme=dark] .gcse-hero p,[data-theme=dark] .gcse-status,[data-theme=dark] .combined-scope{color:#c0d3cd}
+[data-theme=dark] .course{color:#c0d3cd}

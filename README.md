@@ -1,10 +1,12 @@
 # Physics Practice
 
-## A Level coins and hint shop
+## Course coins and hint shops
 
 The A Level page awards 5 browser-local coins for each question's first correct completion. Practice and challenge share one reward ledger; written questions count when every self-assessment point is checked. Questions already mastered when the wallet is first created are recorded without a retroactive award. The shop sells one hint credit for 50 coins. Each question's first hint is free; its second and third hints each use one credit. Previously unlocked hints do not require another purchase.
 
-Wallets persist in localStorage, separately for each signed-in account on this browser; guest and static learners share the browser guest wallet. They do not sync across devices, can be edited by the browser owner, and disappear if site data is cleared. Progress and wallets remain separate. Failed hint requests do not spend credits. Supported browsers use Web Locks to serialize wallet changes across tabs. No coins or shop are shown in the GCSE section.
+Wallets persist in localStorage, separately for each signed-in A Level account on this browser; guest and static learners share the browser guest wallet. They do not sync across devices, can be edited by the browser owner, and disappear if site data is cleared. Progress and wallets remain separate. Failed hint requests do not spend credits. Supported browsers use Web Locks to serialize wallet changes across tabs.
+
+Both GCSE pages share a separate browser wallet and shop, using `physics-forge-gcse-wallet-v1:browser`. A Level retains its existing `physics-forge-alevel-wallet-v1:` keys. Balances, hint credits, completion records and hint unlocks do not transfer between courses. GCSE questions are not live yet, so earning and redeeming hints remain pending question integration. Future GCSE marking code can call `Rewards.perform(url, body, request, progressRequest)` after loading the shared script on a page with `data-rewards-course="gcse"`; `progressRequest` returns current question progress for hint purchases. The browser tests use fixture marking responses for this integration, not real GCSE questions.
 
 Run `node tests/rewards-browser-tests.cjs` for the reward/shop browser checks (uses the workspace Playwright installation and Microsoft Edge).
 

@@ -1,14 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-rewards-course="gcse">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Physics Forge | AQA GCSE Physics &amp; Combined Science</title>
   <meta name="description" content="Compare AQA GCSE Physics and Combined Science: Trilogy course content and assessments.">
-  <link rel="stylesheet" href="style.css?v=10"><link rel="stylesheet" href="courses.css?v=1">
+  <link rel="stylesheet" href="style.css?v=10"><link rel="stylesheet" href="courses.css?v=5">
 
+  <script defer src="home.js?v=3"></script>
+  <script defer src="rewards.js?v=2"></script>
 </head>
 <body>
-<header><a class="brand" href="index.html"><span class="brand-symbol" aria-hidden="true"><b>PF</b></span><span class="brand-copy"><span>Physics Forge</span><span class="brand-tagline">Forging a path through Physics</span></span></a><span class="course">AQA GCSE</span></header>
+<header><a class="brand" href="index.html"><span class="brand-symbol" aria-hidden="true"><b>PF</b></span><span class="brand-copy"><span>Physics Forge</span><span class="brand-tagline">Forging a path through Physics</span></span></a><div class="header-actions"><span class="course">AQA GCSE</span><div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary theme-palette-button" title="Choose colour theme" aria-label="Choose colour theme" aria-expanded="false"><span>Theme</span><span class="theme-palette-dot" aria-hidden="true"></span></button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button type="button" class="palette-option active" data-palette="forge" role="menuitemradio" aria-checked="true"><span class="palette-pill forge" aria-hidden="true"></span>Forge</button><button type="button" class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false"><span class="palette-pill amber" aria-hidden="true"></span>Amber</button><button type="button" class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false"><span class="palette-pill ocean" aria-hidden="true"></span>Ocean</button><button type="button" class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false"><span class="palette-pill violet" aria-hidden="true"></span>Violet</button></div></div><button id="theme-toggle" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">&#9680;</button></div></header>
+<section id="rewards-bar" class="rewards-bar" aria-label="GCSE coins" hidden>
+  <div class="coin-box"><strong id="coin-balance">0</strong> coins</div>
+  <span><strong id="hint-credits">0</strong> hint credits</span>
+  <button id="shop-open" type="button" class="secondary">Shop</button>
+  <span id="rewards-message" role="status"></span>
+</section>
+<dialog id="coin-shop" aria-labelledby="shop-title">
+  <div class="heading"><h2 id="shop-title">GCSE coin shop</h2><button id="shop-close" type="button" class="secondary">Close</button></div>
+  <p>Your balance: <strong id="shop-balance">0</strong> coins · <strong id="shop-credits">0</strong> hint credits</p>
+  <h3>Extra hint credit · 50 coins</h3>
+  <p>The first hint on each question is free. One credit unlocks the next hint, up to three hints per question. Unlocked hints stay visible in your saved question progress.</p>
+  <button id="buy-hint" class="primary" type="button">Buy 1 hint · 50 coins</button>
+  <p id="shop-message" role="status"></p>
+  <p class="answer-help">GCSE questions will award 5 coins for each first correct completion. Questions are coming soon, so earning coins and using hints are not available yet. Hint credits cost 50 GCSE coins.</p>
+  <p class="answer-help">GCSE coins and hint credits are separate from A Level and cannot be transferred or spent there. This GCSE wallet is shared by learners using this browser. Clearing site data removes it.</p>
+</dialog>
 <nav class="course-switch" aria-label="Choose your course">
   <a href="a-level.html"><strong>A Level Physics</strong><span>AQA 7408 · Questions, notes &amp; challenges</span></a>
   <a href="gcse.html" aria-current="page"><strong>GCSE Physics &amp; Combined Science</strong><span>AQA 8463 / 8464 · Course guide &amp; differences</span></a>

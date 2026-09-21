@@ -1,5 +1,5 @@
 // Preserve existing study bookmarks and authentication return links.
-if (/^#(?:setup=|microsoft=|guest$|practice$|notes(?:\/|$)|challenge$|landing$)/.test(location.hash)) {
+if ((location.pathname.endsWith('/') || location.pathname.endsWith('/index.html')) && /^#(?:setup=|microsoft=|guest$|practice$|notes(?:\/|$)|challenge$|landing$)/.test(location.hash)) {
   location.replace('a-level.html' + location.search + location.hash);
 }
 if (new URLSearchParams(location.search).has('static')) {

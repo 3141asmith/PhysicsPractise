@@ -1,5 +1,6 @@
-/* A Level rewards are intentionally browser-local, not an account currency. */
+/* Each course has its own browser-local wallet, not an account currency. */
 const Rewards = (() => {
+  const course = document.documentElement.dataset.rewardsCourse === 'gcse' ? 'gcse' : 'alevel';
   let key = null, queue = Promise.resolve();
   const $ = id => document.getElementById(id);
   const empty = () => ({coins:0, credits:0, completed:{}, hints:{}});
@@ -24,7 +25,8 @@ const Rewards = (() => {
     return operation;
   }
   async function init(progress) {
-    key = 'physics-forge-alevel-wallet-v1:' + (School.user.guest ? 'browser' : School.user.id);
+    const owner = course === 'gcse' || School.user.guest ? 'browser' : School.user.id;
+    key = 'physics-forge-' + course + '-wallet-v1:' + owner;
     $('rewards-bar').hidden = false;
     try {
       await locked(() => {
@@ -49,11 +51,11 @@ const Rewards = (() => {
       });
     } catch { notice('Your answer was checked, but the coin reward could not be saved in this browser.'); }
   }
-  async function perform(url, body, request) {
+  async function perform(url, body, request, progressRequest) {
     const hint = url.match(/^\/api\/hints\/([\w-]+)$/);
     if (hint && key) return locked(async () => {
       const id = hint[1], data = read();
-      const current = await School.request('/api/questions');
+      const current = await (progressRequest ? progressRequest() : School.request('/api/questions'));
       const count = current.progress[id]?.hintCount || 0;
       const paid = data.hints[id] || 0;
       const costsCredit = count >= 1 && count + 1 > paid;
@@ -85,6 +87,7 @@ const Rewards = (() => {
     if (!$('coin-shop').open) $('coin-shop').showModal();
   }
   document.addEventListener('DOMContentLoaded', () => {
+    if (course === 'gcse') init({});
     $('shop-open').onclick = open;
     $('shop-close').onclick = () => $('coin-shop').close();
     $('buy-hint').onclick = async () => {

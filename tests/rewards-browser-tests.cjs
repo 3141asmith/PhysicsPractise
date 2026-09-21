@@ -71,7 +71,39 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
     });
     await page.setViewportSize({width:390,height:844});
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-    await page.goto(base+'/combined-science.html');assert.equal(await page.locator('#rewards-bar').count(),0);
+    await page.goto(base+'/combined-science.html');
+    await page.waitForFunction(()=>localStorage.getItem('physics-forge-gcse-wallet-v1:browser'));
+    assert.equal(await page.locator('#coin-balance').innerText(),'0');
+    assert.equal(await page.locator('#hint-credits').innerText(),'0');
+    const alevelWallet=await page.evaluate(()=>localStorage.getItem('physics-forge-alevel-wallet-v1:browser'));
+    // No GCSE bank exists yet: exercise its future marking adapter with fixtures.
+    await page.evaluate(async()=>{
+      for(let i=0;i<10;i++){
+        await Rewards.perform('/api/answer/gcse-test-'+i,{},async()=>({correct:false}));
+        await Rewards.perform('/api/answer/gcse-test-'+i,{},async()=>({correct:true}));
+        await Rewards.perform('/api/answer/gcse-test-'+i,{},async()=>({correct:true}));
+      }
+    });
+    assert.equal(await page.locator('#coin-balance').innerText(),'50');
+    await page.locator('#shop-open').click();await page.locator('#buy-hint').click();
+    await page.waitForFunction(()=>document.getElementById('hint-credits').textContent==='1');
+    assert.equal(await page.locator('#coin-balance').innerText(),'0');
+    await page.locator('#shop-close').click();
+    await page.evaluate(async()=>{
+      let hintCount=0;
+      const progress=async()=>({progress:{'gcse-test-0':{hintCount}}});
+      const reveal=async()=>({progress:{hintCount:++hintCount}});
+      await Rewards.perform('/api/hints/gcse-test-0',{},reveal,progress);
+      if(document.getElementById('hint-credits').textContent!=='1')throw Error('First GCSE hint was charged');
+      await Rewards.perform('/api/hints/gcse-test-0',{},reveal,progress);
+      if(document.getElementById('hint-credits').textContent!=='0')throw Error('GCSE paid hint was not charged');
+    });
+    assert.equal(await page.evaluate(()=>localStorage.getItem('physics-forge-alevel-wallet-v1:browser')),alevelWallet);
+    await page.goto(base+'/gcse.html');await page.locator('#rewards-bar').waitFor();
+    await page.evaluate(()=>Rewards.perform('/api/answer/gcse-test-0',{},async()=>({correct:true})));
+    assert.equal(await page.locator('#coin-balance').innerText(),'0');
+    assert.equal(await page.locator('#hint-credits').innerText(),'0');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('physics-forge-alevel-wallet-v1:browser')),alevelWallet);
     assert.deepEqual(errors,[]);
     console.log('Rewards checks passed: earning, duplicates, purchases, free/paid hints, insufficient funds, reload, cross-tab, challenge, mobile and GCSE isolation.');
   }finally{if(browser)await browser.close();await new Promise(resolve=>app.server.close(resolve));app.db.close();fs.rmSync(dir,{recursive:true,force:true});}
