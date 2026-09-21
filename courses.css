@@ -44,3 +44,61 @@ html[data-theme=dark] .course-switch a{background:#182c29;color:#e3eeea}html[dat
 [data-theme=dark] .gcse-comparison,[data-theme=dark] .gcse-card,[data-theme=dark] .gcse-controls{background:#252c28;color:#e1e9e5;border-color:#526459}
 [data-theme=dark] .gcse-hero p,[data-theme=dark] .gcse-status,[data-theme=dark] .combined-scope{color:#c0d3cd}
 [data-theme=dark] .course{color:#c0d3cd}
+.gcse-workspace .gcse-main{max-width:none;padding:28px}
+.gcse-workspace aside{min-width:0}
+.gcse-workspace #gcse-topic-nav{display:grid;gap:5px}
+.gcse-workspace .topic-button{display:flex;gap:8px;width:100%;max-width:none;text-align:left}
+#gcse-question-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#gcse-question-list .question-link{display:flex;flex-direction:column;gap:12px;padding:18px;min-width:0;width:100%;text-align:left}
+.gcse-preview{font-size:13px;line-height:1.6}
+#gcse-question-list small{margin-top:auto}
+#gcse-answer{max-width:100%;padding:12px;border:1px solid var(--line);border-radius:5px;font:inherit}
+.gcse-workspace .heading{flex-wrap:wrap}.gcse-workspace .heading h1{font-size:30px}
+#gcse-back{margin:16px 0}#gcse-question .prompt{white-space:pre-wrap}
+.gcse-workspace aside .section-label,.gcse-workspace aside h2{display:block}
+@media(max-width:850px){#gcse-question-list{grid-template-columns:1fr}.gcse-workspace aside{position:static;max-height:none}.gcse-workspace #gcse-topic-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.gcse-workspace .gcse-main{padding:20px 16px}.gcse-workspace #gcse-topic-nav{grid-template-columns:1fr}}
+
+/* Shared colour tokens and components: all four course pages use this layer. */
+:root{--surface:#fff;--canvas:#f5f7f7;--ink:#202d30;--muted:#526764;--on-accent:#fff;--accent-soft:color-mix(in srgb,var(--green) 10%,var(--surface));--accent-glow:color-mix(in srgb,var(--green) 24%,transparent)}
+:root[data-theme=light]{color-scheme:light;--line:#dce3e2}
+:root[data-theme=dark]{color-scheme:dark;--surface:#222724;--canvas:#191c1b;--ink:#e1e9e5;--muted:#b7c8bf;--on-accent:#15221d;--line:#3e4843}
+html[data-theme]{background:var(--canvas);color:var(--ink)}
+html[data-theme] :is(header,aside,.view-tabs,.question-sheet,.question-link,.account-panel,.gcse-card,.gcse-comparison,.gcse-controls,dialog,#coin-shop,.theme-palette-menu){background:var(--surface);color:var(--ink);border-color:var(--line)}
+html[data-theme] :is(.primary,.segmented button[aria-pressed=true]){background:var(--green);color:var(--on-accent);border-color:var(--green)}
+html[data-theme] .primary:hover{background:color-mix(in srgb,var(--green) 85%,var(--ink));border-color:var(--green)}
+html[data-theme] :is(input,textarea,select,.secondary,.segmented){background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+html[data-theme] :is(.topic-button,.segmented button){color:var(--muted)}
+html[data-theme] :is(.topic-button.active,.topic-button:hover,.question-link.active,.choice:has(input:checked),.palette-option.active,.note-controls){background:var(--accent-soft);color:var(--green);border-color:var(--line)}
+html[data-theme] .theme-palette-dot{background:var(--green)}
+html[data-theme] .landing-hero{background:radial-gradient(circle at top left,var(--accent-soft),var(--surface) 70%);border-color:var(--line);box-shadow:0 20px 50px var(--accent-glow)}
+html[data-theme] .landing-hero:before,html[data-theme] .landing-hero:after{background:radial-gradient(circle,var(--accent-glow),transparent 70%);box-shadow:none}
+html[data-theme] .landing-hero .spark{background:var(--green);box-shadow:0 0 14px var(--accent-glow)}
+html[data-theme] .landing-hero h1{background:linear-gradient(120deg,var(--ink),var(--green),var(--ink));background-clip:text;-webkit-background-clip:text;color:transparent}
+html[data-theme] .landing-hero h1:after{display:none}
+html[data-theme] .landing-card{background:linear-gradient(var(--surface),var(--accent-soft));border-color:var(--line);color:var(--ink)}
+html[data-theme] .landing-card:hover{border-color:var(--green);filter:none;box-shadow:0 12px 30px var(--accent-glow)}
+html[data-theme] .landing-icon{background:var(--green);color:var(--on-accent);box-shadow:0 0 16px var(--accent-glow)}
+html[data-theme] :is(.hero-badge,.landing-metrics div,.course-switch a[aria-current=page]){background:var(--accent-soft);color:var(--green);border-color:var(--green)}
+html[data-theme] .course-switch a{background:var(--surface);color:var(--ink)}
+html[data-theme] :is(.landing-hero p,.landing-card-copy,.landing-metrics span,.course-switch span,.gcse-hero p,.combined-scope,.gcse-status,.course,.section-label,.answer-help,.source-note,footer,.aside-note,.note-figure figcaption){color:var(--muted)}
+html[data-theme] :is(.carousel-button,th){background:var(--accent-soft);color:var(--ink);border-color:var(--line)}
+html[data-theme] .carousel-dot{background:var(--accent-glow)}
+html[data-theme] .carousel-dot.active{background:var(--green);box-shadow:0 0 0 4px var(--accent-glow)}
+html[data-theme] :is(.gcse-main a,.question-bottom a,footer a){color:var(--green)}
+html[data-theme] .gcse-tag{background:var(--accent-soft);color:var(--green)}
+/* Course/tier badges and feedback retain their meaning in every palette. */
+html[data-theme=dark] .gcse-tag.extra{background:#4e4024;color:#f4d593}
+html[data-theme=dark] .gcse-tag.higher{background:#38304c;color:#dfd0ff}
+html[data-theme=light] .gcse-tag.extra{background:#fff1d8;color:#794c09}
+html[data-theme=light] .gcse-tag.higher{background:#eeebfb;color:#57458b}
+html[data-theme] input{accent-color:var(--green)}
+html[data-theme] .brand-symbol{background:var(--green);color:var(--on-accent)}
+html[data-theme] .note-equation{background:var(--accent-soft);border-color:var(--green);color:var(--ink)}
+html[data-theme] :is(.note-topic small,.text-button,.mini-meta,.progress-summary,.controls label,.controls legend){color:var(--muted)}
+html[data-theme] :is(.notes-toc a,.notes-reading a){color:var(--green)}
+html[data-theme] .challenge-progress progress,html[data-theme] .challenge-progress progress::-webkit-progress-bar{background:var(--accent-soft)}
+.gcse-challenge-view{padding:32px 40px;max-width:1500px;margin:auto}
+.gcse-challenge-view .challenge-options label{display:block;margin:12px 0 6px}
+.gcse-challenge-view select{width:100%;max-width:100%;padding:10px;font:inherit;border:1px solid var(--line);border-radius:5px}
+@media(max-width:600px){.gcse-challenge-view{padding:22px 18px}}

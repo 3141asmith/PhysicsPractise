@@ -5,14 +5,14 @@
   <title>Physics Forge | GCSE Combined Science</title>
   <meta name="description" content="Your AQA GCSE Combined Science: Trilogy physics study space. Explore topic summaries, practice questions and course differences.">
   <link rel="stylesheet" href="style.css?v=10">
-  <link rel="stylesheet" href="courses.css?v=5">
-  <script defer src="home.js?v=3"></script>
+  <link rel="stylesheet" href="courses.css?v=7">
+  <script defer src="home.js?v=5"></script>
   <script defer src="rewards.js?v=2"></script>
 </head>
 <body>
 <header>
   <a class="brand" href="index.html"><span class="brand-symbol" aria-hidden="true"><b>PF</b></span><span class="brand-copy"><span>Physics Forge</span><span class="brand-tagline">Forging a path through Physics</span></span></a>
-  <div class="header-actions"><a class="secondary header-course-link" href="a-level.html">A Level Physics</a><a class="secondary header-course-link" href="gcse.html?course=combined">Course guide</a><div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary theme-palette-button" title="Choose colour theme" aria-label="Choose colour theme" aria-expanded="false"><span>Theme</span><span class="theme-palette-dot" aria-hidden="true"></span></button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button type="button" class="palette-option active" data-palette="forge" role="menuitemradio" aria-checked="true"><span class="palette-pill forge" aria-hidden="true"></span>Forge</button><button type="button" class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false"><span class="palette-pill amber" aria-hidden="true"></span>Amber</button><button type="button" class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false"><span class="palette-pill ocean" aria-hidden="true"></span>Ocean</button><button type="button" class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false"><span class="palette-pill violet" aria-hidden="true"></span>Violet</button></div></div><button id="theme-toggle" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">&#9680;</button></div>
+  <div class="header-actions"><a class="secondary header-course-link" href="a-level.html">A Level Physics</a><a class="secondary header-course-link" href="gcse.html?course=combined">Course guide</a><div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary theme-palette-button" title="Choose colour theme" aria-label="Choose colour theme" aria-expanded="false"><span>Colour palette</span><span class="theme-palette-dot" aria-hidden="true"></span></button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button type="button" class="palette-option active" data-palette="forge" role="menuitemradio" aria-checked="true"><span class="palette-pill forge" aria-hidden="true"></span>Forge</button><button type="button" class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false"><span class="palette-pill amber" aria-hidden="true"></span>Amber</button><button type="button" class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false"><span class="palette-pill ocean" aria-hidden="true"></span>Ocean</button><button type="button" class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false"><span class="palette-pill violet" aria-hidden="true"></span>Violet</button></div></div><button id="theme-toggle" data-text-label="true" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">Dark mode</button></div>
 </header>
 <section id="rewards-bar" class="rewards-bar" aria-label="GCSE coins" hidden>
   <div class="coin-box"><strong id="coin-balance">0</strong> coins</div>
@@ -27,7 +27,7 @@
   <p>The first hint on each question is free. One credit unlocks the next hint, up to three hints per question. Unlocked hints stay visible in your saved question progress.</p>
   <button id="buy-hint" class="primary" type="button">Buy 1 hint · 50 coins</button>
   <p id="shop-message" role="status"></p>
-  <p class="answer-help">GCSE questions will award 5 coins for each first correct completion. Questions are coming soon, so earning coins and using hints are not available yet. Hint credits cost 50 GCSE coins.</p>
+  <p class="answer-help">Earn 5 GCSE coins for each first correct completion. Written questions use self-assessment. Hint credits cost 50 GCSE coins.</p>
   <p class="answer-help">GCSE coins and hint credits are separate from A Level and cannot be transferred or spent there. This GCSE wallet is shared by learners using this browser. Clearing site data removes it.</p>
 </dialog>
 <main class="landing-screen combined-landing">
@@ -36,10 +36,10 @@
     <div class="hero-badge">AQA GCSE Combined Science · Trilogy 8464</div>
     <div class="section-label">WELCOME TO</div>
     <h1 id="combined-title">Physics Forge</h1>
-    <p>Forge your path through GCSE Combined Science. Your future home for topic notes, worked explanations and practice tailored to your course and tier. Explore the course guide while the study resources are being prepared.</p>
+    <p>Forge your path through GCSE Combined Science. Practise physics with questions, worked explanations and hints tailored to your course and tier. Earn GCSE coins as you complete questions.</p>
     <div class="landing-actions">
-      <a class="primary" href="gcse.html?course=combined#course-differences">Explore the course guide</a>
-      <a class="secondary" href="#study-options">See what is coming</a>
+      <a class="primary" href="gcse.html?course=combined">Start questions</a><a class="secondary" href="gcse.html?course=combined#challenge">Try challenge mode</a>
+      <a class="secondary" href="gcse.html?course=physics">Separate GCSE Physics</a>
 
     </div>
     <div class="landing-metrics" aria-label="Course overview">
@@ -49,11 +49,11 @@
     </div>
   </section>
   <section id="study-options" class="combined-options" aria-label="Combined Science study options">
-    <article class="landing-card"><span class="landing-icon" aria-hidden="true">Q</span><span class="landing-card-title">Questions</span><span class="landing-card-copy">Coming soon · Original physics questions with answer checks and worked explanations.</span></article>
+    <a class="landing-card" href="gcse.html?course=combined"><span class="landing-icon" aria-hidden="true">Q</span><span class="landing-card-title">Questions</span><span class="landing-card-copy">Choose a topic, check your answers and unlock helpful hints. Physics-only questions are filtered out for Trilogy.</span></a>
     <article class="landing-card"><span class="landing-icon" aria-hidden="true">N</span><span class="landing-card-title">Topic notes</span><span class="landing-card-copy">Coming soon · Key ideas and equations for Foundation and Higher tiers.</span></article>
     <a class="landing-card" href="gcse.html?course=combined#course-differences"><span class="landing-icon" aria-hidden="true">C</span><span class="landing-card-title">Know your course</span><span class="landing-card-copy">See how Trilogy differs from separate GCSE Physics and which content you need.</span></a>
   </section>
-  <p class="combined-scope">This section will cover AQA Combined Science: Trilogy, starting with physics. Questions, topic notes, biology and chemistry resources are coming soon. The course comparison is available now.</p>
+  <p class="combined-scope">Physics practice is available for AQA Combined Science: Trilogy and separate GCSE Physics. Topic notes, biology and chemistry resources are coming soon.</p>
   <footer>Independent practice resource. Not affiliated with or endorsed by AQA.</footer>
 </main>
 </body>

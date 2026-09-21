@@ -167,33 +167,6 @@ const School = {
  }
  $('microsoft-signin').onclick=()=>microsoftSignIn(false);
  $('microsoft-connect').onclick=()=>microsoftSignIn(true);
- function theme(value){document.documentElement.dataset.theme=value;$('theme-toggle').setAttribute('aria-label','Switch to '+(value==='dark'?'light':'dark')+' mode');$('theme-toggle').title=$('theme-toggle').getAttribute('aria-label');}
- function applyPalette(value){
-   const palette=['forge','amber','ocean','violet'].includes(value)?value:'forge';
-   document.documentElement.dataset.palette=palette;
-   document.querySelectorAll('.palette-option').forEach(option=>{
-     const active=option.dataset.palette===palette;
-     option.classList.toggle('active',active);
-     option.setAttribute('aria-checked',String(active));
-   });
-   const swatch=$('theme-palette-button')?.querySelector('.theme-palette-dot');
-   if(swatch){
-     const colors={forge:'#156b59',amber:'#9d5d2d',ocean:'#0d5d92',violet:'#5a4a9a'};
-     swatch.style.background=colors[palette];
-   }
-   try{localStorage.setItem('physics-palette',palette);}catch{}
- }
- let preferred;try{preferred=localStorage.getItem('physics-theme');}catch{}
- theme(preferred==='dark'||(!preferred&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');
- $('theme-toggle').onclick=()=>{const value=document.documentElement.dataset.theme==='dark'?'light':'dark';theme(value);try{localStorage.setItem('physics-theme',value);}catch{}};
- let preferredPalette;try{preferredPalette=localStorage.getItem('physics-palette');}catch{}
- applyPalette(preferredPalette||'forge');
- const paletteMenu=$('theme-palette-menu');
- const paletteButton=$('theme-palette-button');
- const closePaletteMenu=()=>{if(!paletteMenu)return;paletteMenu.hidden=true;paletteButton?.setAttribute('aria-expanded','false');};
- paletteButton.onclick=()=>{if(!paletteMenu)return;const open=paletteMenu.hidden;paletteMenu.hidden=!open;paletteButton.setAttribute('aria-expanded',String(!paletteMenu.hidden));};
- document.addEventListener('click',event=>{if(!event.target.closest('.theme-picker'))closePaletteMenu();});
- document.querySelectorAll('.palette-option').forEach(option=>option.onclick=()=>{applyPalette(option.dataset.palette);closePaletteMenu();});
  function setMode(value){
    const teacher=value==='register'&&$('account-role').value==='teacher',student=value==='register'&&!teacher;
    $('microsoft-option').hidden=value==='setup'||teacher;$('microsoft-signin').textContent=value==='register'?'Join with Microsoft 365':'Sign in with Microsoft 365';
