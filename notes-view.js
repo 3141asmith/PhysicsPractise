@@ -77,7 +77,7 @@ const NotesView=(()=>{
   function draw(canvas,now=0){
     const w=600,h=280,dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;
     const c=canvas.getContext('2d');c.scale(dpr,dpr);
-    const dark=document.documentElement.dataset.theme==='dark',ink=dark?'#dce9e2':'#31483e',muted=dark?'#9aaea1':'#6c7d74',accent=getComputedStyle(document.documentElement).getPropertyValue('--green').trim(),warm=dark?'#f1c66f':'#9c6314';
+    const theme=getComputedStyle(document.documentElement),ink=theme.getPropertyValue('--ink').trim(),muted=theme.getPropertyValue('--muted').trim(),accent=theme.getPropertyValue('--green').trim(),warm=ink;
     c.font=(canvas.clientWidth<450?'19':'15')+'px Arial';c.lineWidth=2;c.lineCap='round';
     const line=(x,y,x2,y2,color=muted)=>{c.strokeStyle=color;c.beginPath();c.moveTo(x,y);c.lineTo(x2,y2);c.stroke();};
     const text=(s,x,y,color=ink)=>{c.fillStyle=color;c.fillText(s,x,y);};
