@@ -26,10 +26,10 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
   // Earn enough to buy a hint, using real bank answers through the marking adapter.
   await page.evaluate(async()=>{for(const q of GCSE_BANK.questions.filter(q=>q.type==='numeric').slice(0,10))await GCSEPractice.api('/api/answer/'+q.id,{answer:String(q.answer)});});
   assert.equal(await page.locator('#coin-balance').innerText(),'50');
-  await page.locator('#shop-open').click();await page.locator('#buy-hint').click();await page.waitForFunction(()=>document.getElementById('hint-credits').textContent==='1');await page.locator('#shop-close').click();
+  await page.locator('#shop-open').click();await page.locator('#buy-hint').click();await page.waitForFunction(()=>document.getElementById('shop-credits').textContent==='1');await page.locator('#shop-close').click();
   await page.locator('#gcse-hint').click();await page.waitForFunction(()=>document.querySelectorAll('#gcse-question section[aria-label=Hints] li').length===1);
-  assert.equal(await page.locator('#hint-credits').innerText(),'1');
-  await page.locator('#gcse-hint').click();await page.waitForFunction(()=>document.getElementById('hint-credits').textContent==='0');
+  assert.equal(await page.locator('#shop-credits').textContent(),'1');
+  await page.locator('#gcse-hint').click();await page.waitForFunction(()=>document.getElementById('shop-credits').textContent==='0');
   await page.locator('#gcse-hint').click();await page.locator('#coin-shop').waitFor();assert.equal(await page.locator('#gcse-question section[aria-label=Hints] li').count(),2);await page.locator('#shop-close').click();
   await page.selectOption('#gcse-course','combined');assert.equal(await page.locator('#gcse-question-list .extra').count(),0);assert.equal(await page.locator('[data-topic="7"]').count(),0);
   await page.selectOption('#gcse-tier','foundation');assert.equal(await page.locator('#gcse-question-list .higher').count(),0);

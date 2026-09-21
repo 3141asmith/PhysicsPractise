@@ -13,7 +13,6 @@ const Rewards = (() => {
   function notice(text) { $('rewards-message').textContent = text; }
   function update(data = read()) {
     $('coin-balance').textContent = data.coins;
-    $('hint-credits').textContent = data.credits;
     $('shop-balance').textContent = data.coins;
     $('shop-credits').textContent = data.credits;
     $('buy-hint').disabled = data.coins < 50;
