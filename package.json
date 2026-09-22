@@ -7,6 +7,7 @@
     "test": "node --test --test-isolation=none tests/server.test.cjs tests/microsoft.test.cjs tests/challenge.test.cjs tests/gcse-bank.test.cjs tests/gcse-notes.test.cjs",
     "test:gcse": "node tests/gcse-browser-tests.cjs && node tests/gcse-challenge-browser-tests.cjs && node tests/gcse-notes-browser-tests.cjs",
     "test:themes": "node tests/themes-browser-tests.cjs",
+    "test:pet": "node tests/pet-browser-tests.cjs",
     "test:browser": "node tests/browser-tests.cjs && node tests/challenge-browser-tests.cjs && node tests/microsoft-browser-tests.cjs"
   },
   "engines": {

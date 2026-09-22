@@ -2,6 +2,10 @@
 
 ## Course coins and hint shops
 
+Course pages include a browser-local **digital pet** in the bottom-right corner. Click it to open the pet room with an enlarged animated creature, level, EXP, health, mastered-question count and evolution journey. Each unique completion in the course wallet counts for 10 EXP, including previously recorded completions. The same completion ledger handles practice, challenge and written self-assessment, so replaying questions or spending coins cannot farm or remove EXP. A Level account wallets and the GCSE browser wallet produce separate pets. No additional server or storage is required; clearing the wallet resets its pet.
+
+Evolution thresholds are 0, 50, 150, 350, 750 and 1550 EXP: Spark → Sprout → Flare → Drake → Aurora → Cosmic Guardian. Thresholds follow `50 × (2^stage − 1)`. Levels continue after the final evolution, with level L starting at `25 × (L − 1)^2` EXP. Health stays at 100 without absence penalties. Artwork uses palette-aware SVG and respects reduced-motion settings. Run `npm run test:pet` for browser coverage of rewards, evolution, persistence, cross-tab/course isolation, shop compatibility and responsive display.
+
 The A Level page awards 5 browser-local coins for each question's first correct completion. Practice and challenge share one reward ledger; written questions count when every self-assessment point is checked. Questions already mastered when the wallet is first created are recorded without a retroactive award. The shop sells one hint credit for 50 coins. Each question's first hint is free; its second and third hints each use one credit. Previously unlocked hints do not require another purchase.
 
 Wallets persist in localStorage, separately for each signed-in A Level account on this browser; guest and static learners share the browser guest wallet. They do not sync across devices, can be edited by the browser owner, and disappear if site data is cleared. Progress and wallets remain separate. Failed hint requests do not spend credits. Supported browsers use Web Locks to serialize wallet changes across tabs.

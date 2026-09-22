@@ -16,6 +16,7 @@ const Rewards = (() => {
     $('shop-balance').textContent = data.coins;
     $('shop-credits').textContent = data.credits;
     $('buy-hint').disabled = data.coins < 50;
+    if(typeof ForgePet!=='undefined')ForgePet.sync(data,course);
   }
   function locked(work) {
     const run = () => navigator.locks ? navigator.locks.request(key,work) : work();
