@@ -17,6 +17,15 @@ const GCSENotes=(()=>{
       ${s.example?'<div class="gcse-note-example"><h3>Worked example</h3><p>'+esc(s.example)+'</p></div>':''}
       ${s.practical?'<div class="gcse-note-practical"><h3>Required practical: method and evaluation</h3><p>'+esc(s.practical)+'</p></div>':''}
       </section>`).join(''):'<p class="empty">No notes match these filters in this topic. Choose another topic, clear your search, or change course/tier. Space physics is only available for separate GCSE Physics.</p>';
+    if(sections.length){
+      const poster=`assets/gcse-posters/${selected.id}.png`;
+      $('notes-content').insertAdjacentHTML('beforeend',`<figure class="gcse-topic-poster">
+        <figcaption><h2>Topic ${topics.indexOf(selected)+1}: ${esc(selected.title)} — revision poster</h2>
+          <p>Whole-topic overview. The poster is not filtered by course or tier; use the labels in the notes above to check which content applies to you.</p>
+          <p><a href="${poster}" target="_blank" rel="noopener">Open full-size poster</a></p></figcaption>
+        <a href="${poster}" target="_blank" rel="noopener" aria-label="Open ${esc(selected.title)} revision poster full size"><img src="${poster}" alt="Topic ${topics.indexOf(selected)+1}: ${esc(selected.title)} revision poster with illustrated explanations, equations and key terms. Read the topic notes above for text explanations." width="1448" height="1086" loading="lazy" decoding="async"></a>
+      </figure>`);
+    }
     $('notes-sources').innerHTML=`Scope checked ${GCSE_NOTES.checked}. <a href="${selected.source}">AQA Physics: ${esc(selected.title)}</a> · <a href="${GCSE_NOTES.combinedSource}">AQA Trilogy physics specification</a>. Section numbers above refer to Physics (8463); Trilogy uses different numbering. These are original revision explanations, not official AQA wording.`;
   }
   function open(){

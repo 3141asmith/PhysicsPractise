@@ -222,9 +222,10 @@ function createApp({dataDir=path.join(__dirname,'data'),secureCookies=process.en
       const staticPath=route==='/'?'index.html':decodeURIComponent(route.slice(1));
       const allowed=['index.html','a-level.html','home.js','rewards.js','combined-science.html','gcse.html','gcse.js','gcse-bank.js','gcse-challenge.js','gcse-notes-data.js','gcse-notes.js','gcse-views.js','courses.css','style.css','app.js','school.js','math-format.js','notes.js','notes-view.js','challenge.js','questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js','static-bank.js'];
       if(['questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js','static-bank.js'].includes(staticPath)&&req.headers['sec-fetch-dest']!=='script')throw error(404,'Not found.');
-      if(!allowed.includes(staticPath)&&!/^vendor\/katex\/dist\/(?:katex\.min\.(?:js|css)|fonts\/[A-Za-z0-9_-]+\.(?:woff2?|ttf))$/.test(staticPath))throw error(404,'Not found.');
+      const poster=/^assets\/gcse-posters\/(?:energy|electricity|particle-model|atomic-structure|forces|waves|magnetism|space)\.png$/.test(staticPath);
+      if(!allowed.includes(staticPath)&&!poster&&!/^vendor\/katex\/dist\/(?:katex\.min\.(?:js|css)|fonts\/[A-Za-z0-9_-]+\.(?:woff2?|ttf))$/.test(staticPath))throw error(404,'Not found.');
       const file=path.join(__dirname,staticPath);if(!fs.existsSync(file))throw error(404,'Not found.');
-      const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.woff2':'font/woff2','.woff':'font/woff','.ttf':'font/ttf'}[path.extname(file)];
+      const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.woff2':'font/woff2','.woff':'font/woff','.ttf':'font/ttf'}[path.extname(file)];
       res.writeHead(200,{'Content-Type':mime,'Cache-Control':'no-cache'});if(req.method==='HEAD')return res.end();fs.createReadStream(file).pipe(res);
     }catch(e){if(!res.headersSent)respond(res,e.status||500,{error:e.status?e.message:'The server could not complete the request.'});else res.end();if(!e.status)console.error(e);}
   });

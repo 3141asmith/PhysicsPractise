@@ -34,6 +34,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
   for(const topic of ['energy','electricity','particle-model','atomic-structure','forces','waves','magnetism','space']){
    await page.locator(`[data-notes-topic="${topic}"]`).click();
    assert.equal(await page.locator('#notes-content .note-section').count(),await page.evaluate(id=>GCSE_NOTES.topics.find(t=>t.id===id).sections.length,topic));
+   const poster=page.locator('.gcse-topic-poster img');
+   assert.equal(await poster.getAttribute('src'),`assets/gcse-posters/${topic}.png`);
+   await poster.scrollIntoViewIfNeeded();await poster.evaluate(img=>img.decode());
+   assert.equal(await poster.evaluate(img=>img.naturalWidth),1448);
+   assert.equal(await page.locator('#notes-content > :last-child').getAttribute('class'),'gcse-topic-poster');
+   const response=await page.request.get(base+`/assets/gcse-posters/${topic}.png`);
+   assert.equal(response.status(),200);assert.equal(response.headers()['content-type'],'image/png');
   }
   await page.locator('#gcse-challenge-tab').click();await page.locator('#gcse-challenge-answer').waitFor();assert.equal(await page.locator('#gcse-notes-view').isVisible(),false);
   await page.locator('#gcse-practice-tab').click();await page.locator('#gcse-question-list').waitFor();
