@@ -120,7 +120,8 @@ const Rewards = (() => {
     await locked(()=>{
       const data=read(),pet=ForgePet.profile(value);
       if(!pet.name)throw new Error('Enter a name before choosing your companion.');
-      const old=ForgePet.profile(data.pet||{}),lockedPet=!!old.name,canBranch=Object.values(data.completed).filter(Boolean).length>=15;
+      const freeEdits=data.petSettings?.freeEdits===true;
+      const old=ForgePet.profile(data.pet||{}),lockedPet=!!old.name&&!freeEdits,canBranch=freeEdits||Object.values(data.completed).filter(Boolean).length>=15;
       const chosen=data.pet?.branchChosen??(lockedPet&&canBranch);
       if(!canBranch)pet.branch=ForgePet.profile({starter:pet.starter}).branch;
       const rename=lockedPet&&pet.name!==old.name;
@@ -128,12 +129,17 @@ const Rewards = (() => {
       if(rename&&data.renameTokens<1)throw new Error('A pet rename token is required (100 coins in the shop).');
       if(reclass&&data.reclassTokens<1)throw new Error('A pet re-class token is required (500 coins in the shop).');
       if(rename)data.renameTokens--;if(reclass)data.reclassTokens--;
-      data.pet={...pet,branchChosen:canBranch};save(data);
+      const stageOverride=freeEdits&&/^[0-5]$/.test(String(value.stageOverride))?Number(value.stageOverride):undefined;
+      data.pet={...pet,branchChosen:canBranch,stageOverride};save(data);
     });
+  }
+  async function savePetSettings(settings){
+    if(!key)throw new Error('Open your course first.');
+    await locked(()=>{const data=read();data.petSettings={freeEdits:settings.freeEdits===true};if(!data.petSettings.freeEdits&&data.pet)delete data.pet.stageOverride;save(data);});
   }
   async function buyPetToken(kind){
     if(!key||!['rename','reclass'].includes(kind))throw new Error('Choose a valid pet token.');
     await locked(()=>{const data=read(),cost=kind==='rename'?100:500;if(data.coins<cost)throw new Error('You need '+cost+' coins for this token.');data.coins-=cost;data[kind+'Tokens']++;save(data);});
   }
-  return {perform,savePet,buyPetToken};
+  return {perform,savePet,savePetSettings,buyPetToken};
 })();

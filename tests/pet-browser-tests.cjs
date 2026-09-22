@@ -29,12 +29,14 @@ const {stats}=require('../pet');
   await page.locator('#theme-toggle').click();await page.locator('#theme-palette-button').click();await page.locator('[data-palette=violet]').click();
   const fill=()=>page.locator('#forge-pet .pet-body').evaluate(el=>getComputedStyle(el).fill),colour=await fill();
   await page.locator('#theme-toggle').click();await page.locator('#theme-palette-button').click();await page.locator('[data-palette=ocean]').click();assert.equal(await fill(),colour);
-  assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'pet-roam');
+  assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'pet-idle');
+  await page.locator('#forge-pet').click();
   // Sample actual animation frames: eyes blink/look, smile grows, and feet alternate.
   for(const [selector,first,second] of [['.pet-bob',0,.3],['.pet-gaze',0,.2],['.pet-eyes',0,.41],['.pet-mouth',0,.5],['.pet-foot-left',0,.18],['.pet-foot-right',0,.24]]){
-   const frames=await page.locator('#forge-pet '+selector).evaluate((el,times)=>{const animation=el.getAnimations()[0];animation.pause();const duration=animation.effect.getTiming().duration;return times.map(t=>{animation.currentTime=t*duration;return getComputedStyle(el).transform;});},[first,second]);assert.notEqual(frames[0],frames[1],selector+' should move');
+   const frames=await page.locator('.pet-habitat '+selector).evaluate((el,times)=>{const animation=el.getAnimations()[0];animation.pause();const duration=animation.effect.getTiming().duration;return times.map(t=>{animation.currentTime=t*duration;return getComputedStyle(el).transform;});},[first,second]);assert.notEqual(frames[0],frames[1],selector+' should move');
   }
-  await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'none');assert.equal(await page.locator('#forge-pet').evaluate(el=>el.getAnimations({subtree:true}).length),0);await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.locator('#pet-close').click();
+  await page.emulateMedia({reducedMotion:'reduce'});await page.waitForFunction(()=>document.getElementById('forge-pet').dataset.petMotion==='off');assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'none');assert.equal(await page.locator('#forge-pet').evaluate(el=>el.getAnimations({subtree:true}).length),0);await page.emulateMedia({reducedMotion:'no-preference'});
   await page.locator('#forge-pet').click();
   assert.equal(await page.locator('#pet-branch').isDisabled(),true);
   await page.locator('#pet-name').fill('Nova <star>');await page.locator('[name=pet-starter][value=ripple]').check();await page.locator('#pet-customise [type=submit]').click();
@@ -70,6 +72,31 @@ const {stats}=require('../pet');
   assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));
   await other.waitForFunction(()=>document.querySelector('#forge-pet svg').dataset.petBranch==='grove');
   await page.locator('#pet-close').click();await page.goto(base+'/a-level.html?static');await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'spark');
+  // Settings explicitly override reduced motion and persist across reloads.
+  await page.emulateMedia({reducedMotion:'reduce'});await page.waitForFunction(()=>document.getElementById('forge-pet').dataset.petMotion==='off');
+  await page.locator('#pet-animation').check();
+  assert.equal(await page.locator('.pet-habitat .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'pet-roam');
+  await page.locator('#pet-animation').uncheck();
+  assert.equal(await page.locator('#pet-room').evaluate(el=>el.getAnimations({subtree:true}).length),0);
+  await page.locator('#pet-animation').check();await page.locator('#pet-free-edits').check();await page.waitForFunction(()=>!document.getElementById('pet-form').disabled);
+  await page.locator('#pet-name').fill('Test companion');await page.locator('[name=pet-starter][value=ripple]').check();await page.locator('#pet-branch').selectOption('abyss');await page.locator('#pet-form').selectOption('5');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
+  assert.ok((await page.locator('.pet-habitat').innerText()).includes('Ocean Guardian'));
+  assert.ok((await page.locator('#forge-pet').innerText()).includes('10 EXP'));
+  await page.reload();await page.locator('#forge-pet').click();await page.locator('#pet-settings').click();
+  assert.equal(await page.locator('#pet-animation').isChecked(),true);assert.equal(await page.locator('#pet-free-edits').isChecked(),true);
+  await page.locator('#pet-name').fill('Free rename');await page.locator('[name=pet-starter][value=pebble]').check();await page.locator('#pet-branch').selectOption('grove');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
+  assert.equal(await page.locator('#pet-title').innerText(),'Free rename');
+  await page.locator('#pet-settings').click();await page.locator('#pet-free-edits').uncheck();await page.waitForFunction(()=>document.getElementById('pet-form').disabled);
+  assert.equal(await page.locator('#pet-name').isDisabled(),true);assert.equal(await page.locator('#pet-branch').isDisabled(),true);
+  assert.ok((await page.locator('.pet-habitat').innerText()).includes('Evolution 1 of 6'));
+  await page.locator('#pet-close').click();
+  // A level milestone starts a jump, but replaying an answer does not.
+  await page.evaluate(async()=>{for(const id of ['milestone-a','milestone-b'])await Rewards.perform('/api/answer/'+id,{},async()=>({correct:true}));});
+  assert.equal(await page.locator('#forge-pet').evaluate(el=>el.classList.contains('pet-celebrating')),true);
+  assert.equal(await page.locator('#forge-pet>svg').evaluate(el=>getComputedStyle(el).animationName),'pet-joy');
+  await page.waitForFunction(()=>!document.getElementById('forge-pet').classList.contains('pet-celebrating'));
+  await page.evaluate(()=>Rewards.perform('/api/answer/milestone-b',{},async()=>({correct:true})));
+  assert.equal(await page.locator('#forge-pet').evaluate(el=>el.classList.contains('pet-celebrating')),false);
   assert.deepEqual(errors,[]);console.log('Pet checks passed, including saved names, escaped text, three starters, all six branches, unlock boundary, preserved EXP and isolated profiles.');
  }finally{if(browser)await browser.close();await new Promise(r=>app.server.close(r));app.db.close();fs.rmSync(dir,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});
