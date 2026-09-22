@@ -4,6 +4,17 @@ body.has-forge-pet{padding-bottom:125px}
 #forge-pet svg{width:88px;flex-shrink:0}
 .pet-widget-copy{display:grid;gap:5px;font-size:11px;color:var(--muted)}
 .pet-widget-copy strong{font-size:14px;color:var(--green)}
+.pet-widget-copy{min-width:0}.pet-widget-copy strong{overflow-wrap:anywhere}
+.pet-room-header h2{overflow-wrap:anywhere}.pet-room-header>div{min-width:0}
+#pet-customise{border-block:1px solid var(--line);padding:18px 0;margin-bottom:18px}
+#pet-customise>label{display:block;margin:10px 0 6px}
+#pet-customise>input,#pet-customise>select{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;font:inherit}
+#pet-customise fieldset{border:0;padding:0;margin:18px 0;min-width:0}#pet-customise legend{font-size:14px;margin-bottom:8px}
+.pet-starters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pet-starter{position:relative;display:flex;flex-direction:column;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;cursor:pointer;color:var(--green);text-align:center}
+.pet-starter:has(input:checked){border-color:var(--green);background:var(--accent-soft)}
+.pet-starter svg{width:100%;max-width:110px}.pet-starter span{font-size:11px;color:var(--muted)}
+.pet-starter .pet-bob{animation:none}
 #pet-room{width:min(680px,calc(100% - 24px));max-height:90dvh;padding:24px;overflow:auto;border-radius:20px}
 .pet-room-header{display:flex;align-items:center;justify-content:space-between;gap:16px}.pet-room-header h2{margin:5px 0;font-size:28px}
 .pet-habitat{display:grid;place-items:center;margin:18px 0;border-radius:18px;background:radial-gradient(ellipse,var(--accent-soft),var(--surface));color:var(--green)}

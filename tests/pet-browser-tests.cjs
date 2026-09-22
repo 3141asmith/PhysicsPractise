@@ -28,6 +28,26 @@ const {stats}=require('../pet');
   await page.setViewportSize({width:390,height:844});await page.locator('#forge-pet').click();assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));await page.locator('#pet-close').click();
   await page.locator('#theme-toggle').click();await page.locator('#theme-palette-button').click();await page.locator('[data-palette=violet]').click();
   const colours=await page.locator('#forge-pet').evaluate(el=>({body:getComputedStyle(el.querySelector('.pet-body')).fill,accent:getComputedStyle(el).color}));assert.equal(colours.body,colours.accent);
-  assert.deepEqual(errors,[]);console.log('Pet checks passed: milestones, real first-completion EXP, replay, evolution, persistence, course separation, cross-tab sync, coin purchases, modal keyboard, palette and mobile.');
+  await page.locator('#forge-pet').click();
+  assert.equal(await page.locator('#pet-branch').isDisabled(),true);
+  await page.locator('#pet-name').fill('Nova <star>');await page.locator('[name=pet-starter][value=ripple]').check();await page.locator('#pet-customise [type=submit]').click();
+  await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
+  assert.equal(await page.locator('#pet-title').innerText(),'Nova <star>');assert.equal(await page.locator('#pet-title star').count(),0);
+  await page.locator('#pet-close').click();await page.reload();await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'Nova <star>');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'ripple');
+  await page.locator('#pet-close').click();
+  await page.evaluate(async()=>{for(const q of GCSE_BANK.questions.filter(q=>q.type==='numeric').slice(10,15))await GCSEPractice.api('/api/answer/'+q.id,{answer:String(q.answer)});});
+  await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-branch').isDisabled(),false);
+  for(const [starter,branches] of Object.entries({spark:['solar','storm'],ripple:['reef','abyss'],pebble:['crystal','grove']})){
+   for(const branch of branches){
+    await page.locator(`[name=pet-starter][value=${starter}]`).check();await page.locator('#pet-branch').selectOption(branch);await page.locator('#pet-customise [type=submit]').click();
+    await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
+    assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-branch'),branch);
+    assert.ok((await page.locator('#forge-pet').innerText()).includes('150 EXP'));
+   }
+  }
+  assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));
+  await other.waitForFunction(()=>document.querySelector('#forge-pet svg').dataset.petBranch==='grove');
+  await page.locator('#pet-close').click();await page.goto(base+'/a-level.html?static');await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'spark');
+  assert.deepEqual(errors,[]);console.log('Pet checks passed, including saved names, escaped text, three starters, all six branches, unlock boundary, preserved EXP and isolated profiles.');
  }finally{if(browser)await browser.close();await new Promise(r=>app.server.close(r));app.db.close();fs.rmSync(dir,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});

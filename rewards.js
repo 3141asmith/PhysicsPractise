@@ -104,5 +104,13 @@ const Rewards = (() => {
     };
     window.addEventListener('storage', event => { if (key && event.key === key) { try { update(); } catch { notice('Could not refresh the saved balance.'); } } });
   });
-  return {perform};
+  async function savePet(value){
+    if(!key)throw new Error('Open your course before customising a pet.');
+    await locked(()=>{
+      const data=read(),pet=ForgePet.profile(value);
+      if(Object.values(data.completed).filter(Boolean).length<15)pet.branch=ForgePet.profile({starter:pet.starter}).branch;
+      data.pet=pet;save(data);
+    });
+  }
+  return {perform,savePet};
 })();
