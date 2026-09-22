@@ -42,6 +42,17 @@ svg[data-pet-branch=storm]{--green:#7761bd;--accent-selection:#b7a4ed;--on-accen
 svg[data-pet-branch=abyss]{--green:#36538f;--accent-selection:#82b5df;--on-accent:#94ffe6}
 svg[data-pet-branch=crystal]{--green:#648e9d;--accent-selection:#bbe9ed;--on-accent:#f3cfff}
 svg[data-pet-branch=grove]{--green:#54844f;--accent-selection:#bdd38b;--on-accent:#ecf4bd}
+svg[data-pet-family=spark][data-pet-stage="0"],svg[data-pet-family=spark][data-pet-stage="1"]{--green:#e87932;--accent-selection:#ffd28c;--on-accent:#fff2bb}
+svg[data-pet-family=ripple][data-pet-stage="0"],svg[data-pet-family=ripple][data-pet-stage="1"]{--green:#239cba;--accent-selection:#a4ebec;--on-accent:#ddffff}
+svg[data-pet-family=pebble][data-pet-stage="0"],svg[data-pet-family=pebble][data-pet-stage="1"]{--green:#8b7967;--accent-selection:#d8caab;--on-accent:#fff5dd}
+.pet-detail,.pet-aura,.pet-smile{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.pet-aura{stroke:#ffc84b;stroke-width:7;opacity:.7}
+.pet-coral{fill:#fa8e9e;stroke:#973e67;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.pet-leaf{fill:#76b947;stroke:#2e633c;stroke-width:3}
+.pet-bark{fill:none;stroke:#805337;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.pet-crystal{fill:#a0edf6;stroke:#5668ad;stroke-width:3;stroke-linejoin:round}
+.pet-pearl{fill:#fff3f7;stroke:#af71a4;stroke-width:3}
+.pet-lure{fill:#a5ffe2;stroke:#368caa;stroke-width:4}
 /* All movement is inside the SVG: the widget remains a steady click target.
    Shared timing keeps the steps and pauses aligned with the walking route. */
 :is(#forge-pet,.pet-habitat) svg{--pet-pace:16s}
