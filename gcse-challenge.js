@@ -31,16 +31,8 @@ const GCSEChallenge=(()=>{
     if(state.answered)$('gcse-challenge-next').onclick=()=>action({action:'next'});
     $('gcse-challenge-form').onsubmit=e=>{e.preventDefault();action({action:'answer',questionId:q.id,answer:$('gcse-challenge-answer').value});};
   }
-  function view(challenge){
-    $('gcse-practice-view').hidden=challenge;$('gcse-challenge-view').hidden=!challenge;
-    $('gcse-practice-tab').setAttribute('aria-current',challenge?'false':'page');$('gcse-challenge-tab').setAttribute('aria-current',challenge?'page':'false');
-    history.replaceState(null,'',location.pathname+location.search+(challenge?'#challenge':'#practice'));
-    if(challenge)action();else GCSEPractice.refresh();
-  }
   document.addEventListener('DOMContentLoaded',()=>{
-    $('gcse-practice-tab').onclick=()=>view(false);$('gcse-challenge-tab').onclick=()=>view(true);
-    if(location.hash==='#challenge')view(true);
     window.addEventListener('storage',e=>{if(e.key==='physics-forge-gcse-challenge-v1'&&!$('gcse-challenge-view').hidden)action();});
   });
-  return {open:()=>view(true)};
+  return {activate:()=>action(),open:()=>GCSEViews.show('challenge')};
 })();

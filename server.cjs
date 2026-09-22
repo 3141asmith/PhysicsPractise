@@ -220,7 +220,7 @@ function createApp({dataDir=path.join(__dirname,'data'),secureCookies=process.en
       }
       if(req.method!=='GET'&&req.method!=='HEAD')throw error(405,'Method not allowed.');
       const staticPath=route==='/'?'index.html':decodeURIComponent(route.slice(1));
-      const allowed=['index.html','a-level.html','home.js','rewards.js','combined-science.html','gcse.html','gcse.js','gcse-bank.js','gcse-challenge.js','courses.css','style.css','app.js','school.js','math-format.js','notes.js','notes-view.js','challenge.js','questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js','static-bank.js'];
+      const allowed=['index.html','a-level.html','home.js','rewards.js','combined-science.html','gcse.html','gcse.js','gcse-bank.js','gcse-challenge.js','gcse-notes-data.js','gcse-notes.js','gcse-views.js','courses.css','style.css','app.js','school.js','math-format.js','notes.js','notes-view.js','challenge.js','questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js','static-bank.js'];
       if(['questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js','static-bank.js'].includes(staticPath)&&req.headers['sec-fetch-dest']!=='script')throw error(404,'Not found.');
       if(!allowed.includes(staticPath)&&!/^vendor\/katex\/dist\/(?:katex\.min\.(?:js|css)|fonts\/[A-Za-z0-9_-]+\.(?:woff2?|ttf))$/.test(staticPath))throw error(404,'Not found.');
       const file=path.join(__dirname,staticPath);if(!fs.existsSync(file))throw error(404,'Not found.');

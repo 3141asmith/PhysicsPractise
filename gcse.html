@@ -4,13 +4,16 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Physics Forge | AQA GCSE Physics &amp; Combined Science</title>
   <meta name="description" content="Practise 400 AQA GCSE Physics questions with course and tier filters, worked answers and hints.">
-  <link rel="stylesheet" href="style.css?v=10"><link rel="stylesheet" href="courses.css?v=8">
+  <link rel="stylesheet" href="style.css?v=10"><link rel="stylesheet" href="courses.css?v=9">
 
   <script defer src="home.js?v=5"></script>
   <script defer src="rewards.js?v=3"></script>
   <script defer src="gcse-bank.js?v=1"></script>
   <script defer src="gcse.js?v=2"></script>
-  <script defer src="gcse-challenge.js?v=1"></script>
+  <script defer src="gcse-challenge.js?v=2"></script>
+  <script defer src="gcse-notes-data.js?v=1"></script>
+  <script defer src="gcse-notes.js?v=1"></script>
+  <script defer src="gcse-views.js?v=1"></script>
 </head>
 <body>
 <header><a class="brand" href="index.html"><span class="brand-symbol" aria-hidden="true"><b>PF</b></span><span class="brand-copy"><span>Physics Forge</span><span class="brand-tagline">Forging a path through Physics</span></span></a><div class="header-actions"><span class="course">AQA GCSE</span><div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary theme-palette-button" title="Choose colour theme" aria-label="Choose colour theme" aria-expanded="false"><span>Colour palette</span><span class="theme-palette-dot" aria-hidden="true"></span></button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button type="button" class="palette-option active" data-palette="forge" role="menuitemradio" aria-checked="true"><span class="palette-pill forge" aria-hidden="true"></span>Forge</button><button type="button" class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false"><span class="palette-pill amber" aria-hidden="true"></span>Amber</button><button type="button" class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false"><span class="palette-pill ocean" aria-hidden="true"></span>Ocean</button><button type="button" class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false"><span class="palette-pill violet" aria-hidden="true"></span>Violet</button></div></div><button id="theme-toggle" data-text-label="true" type="button" class="secondary" title="Switch colour theme" aria-label="Switch to dark mode">Dark mode</button></div></header>
@@ -33,7 +36,32 @@
   <a href="a-level.html"><strong>A Level Physics</strong><span>AQA 7408 · Questions, notes &amp; challenges</span></a>
   <a href="gcse.html" aria-current="page"><strong>GCSE Physics &amp; Combined Science</strong><span>AQA 8463 / 8464 · Course guide &amp; differences</span></a>
 </nav>
-<nav class="view-tabs" aria-label="GCSE study views"><button id="gcse-practice-tab" type="button" aria-current="page">Questions</button><button id="gcse-challenge-tab" type="button" aria-current="false">Challenge mode</button></nav>
+<nav class="view-tabs" aria-label="GCSE study views"><button id="gcse-practice-tab" type="button" aria-current="page">Questions</button><button id="gcse-notes-tab" type="button" aria-current="false">Topic notes</button><button id="gcse-challenge-tab" type="button" aria-current="false">Challenge mode</button></nav>
+<div id="gcse-notes-view" class="layout gcse-notes-workspace" hidden>
+  <aside><div class="section-label">AQA GCSE PHYSICS</div><h2>Topic notes</h2><nav id="notes-topic-nav" aria-label="Notes topics"></nav></aside>
+  <main>
+    <div class="section-label">TOPIC NOTES</div><h1 id="notes-title" tabindex="-1">Energy</h1>
+    <p>Explanations, equations, worked examples and practical guidance for Physics (8463) and Combined Science: Trilogy (8464).</p>
+    <p><span class="gcse-tag extra">Physics only</span> Extra content for separate Physics. <span class="gcse-tag higher">HT only</span> Higher tier content. These restrictions are independent; Higher includes Foundation material.</p>
+    <div class="gcse-controls">
+      <label for="notes-course">Course<select id="notes-course"><option value="physics">GCSE Physics (all content)</option><option value="combined">Combined Science: Trilogy</option></select></label>
+      <label for="notes-tier">Tier<select id="notes-tier"><option value="higher">Higher (includes Foundation)</option><option value="foundation">Foundation</option></select></label>
+      <label for="notes-search">Search notes<input id="notes-search" type="search" placeholder="Search all topics..."></label>
+      <button id="notes-clear" type="button" class="secondary">Clear search</button>
+    </div>
+    <p id="notes-count" role="status"></p>
+    <p class="answer-help">Search updates the section counts beside every topic. Select a topic to read its matching sections. Filters apply to notes independently of questions and challenge mode.</p>
+    <div id="notes-content" class="notes-reading"></div><p id="notes-sources" class="notes-source"></p>
+    <details class="notes-source"><summary>Practical and calculation skills for every topic</summary>
+      <p>Identify the independent variable you change, the dependent variable you measure and the control variables you keep constant. Explain how each control makes the comparison fair. Choose a useful range and enough readings to reveal a trend, then repeat to assess variation.</p>
+      <p>Random errors cause scatter; repeated readings and a mean can reduce their effect. A systematic error shifts results consistently and is not removed by averaging. Check zero readings and calibration. Resolution is the smallest change an instrument displays; greater resolution alone does not guarantee accuracy.</p>
+      <p>Label graph axes with quantities and units. Use a sensible scale and draw a best-fit line or curve, not a dot-to-dot line. Calculate a gradient using a large triangle on the best-fit line. A straight line shows a linear relationship; direct proportionality also requires it to pass through the origin. Investigate anomalous results before excluding them.</p>
+      <p>Convert units before substitution: milli means 10⁻³, kilo means 10³, and micro means 10⁻⁶. Square or cube conversion factors for areas and volumes. Show the equation, rearrangement, substituted values and final unit. Keep extra digits during working and round the final answer to sensible precision.</p>
+      <p>When evaluating a method, name a specific source of uncertainty, explain its effect and suggest a practical improvement. “Repeat it” addresses random scatter, not every problem. Identify hazards and explain how the chosen control reduces the risk. These notes support, rather than replace, supervised practical work.</p>
+    </details>
+    <footer>Independent revision resource. Use alongside your lessons and the full specification.</footer>
+  </main>
+</div>
 <section id="gcse-challenge-view" class="gcse-challenge-view" hidden><p id="gcse-challenge-error" role="alert"></p></section>
 <div id="gcse-practice-view" class="layout gcse-workspace">
 <aside aria-label="GCSE topic filters"><div class="section-label">AQA GCSE PHYSICS</div><h2>Topics</h2><nav id="gcse-topic-nav" aria-label="Physics topics"></nav><p class="aside-note">Physics-only material is labelled. Combined Science means Trilogy (8464), not Synergy.</p></aside>

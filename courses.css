@@ -60,6 +60,14 @@ html[data-theme=dark] .course-switch a{background:#182c29;color:#e3eeea}html[dat
 @media(max-width:600px){.gcse-workspace .gcse-main{padding:20px 16px}.gcse-workspace #gcse-topic-nav{grid-template-columns:1fr}}
 
 /* Shared colour tokens and components: all four course pages use this layer. */
+.gcse-note-section.physics-only{border-left:3px solid var(--green);padding-left:20px}
+.gcse-note-section.higher-only{border-top:2px dashed var(--green)}
+.gcse-note-example,.gcse-note-practical{background:var(--accent-soft);padding:16px 20px;margin:18px 0;border-radius:6px}
+.gcse-note-section h3{font-size:15px;margin-top:0}
+.gcse-note-section .note-equation p{margin:6px 0;overflow-wrap:anywhere}
+.gcse-notes-workspace main{max-width:1100px}
+.gcse-notes-workspace .gcse-controls{align-items:end}
+@media(max-width:850px){#notes-topic-nav{display:flex;gap:8px;overflow-x:auto}.view-tabs{gap:12px;padding-inline:18px}.view-tabs button{font-size:12px}}
 :root{--surface:#fff;--canvas:#f5f7f7;--ink:#202d30;--muted:#526764;--on-accent:#fff;--accent-soft:color-mix(in srgb,var(--green) 10%,var(--surface));--accent-glow:color-mix(in srgb,var(--green) 24%,transparent)}
 :root[data-theme=light]{color-scheme:light;--line:#dce3e2}
 :root[data-theme=dark]{color-scheme:dark;--surface:#222724;--canvas:#191c1b;--ink:#e1e9e5;--muted:#b7c8bf;--on-accent:#15221d;--line:#3e4843}
