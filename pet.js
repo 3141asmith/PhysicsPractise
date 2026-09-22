@@ -169,7 +169,7 @@ const ForgePet=(()=>{
     const previous=current;
     current={...stats(Object.values(data.completed).filter(Boolean).length),course,freeEdits:data.petSettings?.freeEdits===true,stageOverride:data.pet?.stageOverride,profile:profile(data.pet||{}),renameTokens:data.renameTokens||0,reclassTokens:data.reclassTokens||0,branchChosen:data.pet?.branchChosen??(!!data.pet?.name&&Object.values(data.completed).filter(Boolean).length>=15)};
     current.earnedStage=current.stage;
-    if(current.completed>0&&current.freeEdits&&Number.isInteger(current.stageOverride)&&current.stageOverride>=0&&current.stageOverride<6)current.stage=current.stageOverride;
+    if(current.freeEdits&&Number.isInteger(current.stageOverride)&&current.stageOverride>=0&&current.stageOverride<6)current.stage=current.stageOverride;
     const stages=journey(current.profile),name=current.profile.name||stages[current.stage];
     widget.setAttribute('aria-label',`Open ${course==='gcse'?'GCSE':'A Level'} pet: ${name}, ${stages[current.stage]}, level ${current.level}, ${current.exp} EXP`);
     const artwork=creature(current.stage,current.profile);
