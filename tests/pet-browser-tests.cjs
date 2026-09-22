@@ -46,7 +46,7 @@ const {stats}=require('../pet');
   assert.equal(await page.locator('#pet-name').isDisabled(),true);assert.equal(await page.locator('[name=pet-starter][value=spark]').isDisabled(),true);
   assert.equal(await page.evaluate(async()=>{try{await Rewards.savePet({name:'Free rename',starter:'ripple',branch:'reef'});return false;}catch{return true;}}),true);
   assert.equal(await page.evaluate(async()=>{try{await Rewards.buyPetToken('rename');return false;}catch{return true;}}),true);
-  await page.locator('#pet-close').click();await page.reload();await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'Nova <star>');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'ripple');
+  await page.locator('#pet-close').click();await page.reload();await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'Nova <star>');assert.equal(await page.locator('.pet-habitat svg[data-pet-family]').getAttribute('data-pet-family'),'ripple');
   await page.locator('#pet-close').click();
   await page.evaluate(async()=>{for(const q of GCSE_BANK.questions.filter(q=>q.type==='numeric').slice(10,15))await GCSEPractice.api('/api/answer/'+q.id,{answer:String(q.answer)});});
   await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-customise').isVisible(),false);await page.locator('#pet-settings').click();assert.equal(await page.locator('#pet-branch').isDisabled(),false);
@@ -62,7 +62,7 @@ const {stats}=require('../pet');
     assert.equal(await page.locator('#pet-customise').isVisible(),false);await page.locator('#pet-settings').click();
     await page.locator(`[name=pet-starter][value=${starter}]`).check();await page.locator('#pet-branch').selectOption(branch);await page.locator('#pet-customise [type=submit]').click();
     await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
-    assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-branch'),branch);
+    assert.equal(await page.locator('.pet-habitat svg[data-pet-family]').getAttribute('data-pet-branch'),branch);
     assert.ok((await page.locator('#forge-pet').innerText()).includes('150 EXP'));
    }
   }
@@ -71,7 +71,7 @@ const {stats}=require('../pet');
   await page.evaluate(()=>Rewards.savePet({name:'Comet',starter:'pebble',branch:'grove'}));
   assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));
   await other.waitForFunction(()=>document.querySelector('#forge-pet svg').dataset.petBranch==='grove');
-  await page.locator('#pet-close').click();await page.goto(base+'/a-level.html?static');await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'spark');
+  await page.locator('#pet-close').click();await page.goto(base+'/a-level.html?static');await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'');assert.equal(await page.locator('.pet-habitat svg[data-pet-family]').getAttribute('data-pet-family'),'spark');
   // Settings explicitly override reduced motion and persist across reloads.
   await page.emulateMedia({reducedMotion:'reduce'});await page.waitForFunction(()=>document.getElementById('forge-pet').dataset.petMotion==='off');
   await page.locator('#pet-animation').check();
