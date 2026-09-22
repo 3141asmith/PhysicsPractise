@@ -6,6 +6,8 @@ body.has-forge-pet{padding-bottom:125px}
 .pet-widget-copy strong{font-size:14px;color:var(--green)}
 .pet-widget-copy{min-width:0}.pet-widget-copy strong{overflow-wrap:anywhere}
 .pet-room-header h2{overflow-wrap:anywhere}.pet-room-header>div{min-width:0}
+.pet-room-header{flex-wrap:wrap}.pet-room-header>div{flex:1 1 180px}
+#pet-customise[hidden]{display:none}
 #pet-customise{border-block:1px solid var(--line);padding:18px 0;margin-bottom:18px}
 #pet-customise>label{display:block;margin:10px 0 6px}
 #pet-customise>input,#pet-customise>select{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;font:inherit}

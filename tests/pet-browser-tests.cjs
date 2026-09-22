@@ -35,6 +35,7 @@ const {stats}=require('../pet');
   assert.equal(await page.locator('#pet-branch').isDisabled(),true);
   await page.locator('#pet-name').fill('Nova <star>');await page.locator('[name=pet-starter][value=ripple]').check();await page.locator('#pet-customise [type=submit]').click();
   await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
+  assert.equal(await page.locator('#pet-customise').isVisible(),false);await page.locator('#pet-settings').click();assert.equal(await page.locator('#pet-customise').isVisible(),true);
   assert.equal(await page.locator('#pet-title').innerText(),'Nova <star>');assert.equal(await page.locator('#pet-title star').count(),0);
   assert.equal(await page.locator('#pet-name').isDisabled(),true);assert.equal(await page.locator('[name=pet-starter][value=spark]').isDisabled(),true);
   assert.equal(await page.evaluate(async()=>{try{await Rewards.savePet({name:'Free rename',starter:'ripple',branch:'reef'});return false;}catch{return true;}}),true);
@@ -42,16 +43,17 @@ const {stats}=require('../pet');
   await page.locator('#pet-close').click();await page.reload();await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'Nova <star>');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'ripple');
   await page.locator('#pet-close').click();
   await page.evaluate(async()=>{for(const q of GCSE_BANK.questions.filter(q=>q.type==='numeric').slice(10,15))await GCSEPractice.api('/api/answer/'+q.id,{answer:String(q.answer)});});
-  await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-branch').isDisabled(),false);
+  await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-customise').isVisible(),false);await page.locator('#pet-settings').click();assert.equal(await page.locator('#pet-branch').isDisabled(),false);
   await page.locator('#pet-branch').selectOption('abyss');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');assert.equal(await page.locator('#pet-branch').isDisabled(),true);
   // Fixture funds allow all paid paths to be exercised without hundreds of answers.
   await page.evaluate(()=>{const key='physics-forge-gcse-wallet-v1:browser',data=JSON.parse(localStorage.getItem(key));data.coins=3200;localStorage.setItem(key,JSON.stringify(data));});
-  await page.locator('#pet-open-shop').click();await page.locator('#buy-pet-rename').click();await page.waitForFunction(()=>document.getElementById('pet-rename-tokens').textContent==='1');assert.equal(await page.locator('#coin-balance').innerText(),'3100');
-  await page.locator('#shop-close').click();await page.locator('#forge-pet').click();await page.locator('#pet-name').fill('Comet');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-title').textContent==='Comet');assert.equal(await page.locator('#pet-name').isDisabled(),true);
+  await page.locator('#pet-settings').click();await page.locator('#pet-open-shop').click();await page.locator('#buy-pet-rename').click();await page.waitForFunction(()=>document.getElementById('pet-rename-tokens').textContent==='1');assert.equal(await page.locator('#coin-balance').innerText(),'3100');
+  await page.locator('#shop-close').click();await page.locator('#forge-pet').click();await page.locator('#pet-settings').click();await page.locator('#pet-name').fill('Comet');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-title').textContent==='Comet');assert.equal(await page.locator('#pet-name').isDisabled(),true);
   await page.evaluate(async()=>{for(let i=0;i<6;i++)await Rewards.buyPetToken('reclass');});
   assert.equal(await page.locator('#coin-balance').innerText(),'100');
   for(const [starter,branches] of Object.entries({spark:['solar','storm'],ripple:['reef','abyss'],pebble:['crystal','grove']})){
    for(const branch of branches){
+    assert.equal(await page.locator('#pet-customise').isVisible(),false);await page.locator('#pet-settings').click();
     await page.locator(`[name=pet-starter][value=${starter}]`).check();await page.locator('#pet-branch').selectOption(branch);await page.locator('#pet-customise [type=submit]').click();
     await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
     assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-branch'),branch);

@@ -13,7 +13,7 @@ const ForgePet=(()=>{
   }
   const journey=p=>[...families[p.starter].base,...families[p.starter].branches[p.branch]];
   const milestones=[0,50,150,350,750,1550];
-  let current=null,widget,dialog;
+  let current=null,widget,dialog,settingsOpen=false;
   function stats(completed){
     const exp=completed*10,stage=milestones.filter(n=>exp>=n).length-1;
     const level=Math.floor(Math.sqrt(exp/25))+1;
@@ -44,7 +44,7 @@ const ForgePet=(()=>{
   function mount(){
     if(widget)return;
     widget=document.createElement('button');widget.type='button';widget.id='forge-pet';widget.setAttribute('aria-haspopup','dialog');
-    widget.onclick=()=>{renderDialog();dialog.showModal();};
+    widget.onclick=()=>{settingsOpen=false;renderDialog();dialog.showModal();};
     dialog=document.createElement('dialog');dialog.id='pet-room';dialog.setAttribute('aria-labelledby','pet-title');
     document.body.append(widget,dialog);document.body.classList.add('has-forge-pet');
   }
@@ -53,18 +53,21 @@ const ForgePet=(()=>{
     const s=current,course=s.course==='gcse'?'GCSE':'A Level',start=25*(s.level-1)**2;
     const stages=journey(s.profile);
     const locked=!!s.profile.name,rename= !locked||s.renameTokens>0,reclass= !locked||s.reclassTokens>0;
-    dialog.innerHTML=`<div class="pet-room-header"><div><p class="section-label">${course} COMPANION</p><h2 id="pet-title">${esc(s.profile.name||stages[s.stage])}</h2></div><button class="secondary" id="pet-close" type="button" autofocus>Close</button></div>
+    dialog.innerHTML=`<div class="pet-room-header"><div><p class="section-label">${course} COMPANION</p><h2 id="pet-title">${esc(s.profile.name||stages[s.stage])}</h2></div>${locked?`<button class="secondary" id="pet-settings" type="button" aria-expanded="${settingsOpen}" aria-controls="pet-customise">Settings</button>`:''}<button class="secondary" id="pet-close" type="button" autofocus>Close</button></div>
       <div class="pet-habitat">${creature(s.stage,s.profile)}<span>${stages[s.stage]} · Evolution ${s.stage+1} of ${stages.length}</span></div>
-      <form id="pet-customise"><label for="pet-name">Pet name (up to 24 characters)</label><input id="pet-name" maxlength="24" required ${rename?'':'disabled'} value="${esc(s.profile.name)}" placeholder="Give your companion a name" autocomplete="off">
+      ${locked&&s.exp>=150&&!s.branchChosen?'<p class="answer-help">Your first evolution branch is ready to choose in Settings.</p>':''}
+      <form id="pet-customise" ${locked&&!settingsOpen?'hidden':''}><label for="pet-name">Pet name (up to 24 characters)</label><input id="pet-name" maxlength="24" required ${rename?'':'disabled'} value="${esc(s.profile.name)}" placeholder="Give your companion a name" autocomplete="off">
         <fieldset ${reclass?'':'disabled'}><legend>Choose your starter</legend><div class="pet-starters">${Object.entries(families).map(([id,f])=>`<label class="pet-starter"><input type="radio" name="pet-starter" value="${id}" ${s.profile.starter===id?'checked':''}>${creature(0,profile({starter:id}))}<strong>${f.label}</strong><span>${f.hint}</span></label>`).join('')}</div></fieldset>
         <label for="pet-branch">Evolution branch</label><select id="pet-branch" ${s.exp<150||(s.branchChosen&&!reclass)?'disabled':''}></select><p id="pet-branch-preview" class="answer-help"></p>
-        <p class="answer-help">Your first name and starter choice are free and lock when saved. Branches unlock at 150 EXP; your first branch choice is free. Later changes use a rename token (100 coins) or a re-class token (500 coins). Tokens are spent only when a saved value changes. EXP is preserved.</p><p>Tokens: ${s.renameTokens} rename · ${s.reclassTokens} re-class</p><button id="pet-open-shop" class="secondary" type="button">Open shop</button> <button class="primary" type="submit">${locked?'Save changes':'Choose companion'}</button><p id="pet-save-status" role="status"></p></form>
+        <p class="answer-help">Your first name and starter choice are free and lock when saved. Branches unlock at 150 EXP; your first branch choice is free. Later changes use a rename token (100 coins) or a re-class token (500 coins). Tokens are spent only when a saved value changes. EXP is preserved.</p><p>Tokens: ${s.renameTokens} rename · ${s.reclassTokens} re-class</p><button id="pet-open-shop" class="secondary" type="button">Open shop</button> <button class="primary" type="submit">${locked?'Save changes':'Choose companion'}</button></form><p id="pet-save-status" role="status"></p>
       <dl class="pet-stats"><div><dt>Level</dt><dd>${s.level}</dd></div><div><dt>Total EXP</dt><dd>${s.exp}</dd></div><div><dt>Health</dt><dd>${s.health}/100</dd></div><div><dt>Questions mastered</dt><dd>${s.completed}</dd></div></dl>
       <label for="pet-level-progress">Level ${s.level+1}: ${s.nextLevel-s.exp} EXP to go</label><progress id="pet-level-progress" max="${s.nextLevel-start}" value="${s.exp-start}"></progress>
       <p>${s.nextEvolution===null?'Final form reached! Your companion keeps gaining levels.':`Next evolution: <strong>${stages[s.stage+1]}</strong> at ${s.nextEvolution} EXP (${Math.ceil((s.nextEvolution-s.exp)/10)} new correct answers away).`}</p>
       <h3>Evolution journey</h3><ol class="pet-evolutions">${stages.map((name,i)=>`<li class="${i<=s.stage?'unlocked':''}" ${i===s.stage?'aria-current="step"':''}><strong>${name}</strong><span>${milestones[i]} EXP · ${i<=s.stage?'Unlocked':'Locked'}</span></li>`).join('')}</ol>
       <p class="answer-help">Earn 10 EXP for each first correct completion, including challenge questions and completed written self-assessments. Previously recorded completions count too. Repeats and spending coins do not change EXP.</p><p class="answer-help">Health stays at 100: your pet never loses health while you are away. Evolution milestones grow exponentially; levels use a quadratic EXP curve. Your ${course} pet is saved with this browser’s course wallet, separately from the other course. Clearing site data resets it.</p>`;
     document.getElementById('pet-close').onclick=()=>dialog.close();
+    const settings=document.getElementById('pet-settings');
+    if(settings)settings.onclick=()=>{settingsOpen=!settingsOpen;document.getElementById('pet-customise').hidden=!settingsOpen;settings.setAttribute('aria-expanded',String(settingsOpen));};
     document.getElementById('pet-open-shop').onclick=()=>{dialog.close();document.getElementById('shop-open').click();};
     const form=document.getElementById('pet-customise'),select=document.getElementById('pet-branch');
     function options(){
@@ -78,7 +81,7 @@ const ForgePet=(()=>{
     form.onsubmit=async event=>{
       event.preventDefault();const button=form.querySelector('[type=submit]');button.disabled=true;
       document.getElementById('pet-save-status').textContent='Saving companion…';
-      try{await Rewards.savePet({name:document.getElementById('pet-name').value,starter:form.elements['pet-starter'].value,branch:select.value});document.getElementById('pet-save-status').textContent='Companion saved.';document.getElementById('pet-name').focus();}
+      try{await Rewards.savePet({name:document.getElementById('pet-name').value,starter:form.elements['pet-starter'].value,branch:select.value});settingsOpen=false;renderDialog();document.getElementById('pet-save-status').textContent='Companion saved.';document.getElementById('pet-settings').focus();}
       catch(error){document.getElementById('pet-save-status').textContent=error.message;}
       finally{button.disabled=false;}
     };
