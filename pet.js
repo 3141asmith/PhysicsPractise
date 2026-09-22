@@ -35,9 +35,9 @@ const ForgePet=(()=>{
       ${stage>=3?'<path class="pet-horn" d="M93 56L98 22 111 52M129 52L142 22 147 56"/>':''}
       ${stage===5?'<path class="pet-crown" d="M95 25L91 7 111 16 120 1 129 16 149 7 145 25Z"/>':''}
       <ellipse class="pet-belly" cx="120" cy="140" rx="30" ry="22"/>
-      <g class="pet-eyes"><ellipse cx="95" cy="100" rx="8" ry="12"/><ellipse cx="145" cy="100" rx="8" ry="12"/><circle class="pet-glint" cx="98" cy="96" r="3"/><circle class="pet-glint" cx="148" cy="96" r="3"/></g>
-      <path d="M110 119Q120 129 130 119" fill="none" class="pet-smile"/>
-      <ellipse class="pet-feet" cx="83" cy="167" rx="19" ry="10"/><ellipse class="pet-feet" cx="157" cy="167" rx="19" ry="10"/>
+      <g class="pet-gaze"><g class="pet-eyes"><ellipse cx="95" cy="100" rx="8" ry="12"/><ellipse cx="145" cy="100" rx="8" ry="12"/><circle class="pet-glint" cx="98" cy="96" r="3"/><circle class="pet-glint" cx="148" cy="96" r="3"/></g></g>
+      <path d="M110 119Q120 129 130 119" fill="none" class="pet-smile pet-mouth"/>
+      <ellipse class="pet-feet pet-foot-left" cx="83" cy="167" rx="19" ry="10"/><ellipse class="pet-feet pet-foot-right" cx="157" cy="167" rx="19" ry="10"/>
       ${stage>=2?'<path class="pet-mark" d="M121 72l-9 12h9l-3 11 12-15h-10z"/>':''}
       </g></g></svg>`;
   }

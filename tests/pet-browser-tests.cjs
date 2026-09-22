@@ -30,7 +30,11 @@ const {stats}=require('../pet');
   const fill=()=>page.locator('#forge-pet .pet-body').evaluate(el=>getComputedStyle(el).fill),colour=await fill();
   await page.locator('#theme-toggle').click();await page.locator('#theme-palette-button').click();await page.locator('[data-palette=ocean]').click();assert.equal(await fill(),colour);
   assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'pet-roam');
-  await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'none');await page.emulateMedia({reducedMotion:'no-preference'});
+  // Sample actual animation frames: eyes blink/look, smile grows, and feet alternate.
+  for(const [selector,first,second] of [['.pet-bob',0,.3],['.pet-gaze',0,.2],['.pet-eyes',0,.41],['.pet-mouth',0,.5],['.pet-foot-left',0,.18],['.pet-foot-right',0,.24]]){
+   const frames=await page.locator('#forge-pet '+selector).evaluate((el,times)=>{const animation=el.getAnimations()[0];animation.pause();const duration=animation.effect.getTiming().duration;return times.map(t=>{animation.currentTime=t*duration;return getComputedStyle(el).transform;});},[first,second]);assert.notEqual(frames[0],frames[1],selector+' should move');
+  }
+  await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'none');assert.equal(await page.locator('#forge-pet').evaluate(el=>el.getAnimations({subtree:true}).length),0);await page.emulateMedia({reducedMotion:'no-preference'});
   await page.locator('#forge-pet').click();
   assert.equal(await page.locator('#pet-branch').isDisabled(),true);
   await page.locator('#pet-name').fill('Nova <star>');await page.locator('[name=pet-starter][value=ripple]').check();await page.locator('#pet-customise [type=submit]').click();
