@@ -60,7 +60,7 @@ test('accounts, teacher permissions, personal questions and persistent progress'
     assert.equal((await request('/api/answer/'+q.id,{answer:String(expected)},student)).correct,true);
     const written=bank.questions.find(q=>q.type==='written');
     await request('/api/draft/'+written.id,{answer:'A saved explanation.'},student);
-    const solution=await request('/api/solution/'+written.id,{},student);
+    const solution=await request('/api/answer/'+written.id,{answer:'A saved explanation.'},student);
     assert.equal((await request('/api/self-assess/'+written.id,{points:solution.steps.map((_,i)=>i)},student)).progress.mastered,true);
     const gradebook=await request('/api/gradebook',undefined,teacher),row=gradebook.students.find(s=>s.id===student.user.id);
     assert.equal(row.hints,3);assert.equal(row.hintedQuestions,1);assert.equal(row.mastered,2);assert.equal(row.selfAssessed,1);

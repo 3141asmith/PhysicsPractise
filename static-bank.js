@@ -8,6 +8,13 @@
     return ['binary', 'nucleons', 'counts', 'induction', 'activity'].includes(key) ? 1 + value % 10 : 1 + (value % 7201) / 800;
   };
   const questions = QUESTIONS.map(question => ({...question}));
+  // Match the server bank: legacy fixed calculations use a generated counterpart.
+  for(const q of questions){
+    if(/^q\d+$/.test(q.id)&&q.type==='numeric'){
+      const candidates=questions.filter(item=>item.id.startsWith('calc-')&&item.topic===q.topic&&item.level===q.level);
+      if(candidates.length){const replacement=candidates[QuestionRandom.hash(q.id)%candidates.length];Object.assign(q,{...replacement,id:q.id});}
+    }
+  }
   for (const question of questions) {
     question.prompt = tidy(question.prompt);
     question.steps = question.steps.map(tidy);
@@ -23,5 +30,14 @@
     question.revealedHints = [];
   }
   window.STATIC_BANK = {topics: TOPICS, questions};
+  // Discard only obsolete numeric working on the first randomised-bank load.
+  try{
+    const state=JSON.parse(localStorage.getItem('physics-practice-static-state')||'{}');
+    if(!state.randomisedNumbers){
+      for(const q of questions)if(q.type==='numeric'&&state.progress?.[q.id])Object.assign(state.progress[q.id],{draft:'',solutionSeen:false});
+      state.challenge=null;state.randomisedNumbers=true;
+      localStorage.setItem('physics-practice-static-state',JSON.stringify(state));
+    }
+  }catch{}
   window.STATIC_VARIANT = variant;
 })();

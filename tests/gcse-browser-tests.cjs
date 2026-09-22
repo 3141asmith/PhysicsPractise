@@ -18,11 +18,11 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
   await page.locator('#gcse-answer').fill('8');await page.locator('#gcse-answer-form [type=submit]').click();
   await page.waitForFunction(()=>document.getElementById('gcse-feedback').textContent.includes('Not quite'));
   assert.equal(await page.locator('#coin-balance').innerText(),'0');
-  await page.locator('#gcse-answer').fill('9');await page.locator('#gcse-answer-form [type=submit]').click();
+  const expected=await page.evaluate(()=>String(GCSE_BANK.questions.find(q=>q.id==='gcse-0-kinetic-1').answer));await page.locator('#gcse-answer').fill(expected);await page.locator('#gcse-answer-form [type=submit]').click();
   await page.waitForFunction(()=>document.getElementById('coin-balance').textContent==='5');
   await page.locator('#gcse-answer-form [type=submit]').click();await page.waitForFunction(()=>document.getElementById('gcse-feedback').textContent.includes('Correct'));
   assert.equal(await page.locator('#coin-balance').innerText(),'5');
-  await page.reload();await page.locator('#gcse-answer').waitFor();assert.equal(await page.locator('#gcse-answer').inputValue(),'9');
+  await page.reload();await page.locator('#gcse-answer').waitFor();assert.equal(await page.locator('#gcse-answer').inputValue(),expected);
   // Earn enough to buy a hint, using real bank answers through the marking adapter.
   await page.evaluate(async()=>{for(const q of GCSE_BANK.questions.filter(q=>q.type==='numeric').slice(0,10))await GCSEPractice.api('/api/answer/'+q.id,{answer:String(q.answer)});});
   assert.equal(await page.locator('#coin-balance').innerText(),'50');

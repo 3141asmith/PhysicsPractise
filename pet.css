@@ -30,3 +30,20 @@ body.has-forge-pet{padding-bottom:125px}
 @keyframes pet-float{50%{transform:translateY(-5px)}}
 @media(prefers-reduced-motion:reduce){.pet-bob{animation:none}}
 @media(max-width:600px){#forge-pet{width:195px;min-height:80px;right:10px;bottom:10px}#forge-pet svg{width:65px}.pet-stats{grid-template-columns:repeat(2,1fr)}.pet-evolutions{grid-template-columns:repeat(2,1fr)}#pet-room{padding:18px}}
+
+/* Creature colours are intrinsic; only the surrounding interface uses the theme. */
+svg[data-pet-family]{--ink:#233044;--surface:#fff;--on-accent:#fff2bb;--accent-glow:#24354c26;color:var(--green)}
+svg[data-pet-family=spark]{--green:#e87932;--accent-selection:#ffd28c}
+svg[data-pet-family=ripple]{--green:#239cba;--accent-selection:#a4ebec;--on-accent:#ddffff}
+svg[data-pet-family=pebble]{--green:#8b7967;--accent-selection:#d8caab;--on-accent:#fff5dd}
+svg[data-pet-branch=storm]{--green:#7761bd;--accent-selection:#b7a4ed;--on-accent:#fff08c}
+svg[data-pet-branch=abyss]{--green:#36538f;--accent-selection:#82b5df;--on-accent:#94ffe6}
+svg[data-pet-branch=crystal]{--green:#648e9d;--accent-selection:#bbe9ed;--on-accent:#f3cfff}
+svg[data-pet-branch=grove]{--green:#54844f;--accent-selection:#bdd38b;--on-accent:#ecf4bd}
+#forge-pet .pet-bob,.pet-habitat .pet-bob{animation:pet-roam 14s ease-in-out infinite}
+#forge-pet .pet-feet,.pet-habitat .pet-feet{transform-box:fill-box;transform-origin:center;animation:pet-step 1.4s ease-in-out infinite alternate}
+#forge-pet .pet-feet:nth-last-of-type(2),.pet-habitat .pet-feet:nth-last-of-type(2){animation-delay:-.7s}
+#forge-pet:hover .pet-bob{animation-play-state:paused}
+@keyframes pet-roam{0%,15%,100%{transform:translate(0,0)}25%{transform:translate(-8px,-3px) rotate(-3deg)}35%{transform:translate(-8px,0)}45%{transform:translate(0,-8px)}55%{transform:translate(6px,0) rotate(3deg)}65%{transform:translate(8px,-4px)}75%,85%{transform:translate(0,0)}}
+@keyframes pet-step{to{transform:translateY(-2px) rotate(8deg)}}
+@media(prefers-reduced-motion:reduce){#forge-pet .pet-bob,.pet-habitat .pet-bob,#forge-pet .pet-feet,.pet-habitat .pet-feet{animation:none}}

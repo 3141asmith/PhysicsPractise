@@ -49,6 +49,7 @@ const GCSEPractice = (() => {
     if(!match)throw Error('Unknown question action.');
     const [,action,id]=match,q=questions.find(q=>q.id===id);
     if(!q)throw Error('Question not found.');
+    if(action==='solution')throw Error('Show solution is temporarily disabled. Submit your answer to receive feedback.');
     return transaction(()=>{
       const all=read(),p=all[id]||blank();all[id]=p;
       let correct=false;
@@ -112,7 +113,7 @@ const GCSEPractice = (() => {
       <form id="gcse-answer-form"><label class="answer-label" for="gcse-answer">${q.type==='numeric'?'Answer in '+esc(q.unit):'Your explanation'}</label>
       ${q.type==='numeric'?`<input id="gcse-answer" inputmode="decimal" autocomplete="off" maxlength="12000" value="${esc(p.draft)}">`:`<textarea id="gcse-answer" rows="5" maxlength="12000">${esc(p.draft)}</textarea>`}
       <p class="answer-help">${q.type==='numeric'?'Numerical answers allow 1.5% rounding tolerance. Enter the number without units.':'Written work is self-assessed against marking points; it is not automatically graded.'}</p>
-      <div class="actions"><button class="primary" type="submit">${q.type==='numeric'?'Check answer':'Compare answer'}</button><button id="gcse-hint" class="secondary" type="button" ${p.hintCount>=3?'disabled':''}>${p.hintCount>=3?'All hints unlocked':p.hintCount===0?'Free hint':'Use 1 hint credit'} (${p.hintCount}/3)</button><button id="gcse-solution" class="secondary" type="button">Show solution</button></div></form>
+      <div class="actions"><button class="primary" type="submit">${q.type==='numeric'?'Check answer':'Compare answer'}</button><button id="gcse-hint" class="secondary" type="button" ${p.hintCount>=3?'disabled':''}>${p.hintCount>=3?'All hints unlocked':p.hintCount===0?'Free hint':'Use 1 hint credit'} (${p.hintCount}/3)</button><button id="gcse-solution" class="secondary" disabled title="Solutions are temporarily disabled" type="button">Show solution</button></div></form>
       <p id="gcse-feedback" role="status">${p.mastered?'Completed':''}</p>
       <section aria-label="Hints">${p.hintCount?'<h3>Hints</h3><ol>'+q.hints.slice(0,p.hintCount).map(h=>'<li>'+esc(h)+'</li>').join('')+'</ol>':''}</section>
       ${p.solutionSeen?`<section class="solution"><h3>${q.type==='written'?'Self-assessment marking points':'Worked solution'}</h3>${q.type==='written'?q.steps.map((step,i)=>`<label class="choice"><input type="checkbox" data-mark="${i}" ${p.points.includes(i)?'checked':''} ${!p.draft.trim()?'disabled':''}><span>${esc(step)}</span></label>`).join(''):'<ol>'+q.steps.map(step=>'<li>'+esc(step)+'</li>').join('')+'</ol>'}</section>`:''}
@@ -137,6 +138,14 @@ const GCSEPractice = (() => {
     }catch(error){if(selected===q.id)renderQuestion(q);showError(error);}finally{busy=false;}
   }
   document.addEventListener('DOMContentLoaded',async()=>{
+    try{
+      if(!localStorage.getItem('physics-forge-gcse-randomised-v1')){
+        const records=read();
+        for(const q of questions)if(q.type==='numeric'&&records[q.id])Object.assign(records[q.id],{draft:'',solutionSeen:false});
+        write(records);localStorage.removeItem('physics-forge-gcse-challenge-v1');
+        localStorage.setItem('physics-forge-gcse-randomised-v1','1');
+      }
+    }catch{}
     const params=new URLSearchParams(location.search);
     for(const name of ['course','tier','paper']){const control=$('gcse-'+name);if([...control.options].some(o=>o.value===params.get(name)))control.value=params.get(name);}
     topic=/^[0-7]$/.test(params.get('topic'))?params.get('topic'):'all';selected=params.get('question');

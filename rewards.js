@@ -7,6 +7,7 @@ const Rewards = (() => {
   function read() {
     const data = JSON.parse(localStorage.getItem(key) || 'null') || empty();
     if (!Number.isSafeInteger(data.coins) || data.coins < 0 || !Number.isSafeInteger(data.credits) || data.credits < 0 || !data.completed || !data.hints) throw new Error('The saved coin balance could not be read.');
+    for(const token of ['renameTokens','reclassTokens']){data[token]??=0;if(!Number.isSafeInteger(data[token])||data[token]<0)throw new Error('Invalid pet token balance.');}
     return data;
   }
   function save(data) { localStorage.setItem(key, JSON.stringify(data)); update(data); }
@@ -16,6 +17,9 @@ const Rewards = (() => {
     $('shop-balance').textContent = data.coins;
     $('shop-credits').textContent = data.credits;
     $('buy-hint').disabled = data.coins < 50;
+    for(const [kind,cost] of [['rename',100],['reclass',500]]){
+      if($('buy-pet-'+kind)){$('buy-pet-'+kind).disabled=data.coins<cost;$('pet-'+kind+'-tokens').textContent=data[kind+'Tokens'];}
+    }
     if(typeof ForgePet!=='undefined')ForgePet.sync(data,course);
   }
   function locked(work) {
@@ -87,6 +91,13 @@ const Rewards = (() => {
     if (!$('coin-shop').open) $('coin-shop').showModal();
   }
   document.addEventListener('DOMContentLoaded', () => {
+    $('shop-message').insertAdjacentHTML('beforebegin',`<section aria-label="Pet tokens"><h3>Pet rename token · 100 coins</h3><p>Change your pet’s name once. Owned: <strong id="pet-rename-tokens">0</strong></p><button id="buy-pet-rename" class="primary" type="button">Buy rename token · 100 coins</button><h3>Pet re-class token · 500 coins</h3><p>Change your starter or chosen evolution branch once, keeping all EXP. Owned: <strong id="pet-reclass-tokens">0</strong></p><button id="buy-pet-reclass" class="primary" type="button">Buy re-class token · 500 coins</button><p class="answer-help">Use purchased tokens when saving changes in your pet’s window. Tokens stay within this course.</p></section>`);
+    for(const kind of ['rename','reclass'])$('buy-pet-'+kind).onclick=async()=>{
+      const button=$('buy-pet-'+kind);button.disabled=true;
+      try{await buyPetToken(kind);$('shop-message').textContent='Pet '+kind+' token purchased. Open your pet to use it.';}
+      catch(error){$('shop-message').textContent=error.message;}
+      finally{try{update();}catch{}}
+    };
     if (course === 'gcse') init({});
     $('shop-open').onclick = open;
     $('shop-close').onclick = () => $('coin-shop').close();
@@ -108,9 +119,21 @@ const Rewards = (() => {
     if(!key)throw new Error('Open your course before customising a pet.');
     await locked(()=>{
       const data=read(),pet=ForgePet.profile(value);
-      if(Object.values(data.completed).filter(Boolean).length<15)pet.branch=ForgePet.profile({starter:pet.starter}).branch;
-      data.pet=pet;save(data);
+      if(!pet.name)throw new Error('Enter a name before choosing your companion.');
+      const old=ForgePet.profile(data.pet||{}),lockedPet=!!old.name,canBranch=Object.values(data.completed).filter(Boolean).length>=15;
+      const chosen=data.pet?.branchChosen??(lockedPet&&canBranch);
+      if(!canBranch)pet.branch=ForgePet.profile({starter:pet.starter}).branch;
+      const rename=lockedPet&&pet.name!==old.name;
+      const reclass=lockedPet&&(pet.starter!==old.starter||(chosen&&pet.branch!==old.branch));
+      if(rename&&data.renameTokens<1)throw new Error('A pet rename token is required (100 coins in the shop).');
+      if(reclass&&data.reclassTokens<1)throw new Error('A pet re-class token is required (500 coins in the shop).');
+      if(rename)data.renameTokens--;if(reclass)data.reclassTokens--;
+      data.pet={...pet,branchChosen:canBranch};save(data);
     });
   }
-  return {perform,savePet};
+  async function buyPetToken(kind){
+    if(!key||!['rename','reclass'].includes(kind))throw new Error('Choose a valid pet token.');
+    await locked(()=>{const data=read(),cost=kind==='rename'?100:500;if(data.coins<cost)throw new Error('You need '+cost+' coins for this token.');data.coins-=cost;data[kind+'Tokens']++;save(data);});
+  }
+  return {perform,savePet,buyPetToken};
 })();

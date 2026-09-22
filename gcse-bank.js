@@ -11,7 +11,8 @@ const GCSE_BANK = (() => {
   }
   function calc(topic,key,title,spec,flags,unit,formula,make) {
     for(let i=1;i<=5;i++) {
-      const [prompt,answer,working] = make(i);
+      const parameter=typeof GCSE_VARIANT==='function'?GCSE_VARIANT(topic,key,i):i;
+      const [prompt,answer,working] = make(parameter);
       add(topic,`${key}-${i}`,`${title} · ${i}`,spec,flags,{type:'numeric',unit,prompt,answer,steps:[formula,working,`Answer: ${fmt(answer)} ${unit}.`],hints:['Identify the unknown and convert the supplied quantities to compatible units.',formula,'Substitute the values, work through the arithmetic and check the unit of your answer.']});
     }
   }

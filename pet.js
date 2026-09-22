@@ -52,18 +52,20 @@ const ForgePet=(()=>{
     if(!current)return;
     const s=current,course=s.course==='gcse'?'GCSE':'A Level',start=25*(s.level-1)**2;
     const stages=journey(s.profile);
+    const locked=!!s.profile.name,rename= !locked||s.renameTokens>0,reclass= !locked||s.reclassTokens>0;
     dialog.innerHTML=`<div class="pet-room-header"><div><p class="section-label">${course} COMPANION</p><h2 id="pet-title">${esc(s.profile.name||stages[s.stage])}</h2></div><button class="secondary" id="pet-close" type="button" autofocus>Close</button></div>
       <div class="pet-habitat">${creature(s.stage,s.profile)}<span>${stages[s.stage]} · Evolution ${s.stage+1} of ${stages.length}</span></div>
-      <form id="pet-customise"><label for="pet-name">Pet name (up to 24 characters)</label><input id="pet-name" maxlength="24" value="${esc(s.profile.name)}" placeholder="Give your companion a name" autocomplete="off">
-        <fieldset><legend>Choose your starter</legend><div class="pet-starters">${Object.entries(families).map(([id,f])=>`<label class="pet-starter"><input type="radio" name="pet-starter" value="${id}" ${s.profile.starter===id?'checked':''}>${creature(0,profile({starter:id}))}<strong>${f.label}</strong><span>${f.hint}</span></label>`).join('')}</div></fieldset>
-        <label for="pet-branch">Evolution branch</label><select id="pet-branch" ${s.exp<150?'disabled':''}></select><p id="pet-branch-preview" class="answer-help"></p>
-        <p class="answer-help">Branches unlock at 150 EXP. You can rename your pet or change its starter and unlocked branch at any time without losing EXP.</p><button class="primary" type="submit">Save companion</button><p id="pet-save-status" role="status"></p></form>
+      <form id="pet-customise"><label for="pet-name">Pet name (up to 24 characters)</label><input id="pet-name" maxlength="24" required ${rename?'':'disabled'} value="${esc(s.profile.name)}" placeholder="Give your companion a name" autocomplete="off">
+        <fieldset ${reclass?'':'disabled'}><legend>Choose your starter</legend><div class="pet-starters">${Object.entries(families).map(([id,f])=>`<label class="pet-starter"><input type="radio" name="pet-starter" value="${id}" ${s.profile.starter===id?'checked':''}>${creature(0,profile({starter:id}))}<strong>${f.label}</strong><span>${f.hint}</span></label>`).join('')}</div></fieldset>
+        <label for="pet-branch">Evolution branch</label><select id="pet-branch" ${s.exp<150||(s.branchChosen&&!reclass)?'disabled':''}></select><p id="pet-branch-preview" class="answer-help"></p>
+        <p class="answer-help">Your first name and starter choice are free and lock when saved. Branches unlock at 150 EXP; your first branch choice is free. Later changes use a rename token (100 coins) or a re-class token (500 coins). Tokens are spent only when a saved value changes. EXP is preserved.</p><p>Tokens: ${s.renameTokens} rename · ${s.reclassTokens} re-class</p><button id="pet-open-shop" class="secondary" type="button">Open shop</button> <button class="primary" type="submit">${locked?'Save changes':'Choose companion'}</button><p id="pet-save-status" role="status"></p></form>
       <dl class="pet-stats"><div><dt>Level</dt><dd>${s.level}</dd></div><div><dt>Total EXP</dt><dd>${s.exp}</dd></div><div><dt>Health</dt><dd>${s.health}/100</dd></div><div><dt>Questions mastered</dt><dd>${s.completed}</dd></div></dl>
       <label for="pet-level-progress">Level ${s.level+1}: ${s.nextLevel-s.exp} EXP to go</label><progress id="pet-level-progress" max="${s.nextLevel-start}" value="${s.exp-start}"></progress>
       <p>${s.nextEvolution===null?'Final form reached! Your companion keeps gaining levels.':`Next evolution: <strong>${stages[s.stage+1]}</strong> at ${s.nextEvolution} EXP (${Math.ceil((s.nextEvolution-s.exp)/10)} new correct answers away).`}</p>
       <h3>Evolution journey</h3><ol class="pet-evolutions">${stages.map((name,i)=>`<li class="${i<=s.stage?'unlocked':''}" ${i===s.stage?'aria-current="step"':''}><strong>${name}</strong><span>${milestones[i]} EXP · ${i<=s.stage?'Unlocked':'Locked'}</span></li>`).join('')}</ol>
       <p class="answer-help">Earn 10 EXP for each first correct completion, including challenge questions and completed written self-assessments. Previously recorded completions count too. Repeats and spending coins do not change EXP.</p><p class="answer-help">Health stays at 100: your pet never loses health while you are away. Evolution milestones grow exponentially; levels use a quadratic EXP curve. Your ${course} pet is saved with this browser’s course wallet, separately from the other course. Clearing site data resets it.</p>`;
     document.getElementById('pet-close').onclick=()=>dialog.close();
+    document.getElementById('pet-open-shop').onclick=()=>{dialog.close();document.getElementById('shop-open').click();};
     const form=document.getElementById('pet-customise'),select=document.getElementById('pet-branch');
     function options(){
       const starter=form.elements['pet-starter'].value,f= families[starter];
@@ -84,7 +86,7 @@ const ForgePet=(()=>{
   function sync(data,course){
     mount();
     const previous=current;
-    current={...stats(Object.values(data.completed).filter(Boolean).length),course,profile:profile(data.pet||{})};
+    current={...stats(Object.values(data.completed).filter(Boolean).length),course,profile:profile(data.pet||{}),renameTokens:data.renameTokens||0,reclassTokens:data.reclassTokens||0,branchChosen:data.pet?.branchChosen??(!!data.pet?.name&&Object.values(data.completed).filter(Boolean).length>=15)};
     const stages=journey(current.profile),name=current.profile.name||stages[current.stage];
     widget.setAttribute('aria-label',`Open ${course==='gcse'?'GCSE':'A Level'} pet: ${name}, ${stages[current.stage]}, level ${current.level}, ${current.exp} EXP`);
     widget.innerHTML=`${creature(current.stage,current.profile)}<span class="pet-widget-copy"><strong>${esc(name)}</strong><span>Lv ${current.level} · ${current.exp} EXP</span><span>${current.nextEvolution===null?'Final evolution':`${current.nextEvolution-current.exp} EXP to evolve`}</span></span>`;

@@ -27,16 +27,29 @@ const {stats}=require('../pet');
   await page.locator('#shop-open').click();await page.locator('#buy-hint').click();await page.waitForFunction(()=>document.getElementById('coin-balance').textContent==='0');assert.ok((await page.locator('#forge-pet').innerText()).includes('100 EXP'));await page.locator('#shop-close').click();
   await page.setViewportSize({width:390,height:844});await page.locator('#forge-pet').click();assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));await page.locator('#pet-close').click();
   await page.locator('#theme-toggle').click();await page.locator('#theme-palette-button').click();await page.locator('[data-palette=violet]').click();
-  const colours=await page.locator('#forge-pet').evaluate(el=>({body:getComputedStyle(el.querySelector('.pet-body')).fill,accent:getComputedStyle(el).color}));assert.equal(colours.body,colours.accent);
+  const fill=()=>page.locator('#forge-pet .pet-body').evaluate(el=>getComputedStyle(el).fill),colour=await fill();
+  await page.locator('#theme-toggle').click();await page.locator('#theme-palette-button').click();await page.locator('[data-palette=ocean]').click();assert.equal(await fill(),colour);
+  assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'pet-roam');
+  await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('#forge-pet .pet-bob').evaluate(el=>getComputedStyle(el).animationName),'none');await page.emulateMedia({reducedMotion:'no-preference'});
   await page.locator('#forge-pet').click();
   assert.equal(await page.locator('#pet-branch').isDisabled(),true);
   await page.locator('#pet-name').fill('Nova <star>');await page.locator('[name=pet-starter][value=ripple]').check();await page.locator('#pet-customise [type=submit]').click();
   await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');
   assert.equal(await page.locator('#pet-title').innerText(),'Nova <star>');assert.equal(await page.locator('#pet-title star').count(),0);
+  assert.equal(await page.locator('#pet-name').isDisabled(),true);assert.equal(await page.locator('[name=pet-starter][value=spark]').isDisabled(),true);
+  assert.equal(await page.evaluate(async()=>{try{await Rewards.savePet({name:'Free rename',starter:'ripple',branch:'reef'});return false;}catch{return true;}}),true);
+  assert.equal(await page.evaluate(async()=>{try{await Rewards.buyPetToken('rename');return false;}catch{return true;}}),true);
   await page.locator('#pet-close').click();await page.reload();await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'Nova <star>');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'ripple');
   await page.locator('#pet-close').click();
   await page.evaluate(async()=>{for(const q of GCSE_BANK.questions.filter(q=>q.type==='numeric').slice(10,15))await GCSEPractice.api('/api/answer/'+q.id,{answer:String(q.answer)});});
   await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-branch').isDisabled(),false);
+  await page.locator('#pet-branch').selectOption('abyss');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-save-status').textContent==='Companion saved.');assert.equal(await page.locator('#pet-branch').isDisabled(),true);
+  // Fixture funds allow all paid paths to be exercised without hundreds of answers.
+  await page.evaluate(()=>{const key='physics-forge-gcse-wallet-v1:browser',data=JSON.parse(localStorage.getItem(key));data.coins=3200;localStorage.setItem(key,JSON.stringify(data));});
+  await page.locator('#pet-open-shop').click();await page.locator('#buy-pet-rename').click();await page.waitForFunction(()=>document.getElementById('pet-rename-tokens').textContent==='1');assert.equal(await page.locator('#coin-balance').innerText(),'3100');
+  await page.locator('#shop-close').click();await page.locator('#forge-pet').click();await page.locator('#pet-name').fill('Comet');await page.locator('#pet-customise [type=submit]').click();await page.waitForFunction(()=>document.getElementById('pet-title').textContent==='Comet');assert.equal(await page.locator('#pet-name').isDisabled(),true);
+  await page.evaluate(async()=>{for(let i=0;i<6;i++)await Rewards.buyPetToken('reclass');});
+  assert.equal(await page.locator('#coin-balance').innerText(),'100');
   for(const [starter,branches] of Object.entries({spark:['solar','storm'],ripple:['reef','abyss'],pebble:['crystal','grove']})){
    for(const branch of branches){
     await page.locator(`[name=pet-starter][value=${starter}]`).check();await page.locator('#pet-branch').selectOption(branch);await page.locator('#pet-customise [type=submit]').click();
@@ -45,6 +58,9 @@ const {stats}=require('../pet');
     assert.ok((await page.locator('#forge-pet').innerText()).includes('150 EXP'));
    }
   }
+  assert.equal(await page.locator('[name=pet-starter][value=spark]').isDisabled(),true);
+  const tokens=await page.evaluate(()=>JSON.parse(localStorage.getItem('physics-forge-gcse-wallet-v1:browser')));assert.equal(tokens.reclassTokens,0);assert.equal(tokens.renameTokens,0);
+  await page.evaluate(()=>Rewards.savePet({name:'Comet',starter:'pebble',branch:'grove'}));
   assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));
   await other.waitForFunction(()=>document.querySelector('#forge-pet svg').dataset.petBranch==='grove');
   await page.locator('#pet-close').click();await page.goto(base+'/a-level.html?static');await page.locator('#forge-pet').click();assert.equal(await page.locator('#pet-name').inputValue(),'');assert.equal(await page.locator('.pet-habitat svg').getAttribute('data-pet-family'),'spark');

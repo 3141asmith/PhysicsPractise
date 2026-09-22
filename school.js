@@ -44,7 +44,11 @@ const School = {
     const record=id=>stored.progress[id]||(stored.progress[id]={draft:'',attempted:false,attempts:0,mastered:false,points:[],hintCount:0,solutionSeen:false,updated:new Date().toISOString()});
     const parse=value=>{const cleaned=String(value).trim().replace(/[−\s]/g,'').replace(/[x×*]10\^/i,'e');return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(cleaned)?Number(cleaned):NaN;};
     if(url==='/api/session')return Promise.resolve({user:null,csrf:null,microsoftEnabled:false,setupRequired:false});
-    if(url==='/api/questions')return Promise.resolve({topics:bank.topics,questions:bank.questions,progress:stored.progress});
+    if(url==='/api/questions')return Promise.resolve({topics:bank.topics,questions:bank.questions.map(q=>{
+      const copy={...q},p=stored.progress[q.id];
+      if(!p?.mastered&&!(q.type==='written'&&p?.attempted))delete copy.steps;
+      return copy;
+    }),progress:stored.progress});
     if(url==='/api/logout'){stored.progress={};stored.challenge=null;save();return Promise.resolve({ok:true});}
     if(url==='/api/guest')return Promise.resolve({user:{id:'static-guest',name:'Local learner',role:'student',guest:true},csrf:'static'});
     if(url==='/api/challenge'){
@@ -68,7 +72,7 @@ const School = {
     const [,action,id]=match,q=bank.questions.find(item=>item.id===id),progress=record(id);if(!q)return Promise.reject(new Error('Question not found.'));
     if(action==='draft')progress.draft=String(body?.answer||'');
     else if(action==='hints')progress.hintCount=Math.min(3,progress.hintCount+1);
-    else if(action==='solution')progress.solutionSeen=true;
+    else if(action==='solution')throw new Error('Show solution is temporarily disabled. Submit your answer to receive feedback.');
     else if(action==='self-assess'){progress.points=[...new Set(body?.points||[])];progress.attempted=true;progress.attempts=Math.max(1,progress.attempts);progress.mastered=progress.points.length===q.steps.length;}
     else{
       const answer=String(body?.answer??'').trim();if(!answer)throw new Error('Enter an answer first.');
