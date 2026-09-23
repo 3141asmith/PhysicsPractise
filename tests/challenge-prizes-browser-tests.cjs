@@ -32,7 +32,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
     const before=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),walletKey);
     assert.equal(before.prizes[round].claimed,false);
     // Exercise every equal-weight bucket deterministically, without flaky sampling.
-    await page.evaluate(roll=>{window.originalRandom=crypto.getRandomValues.bind(crypto);crypto.getRandomValues=array=>{array.fill(roll);return array;};},roll);
+    await page.evaluate(roll=>{window.originalRandom=crypto.getRandomValues.bind(crypto);let calls=0;crypto.getRandomValues=array=>{array.fill(calls++===0?roll:0);return array;};},roll);
     await page.locator('.prize-present').click();
     await page.waitForFunction(()=>document.querySelector('.prize-present').classList.contains('opened'));
     await page.evaluate(()=>{crypto.getRandomValues=window.originalRandom;});

@@ -107,3 +107,10 @@ svg[data-pet-family=pebble][data-pet-stage="0"],svg[data-pet-family=pebble][data
 [data-pet-motion=off],[data-pet-motion=off] *{animation:none!important}
 .pet-scarf{fill:#e75570;stroke:#8c2947;stroke-width:3;stroke-linejoin:round}
 .pet-inventory{padding:16px;margin:16px 0;background:var(--accent-soft);border:1px solid var(--line);border-radius:12px}
+.pet-wardrobe{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pet-wardrobe label{display:grid;gap:5px;min-width:0}.pet-wardrobe select{width:100%;min-width:0;padding:9px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px}
+.pet-collection{margin-top:16px}.pet-collection summary{cursor:pointer}
+.pet-collection>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.pet-collection figure{margin:0;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;text-align:center}
+.pet-collection svg{width:100%;height:100px}.pet-collection figcaption{font-size:12px}.pet-collection small{display:block;color:var(--muted);margin-top:4px}
+@media(max-width:500px){.pet-wardrobe{grid-template-columns:1fr}.pet-collection>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
