@@ -10,7 +10,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
   await page.goto(base+'/a-level.html?static');await page.locator('#forge-pet').waitFor();
   assert.equal(await page.evaluate(async()=>{try{await Rewards.petItem('outfit',{slot:'hat',id:'wizard-hat'});return false;}catch{return true;}}),true);
   const items=await page.evaluate(()=>PetCosmetics.items.filter(item=>item.art).map(({id,slot,name})=>({id,slot,name})));
-  assert.equal(items.length,12);
+  assert.equal(items.length,52);
+  assert.equal(new Set(items.map(item=>item.id)).size,52);
+  for(const slot of ['hat','shoes','jacket','glasses'])assert.equal(items.filter(item=>item.slot===slot).length,13);
   for(const item of items){
    const receipt=await page.evaluate(async item=>{
     let state=await School.api('/api/challenge',{action:'restart'});
@@ -31,7 +33,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
   }
   assert.equal(await page.locator('#forge-pet .pet-cosmetic').count(),4);
   await page.locator('#forge-pet').click();await page.locator('#pet-wardrobe-open').click();await page.locator('.pet-collection summary').click();
-  assert.equal(await page.locator('.pet-collection figure').count(),12);
+  assert.equal(await page.locator('.pet-collection figure').count(),52);
   await page.setViewportSize({width:390,height:844});assert.ok(await page.locator('#pet-room').evaluate(el=>el.scrollWidth<=el.clientWidth));
   for(const slot of ['hat','shoes','jacket','glasses'])await page.locator('[data-outfit="'+slot+'"]').selectOption('');
   await page.waitForFunction(()=>!document.querySelector('#forge-pet .pet-cosmetic'));
@@ -49,6 +51,6 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
   if(!await page.locator('#pet-free-edits').isVisible())await page.locator('#pet-settings').click();
   await page.locator('#pet-free-edits').uncheck();await page.waitForFunction(()=>!document.querySelector('#forge-pet .pet-cosmetic'));
   assert.equal(await page.locator('#forge-pet .pet-scarf').count(),0);
-  assert.deepEqual(errors,[]);console.log('Cosmetics passed: all 12 prize designs, ownership checks, equipping, layering, reload, removal, mobile and course isolation.');
+  assert.deepEqual(errors,[]);console.log('Cosmetics passed: all 52 prize designs, ownership checks, equipping, layering, reload, removal, mobile and course isolation.');
  }finally{if(browser)await browser.close();await new Promise(r=>app.server.close(r));app.db.close();fs.rmSync(dir,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});
