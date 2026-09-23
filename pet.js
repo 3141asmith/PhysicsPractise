@@ -29,6 +29,15 @@ const ForgePet=(()=>{
     const level=completed===0?0:Math.floor(Math.sqrt(exp/25))+1;
     return {completed,exp,stage,level,health:100,nextLevel:level===0?10:25*level*level,nextEvolution:milestones[stage+1]??null};
   }
+  function age(hatchedAt,now=Date.now()){
+    const born=new Date(hatchedAt),today=new Date(now);
+    if(!hatchedAt||!Number.isFinite(born.getTime()))return null;
+    const days=Math.max(0,Math.floor((today-born)/86400000));
+    const months=Math.max(0,(today.getUTCFullYear()-born.getUTCFullYear())*12+today.getUTCMonth()-born.getUTCMonth()-(today.getUTCDate()<born.getUTCDate()?1:0));
+    const value=months>=12?Math.floor(months/12):months>=1?months:days;
+    const unit=months>=12?'year':months>=1?'month':'day';
+    return value+' '+unit+(value===1?'':'s');
+  }
   function creature(stage,p=profile()){
     const scarf=p.scarf?'<path class="pet-scarf" d="M77 128Q120 146 163 128L161 143Q136 155 84 143ZM144 144L166 146 176 171 151 169Z"/><path fill="#fff1ab" d="M155 148L158 155 166 155 160 160 162 167 155 163 149 167 151 160 146 155 153 155Z"/>':'';
     const clothing=slot=>PetCosmetics.layer(p.outfit,slot);
@@ -135,7 +144,8 @@ const ForgePet=(()=>{
         <label for="pet-form">Displayed evolution</label><select id="pet-form" ${s.freeEdits?'':'disabled'}><option value="">Use earned evolution</option>${milestones.map((_,i)=>`<option value="${i}" ${s.stageOverride===i?'selected':''}>Evolution ${i+1}</option>`).join('')}</select>
         <p class="answer-help">Your first name and starter choice are free and lock when saved. Branches unlock at 150 EXP; your first branch choice is free. Later changes use a rename token (100 coins) or a re-class token (500 coins). Tokens are spent only when a saved value changes. EXP is preserved.</p><p>Tokens: ${s.renameTokens} rename · ${s.reclassTokens} re-class</p><button id="pet-open-shop" class="secondary" type="button">Open shop</button> <button class="primary" type="submit">${locked?'Save changes':'Choose companion'}</button></form><p id="pet-save-status" role="status"></p>
       <section class="pet-inventory"><h3>Challenge prizes</h3><p>${s.food} pet treats &middot; ${s.scarves} starlight scarves</p><button id="pet-feed" class="secondary" type="button" ${s.food>0?'':'disabled'}>Feed a treat</button><p class="answer-help">Treats given: ${s.fed}. Mood: ${s.fed?'Delighted':'Curious'}. Treats are for enjoyment and do not change EXP.</p><p id="pet-item-status" role="status"></p></section><section id="pet-wardrobe-panel" class="pet-inventory" ${wardrobeOpen?'':'hidden'} aria-label="Pet wardrobe"><h3>Wardrobe</h3> <button id="pet-equip" class="secondary" type="button" ${s.freeEdits||s.scarves>0?'':'disabled'}>${s.profile.scarf?'Remove scarf':'Wear scarf'}</button><p class="answer-help">${s.freeEdits?'Free selection is enabled: try any design.':'Win cosmetics in challenge presents.'} Wear one item per slot, alongside your scarf. Colours stay the same in every site theme.</p><div class="pet-wardrobe">${Object.entries(PetCosmetics.slots).map(([slot,label])=>`<label>${label}<select data-outfit="${slot}"><option value="">None</option>${PetCosmetics.items.filter(item=>item.slot===slot).map(item=>`<option value="${item.id}" ${s.profile.outfit[slot]===item.id?'selected':''} ${s.freeEdits||s.cosmetics[item.id]>0?'':'disabled'}>${item.name} (${s.cosmetics[item.id]||0} owned)</option>`).join('')}</select></label>`).join('')}</div><details class="pet-collection"><summary>View all cosmetic designs</summary><div>${PetCosmetics.items.filter(item=>item.art).map(item=>`<figure>${PetCosmetics.preview(item)}<figcaption>${item.name}<small>${s.cosmetics[item.id]||0} owned</small></figcaption></figure>`).join('')}</div></details></section>
-      <dl class="pet-stats"><div><dt>Level</dt><dd>${s.level}</dd></div><div><dt>Total EXP</dt><dd>${s.exp}</dd></div><div><dt>Health</dt><dd>${s.health}/100</dd></div><div><dt>Questions mastered</dt><dd>${s.completed}</dd></div></dl>
+      <dl class="pet-stats"><div><dt>Level</dt><dd>${s.level}</dd></div><div><dt>Total EXP</dt><dd>${s.exp}</dd></div><div><dt>Health</dt><dd>${s.health}/100</dd></div><div><dt>Questions mastered</dt><dd>${s.completed}</dd></div><div><dt>Age</dt><dd id="pet-age">${s.completed===0?'Not hatched yet':age(s.hatchedAt)||'Unknown'}</dd></div></dl>
+      <p class="answer-help" id="pet-hatch-date">${s.completed===0?'Answer your first question correctly to hatch your pet.':age(s.hatchedAt)!==null?'Hatched on '+new Date(s.hatchedAt).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+'.':'This pet hatched before hatch dates were recorded.'}</p>
       <label for="pet-level-progress">Level ${s.level+1}: ${s.nextLevel-s.exp} EXP to go</label><progress id="pet-level-progress" max="${s.nextLevel-start}" value="${s.exp-start}"></progress>
       <p>${s.nextEvolution===null?'Final form reached! Your companion keeps gaining levels.':`Next evolution: <strong>${stages[s.earnedStage+1]}</strong> at ${s.nextEvolution} EXP (${Math.ceil((s.nextEvolution-s.exp)/10)} new correct answers away).`}</p>
       <h3>Evolution journey</h3><ol class="pet-evolutions"><li class="unlocked" ${s.stage<0?'aria-current="step"':''}><strong>${stages[-1]}</strong><span>0 EXP ? ${s.completed===0?'Ready to hatch':'Hatched'}</span></li>${stages.map((name,i)=>`<li class="${i<=s.earnedStage?'unlocked':''}" ${i===s.stage?'aria-current="step"':''}><strong>${name}</strong><span>${milestones[i]} EXP · ${i<=s.stage?'Unlocked':'Locked'}</span></li>`).join('')}</ol>
@@ -177,6 +187,7 @@ const ForgePet=(()=>{
     const previous=current;
     current={...stats(Object.values(data.completed).filter(Boolean).length),course,cosmetics:data.petCosmetics||{},food:data.petFood||0,scarves:data.petScarves||0,fed:data.petFed||0,freeEdits:data.petSettings?.freeEdits===true,stageOverride:data.pet?.stageOverride,profile:profile(data.pet||{}),renameTokens:data.renameTokens||0,reclassTokens:data.reclassTokens||0,branchChosen:data.pet?.branchChosen??(!!data.pet?.name&&Object.values(data.completed).filter(Boolean).length>=15)};
     current.profile.outfit={};
+    current.hatchedAt=data.petHatchedAt;
     for(const slot of Object.keys(PetCosmetics.slots)){const id=data.petOutfit?.[slot];if(PetCosmetics.get(id)?.slot===slot&&(current.freeEdits||data.petCosmetics?.[id]>0))current.profile.outfit[slot]=id;}
     current.profile.scarf=data.petScarfEquipped===true&&(current.freeEdits||current.scarves>0);
     current.earnedStage=current.stage;
@@ -199,6 +210,6 @@ const ForgePet=(()=>{
       announcement.textContent=previous.completed===0?'Your egg hatched into '+stages[0]+'!':current.earnedStage>previous.earnedStage?`Your pet evolved into ${stages[current.earnedStage]}!`:'Your pet gained 10 EXP.';
     }
   }
-  return {sync,stats,profile};
+  return {sync,stats,profile,age};
 })();
 if(typeof module!=='undefined')module.exports=ForgePet;

@@ -50,6 +50,7 @@ const Rewards = (() => {
       await locked(() => {
         const data = read();
         if (data.completed[id]) return;
+        if (!Object.values(data.completed).some(Boolean)) data.petHatchedAt = new Date().toISOString();
         data.completed[id] = true; data.coins += 5; save(data);
         notice('+5 coins for your first correct completion!');
       });
