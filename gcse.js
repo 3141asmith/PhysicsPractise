@@ -103,7 +103,7 @@ const GCSEPractice = (() => {
     $('gcse-count').textContent=`${list.length} questions · ${list.filter(q=>progress[q.id]?.mastered).length} completed`;
     $('gcse-topic-title').textContent=topic==='all'?'All topics':topics[Number(topic)];
     $('gcse-back').hidden=!selected;$('gcse-question-list').hidden=!!selected;$('gcse-question').hidden=!selected;
-    $('gcse-question-list').innerHTML=list.length?list.map(q=>`<button class="question-link" data-question="${q.id}"><span>${tags(q)}</span><strong>${esc(q.title)}</strong><span class="gcse-preview">${esc(q.prompt)}</span><small>${q.type==='numeric'?'Calculation':'Written · self-assessed'} · ${progress[q.id]?.mastered?'Completed':topics[q.topic]}</small></button>`).join(''):'<p class="empty">No questions match these filters. Try another topic or clear the filters.</p>';
+    $('gcse-question-list').innerHTML=list.length?list.map(q=>`<button class="question-link" data-question="${q.id}"><span>${tags(q)}</span><strong>${esc(q.title)}</strong><span class="gcse-preview">${esc(q.prompt)}</span><small>${q.type==='numeric'?'Calculation':'Written · self-assessed'} · ${progress[q.id]?.mastered?'<span class="mastered-status">Completed<span class="mastered-tick" aria-hidden="true">&#10003;</span></span>':topics[q.topic]}</small></button>`).join(''):'<p class="empty">No questions match these filters. Try another topic or clear the filters.</p>';
     if(selected)renderQuestion(questions.find(q=>q.id===selected));
     locationState();
   }
