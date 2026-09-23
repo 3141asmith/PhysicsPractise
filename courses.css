@@ -137,3 +137,4 @@ html[data-theme] :is(.challenge-options ul,.notes-source,.note-section .note-ref
 .mastered-status{display:inline-flex;flex-direction:column;align-items:center;vertical-align:top;gap:2px}
 .mastered-status .mastered-tick{display:block;color:#16803c;font-size:20px;font-weight:800;line-height:1}
 [data-theme="dark"] .mastered-status .mastered-tick{color:#6ee79b}
+.topic-button .topic-stats{display:flex;flex-direction:column;gap:3px;flex-shrink:0;margin-left:auto;text-align:right;white-space:nowrap;font-size:10px;line-height:1.4}

@@ -17,7 +17,7 @@ function startPractice(bank) {
     if(result.steps)q.steps=result.steps;
     if(result.hints)q.revealedHints=result.hints;
     $('completed').textContent=QUESTIONS.filter(q=>saved[q.id]?.mastered).length;
-    $('save-status').textContent=savedMessage;
+    $('save-status').textContent=savedMessage;renderTopics();
   }
   function error(message){$('save-status').textContent=message;}
   function filtered(){
@@ -37,8 +37,9 @@ function startPractice(bank) {
     $('save-status').textContent='Saving...';clearTimeout(timers.get(q.id));
     timers.set(q.id,setTimeout(()=>flush(q.id).catch(()=>{}),400));
   }
+  function topicStats(pool){return '<small class="topic-stats"><span>'+pool.length+' questions</span><span>'+pool.filter(q=>saved[q.id]?.mastered).length+' correct</span></small>';}
   function renderTopics(){
-    $('topics').innerHTML='<button class="topic-button '+(topic==='all'?'active':'')+'" data-topic="all"><span class="topic-icon" aria-hidden="true">◆</span><span class="topic-name">All topics</span><small>'+QUESTIONS.length+'</small></button>'+TOPICS.map((name,i)=>'<button class="topic-button '+(topic===i?'active':'')+'" data-topic="'+i+'" aria-pressed="'+(topic===i)+'"><span class="topic-icon" aria-hidden="true">'+topicIcons[i]+'</span><span class="topic-name">'+escapeHtml(name)+'</span><small>'+QUESTIONS.filter(q=>q.topic===i).length+'</small></button>').join('');
+    $('topics').innerHTML='<button class="topic-button '+(topic==='all'?'active':'')+'" data-topic="all"><span class="topic-icon" aria-hidden="true">◆</span><span class="topic-name">All topics</span>'+topicStats(QUESTIONS)+'</button>'+TOPICS.map((name,i)=>'<button class="topic-button '+(topic===i?'active':'')+'" data-topic="'+i+'" aria-pressed="'+(topic===i)+'"><span class="topic-icon" aria-hidden="true">'+topicIcons[i]+'</span><span class="topic-name">'+escapeHtml(name)+'</span>'+topicStats(QUESTIONS.filter(q=>q.topic===i))+'</button>').join('');
     $('topics').querySelectorAll('button').forEach(b=>b.onclick=()=>{topic=b.dataset.topic==='all'?'all':Number(b.dataset.topic);selected=null;if(School.view==='notes')School.showNotes(topic==='all'?null:topic);else{School.setView('practice');render();}renderTopics();});
   }
   function renderList(list){

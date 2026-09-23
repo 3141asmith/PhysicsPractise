@@ -82,11 +82,12 @@ const GCSEPractice = (() => {
   function eligible(q){return ($('gcse-course').value==='physics'||!q.physicsOnly)&&($('gcse-tier').value==='higher'||!q.higher)&&($('gcse-paper').value==='all'||Number($('gcse-paper').value)===q.paper);}
   function matches(q){return eligible(q)&&(topic==='all'||q.topic===Number(topic))&&(!$('gcse-unfinished').checked||!progress[q.id]?.mastered)&&(q.title+' '+q.prompt+' '+topics[q.topic]).toLowerCase().includes($('gcse-search').value.trim().toLowerCase());}
   const tags=q=>`<span class="gcse-tag">Paper ${q.paper}</span><span class="gcse-tag ${q.physicsOnly?'extra':''}">${q.physicsOnly?'Physics only':'Both courses'}</span><span class="gcse-tag ${q.higher?'higher':''}">${q.higher?'Higher only':'Foundation & Higher'}</span>`;
+  const topicStats=pool=>'<small class="topic-stats"><span>'+pool.length+' questions</span><span>'+pool.filter(q=>progress[q.id]?.mastered).length+' correct</span></small>';
   function sidebar(){
     const pool=questions.filter(eligible);
-    $('gcse-topic-nav').innerHTML=`<button class="topic-button ${topic==='all'?'active':''}" data-topic="all" aria-pressed="${topic==='all'}">All topics <small>${pool.length}</small></button>`+topics.map((name,i)=>{
-      const count=pool.filter(q=>q.topic===i).length;
-      return count?`<button class="topic-button ${Number(topic)===i?'active':''}" data-topic="${i}" aria-pressed="${topic===String(i)}"><span>${esc(name)}${i===7?' · Physics only':''}</span><small>${count}</small></button>`:'';
+    $('gcse-topic-nav').innerHTML=`<button class="topic-button ${topic==='all'?'active':''}" data-topic="all" aria-pressed="${topic==='all'}">All topics ${topicStats(pool)}</button>`+topics.map((name,i)=>{
+      const topicPool=pool.filter(q=>q.topic===i),count=topicPool.length;
+      return count?`<button class="topic-button ${Number(topic)===i?'active':''}" data-topic="${i}" aria-pressed="${topic===String(i)}"><span>${esc(name)}${i===7?' · Physics only':''}</span>${topicStats(topicPool)}</button>`:'';
     }).join('');
   }
   function locationState(){
