@@ -139,7 +139,7 @@ const Rewards = (() => {
   }
   async function savePetSettings(settings){
     if(!key)throw new Error('Open your course first.');
-    await locked(()=>{const data=read();data.petSettings={freeEdits:settings.freeEdits===true};if(!data.petSettings.freeEdits&&data.pet)delete data.pet.stageOverride;save(data);});
+    await locked(()=>{const data=read();data.petSettings={freeEdits:settings.freeEdits===true};if(!data.petSettings.freeEdits){if(data.pet)delete data.pet.stageOverride;for(const slot of Object.keys(data.petOutfit||{}))if(!(data.petCosmetics?.[data.petOutfit[slot]]>0))delete data.petOutfit[slot];if(!(data.petScarves>0))data.petScarfEquipped=false;}save(data);});
   }
   async function buyPetToken(kind){
     if(!key||!['rename','reclass'].includes(kind))throw new Error('Choose a valid pet token.');
@@ -178,11 +178,11 @@ const Rewards = (() => {
   async function petItem(action,choice){
     await locked(()=>{const data=read();
       if(action==='feed'){if(!(data.petFood>0))throw new Error('Win a pet treat by completing a challenge.');data.petFood--;data.petFed=(data.petFed||0)+1;}
-      else if(action==='equip'){if(!(data.petScarves>0))throw new Error('Win a scarf by completing a challenge.');data.petScarfEquipped=true;}
+      else if(action==='equip'){if(!data.petSettings?.freeEdits&&!(data.petScarves>0))throw new Error('Win a scarf by completing a challenge.');data.petScarfEquipped=true;}
       else if(action==='outfit'){
         if(!Object.hasOwn(PetCosmetics.slots,choice?.slot))throw new Error('Choose a valid clothing slot.');
         const item=PetCosmetics.get(choice.id);
-        if(choice.id&&(!item||item.slot!==choice.slot||!(data.petCosmetics?.[item.id]>0)))throw new Error('Win this cosmetic before equipping it.');
+        if(choice.id&&(!item||item.slot!==choice.slot||(!data.petSettings?.freeEdits&&!(data.petCosmetics?.[item.id]>0))))throw new Error('Win this cosmetic before equipping it.');
         data.petOutfit??={};if(choice.id)data.petOutfit[choice.slot]=choice.id;else delete data.petOutfit[choice.slot];
       }
       else if(action==='remove')data.petScarfEquipped=false;

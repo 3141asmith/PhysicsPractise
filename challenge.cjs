@@ -26,9 +26,6 @@ function createChallenge(db){
     if(typeof body.includeOptional!=='boolean')throw fail('Choose a valid topic selection.');
     db.prepare('UPDATE challenges SET include_optional=? WHERE user_id=?').run(body.includeOptional?1:0,user.id);
     pool=questionPool(bank,body.includeOptional);replaceExcluded();
-   }else if(body.action==='auto-complete'){
-    // Temporary user-requested shortcut: retain round ID and question mastery.
-    db.prepare('UPDATE challenges SET score=100,answered=1,correct=NULL WHERE user_id=?').run(user.id);
    }else if(body.action==='mode'){
     if(typeof body.extreme!=='boolean')throw fail('Choose a valid mode.');
     db.prepare('UPDATE challenges SET extreme=? WHERE user_id=?').run(body.extreme?1:0,user.id);
