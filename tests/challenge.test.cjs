@@ -17,6 +17,7 @@ test('challenge scores, bounds, extreme mode, persistence, marking and replay pr
   const guest=await call('/api/guest',{});cookie=guest.cookie;csrf=guest.csrf;
   const seed=app.db.prepare('SELECT seed FROM users WHERE id=?').get(guest.user.id).seed,bank=loadBank(seed);
   let state=await call('/api/challenge');assert.equal(state.score,0);assert.equal(state.extreme,false);
+  assert.ok(state.roundId);const initialRound=state.roundId;assert.equal((await call('/api/challenge')).roundId,initialRound);
   assert.equal(state.includeOptional,false);assert.ok(state.question.topic<8||state.question.topic===13);
   assert.equal((await call('/api/challenge',{action:'options',includeOptional:'yes'})).status,400);
   state=await call('/api/challenge',{action:'options',includeOptional:true});assert.equal(state.includeOptional,true);
@@ -27,6 +28,7 @@ test('challenge scores, bounds, extreme mode, persistence, marking and replay pr
   assert.equal(state.score,25);assert.notEqual(state.question.id,optional.id);assert.equal(state.includeOptional,false);
   assert.equal((await call('/api/challenge',{action:'answer',questionId:optional.id,answer:'1'})).status,400);
   state=await call('/api/challenge',{action:'restart'});
+  assert.notEqual(state.roundId,initialRound);
   assert.ok(!('answer' in state.question));assert.ok(!('steps' in state.question));
   async function answer(correct){
    const q=bank.questions.find(q=>q.id===state.question.id),value=correct?q.answer:q.type==='numeric'?-1e99:(q.answer+1)%q.options.length;
@@ -47,7 +49,7 @@ test('challenge scores, bounds, extreme mode, persistence, marking and replay pr
   for(let i=1;i<=20;i++){await next();await answer(true);assert.equal(state.score,i*5);}
   assert.equal((await call('/api/challenge')).score,100);
   assert.equal((await call('/api/challenge',{action:'next',questionId:state.question.id})).status,400);
-  const restored=await call('/api/challenge');assert.equal(restored.extreme,true);assert.equal(restored.answered,true);
+  const restored=await call('/api/challenge');assert.equal(restored.roundId,state.roundId);assert.equal(restored.extreme,true);assert.equal(restored.answered,true);
   assert.ok((await call('/api/questions')).progress[state.question.id].attempts>0);
   state=await call('/api/challenge',{action:'restart'});assert.equal(state.score,0);assert.equal(state.answered,false);assert.equal(state.extreme,true);
   await call('/api/challenge',{action:'options',includeOptional:true});

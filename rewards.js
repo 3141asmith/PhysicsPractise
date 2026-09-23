@@ -84,6 +84,10 @@ const Rewards = (() => {
     const answer = url.match(/^\/api\/(answer|self-assess)\/([\w-]+)$/);
     if (answer && (result.correct === true || (answer[1] === 'self-assess' && result.progress?.mastered))) await reward(answer[2]);
     if (url === '/api/challenge' && body?.action === 'answer' && result.correct) await reward(body.questionId);
+    if (url === '/api/challenge' && result.score === 100 && result.roundId) await locked(()=>{
+      const data=read();data.prizes??={};
+      if(!data.prizes[result.roundId]){data.prizes[result.roundId]={claimed:false};save(data);}
+    });
     return result;
   }
   function open() {
@@ -141,5 +145,36 @@ const Rewards = (() => {
     if(!key||!['rename','reclass'].includes(kind))throw new Error('Choose a valid pet token.');
     await locked(()=>{const data=read(),cost=kind==='rename'?100:500;if(data.coins<cost)throw new Error('You need '+cost+' coins for this token.');data.coins-=cost;data[kind+'Tokens']++;save(data);});
   }
-  return {perform,savePet,savePetSettings,buyPetToken};
+  async function claimPrize(roundId){
+    return locked(()=>{
+      const data=read(),prize=data.prizes?.[roundId];
+      if(!prize)throw new Error('Complete this challenge to unlock its present.');
+      if(prize.claimed)return prize.kind;
+      // Rejection sampling gives each of the three categories exactly equal odds.
+      let roll;do{roll=crypto.getRandomValues(new Uint32Array(1))[0];}while(roll===4294967295);
+      const kind=['coins','food','cosmetic'][roll%3];
+      if(kind==='coins')data.coins+=10;
+      if(kind==='food')data.petFood=(data.petFood||0)+1;
+      if(kind==='cosmetic')data.petScarves=(data.petScarves||0)+1;
+      data.prizes[roundId]={claimed:true,kind};save(data);return kind;
+    });
+  }
+  function mountPrize(host,state){
+    if(state.score!==100||!state.roundId)return;
+    const panel=document.createElement('section');panel.className='challenge-prize';
+    panel.innerHTML='<h3>Your challenge prize</h3><p>Equal chances: 10 coins, a pet treat, or a starlight scarf.</p><button class="prize-present" type="button" aria-label="Open your challenge present"><svg viewBox="0 0 160 160" aria-hidden="true"><path class="gift-box" d="M29 68H131V143H29Z"/><path class="gift-ribbon" d="M71 68H89V143H71Z"/><g class="gift-lid"><path class="gift-box" d="M20 48H140V76H20Z"/><path class="gift-ribbon" d="M71 48H89V76H71Z"/><path class="gift-bow" d="M80 48C24 48 45 1 80 48C115 1 136 48 80 48Z"/></g></svg><span>Click to unwrap</span></button><p class="prize-result" role="status"></p>';
+    host.insertBefore(panel,host.querySelector('button'));const button=panel.querySelector('button'),result=panel.querySelector('.prize-result');
+    const reveal=kind=>{button.disabled=true;button.classList.add('opened');button.querySelector('span').textContent='Present opened';result.innerHTML='<span class="prize-icon" aria-hidden="true">'+({coins:'&#129689;',food:'&#127822;',cosmetic:'&#129507;'})[kind]+'</span>'+({coins:'You won 10 coins! Added to your balance.',food:'You won a pet treat! Feed it to your companion in the pet room.',cosmetic:'You won a starlight scarf! Equip it in the pet room.'})[kind];};
+    try{const prize=read().prizes?.[state.roundId];if(prize?.claimed)reveal(prize.kind);}catch(error){result.textContent=error.message;}
+    button.onclick=async()=>{button.disabled=true;try{const kind=await claimPrize(state.roundId);button.classList.add('opening');await new Promise(resolve=>setTimeout(resolve,650));reveal(kind);}catch(error){button.disabled=false;result.textContent=error.message;}};
+  }
+  async function petItem(action){
+    await locked(()=>{const data=read();
+      if(action==='feed'){if(!(data.petFood>0))throw new Error('Win a pet treat by completing a challenge.');data.petFood--;data.petFed=(data.petFed||0)+1;}
+      else if(action==='equip'){if(!(data.petScarves>0))throw new Error('Win a scarf by completing a challenge.');data.petScarfEquipped=true;}
+      else if(action==='remove')data.petScarfEquipped=false;
+      else throw new Error('Unknown pet item.');save(data);
+    });
+  }
+  return {perform,savePet,savePetSettings,buyPetToken,claimPrize,mountPrize,petItem};
 })();

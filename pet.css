@@ -105,3 +105,5 @@ svg[data-pet-family=pebble][data-pet-stage="0"],svg[data-pet-family=pebble][data
 @keyframes pet-joy{0%,100%{transform:translateY(0) scale(1)}20%{transform:translateY(2px) scale(1.04,.94)}50%{transform:translateY(-12px) rotate(-5deg)}75%{transform:translateY(0) rotate(3deg)}}
 /* An explicit choice overrides the OS preference; JS supplies the default. */
 [data-pet-motion=off],[data-pet-motion=off] *{animation:none!important}
+.pet-scarf{fill:#e75570;stroke:#8c2947;stroke-width:3;stroke-linejoin:round}
+.pet-inventory{padding:16px;margin:16px 0;background:var(--accent-soft);border:1px solid var(--line);border-radius:12px}

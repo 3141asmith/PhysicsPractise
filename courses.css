@@ -138,3 +138,15 @@ html[data-theme] :is(.challenge-options ul,.notes-source,.note-section .note-ref
 .mastered-status .mastered-tick{display:block;color:#16803c;font-size:20px;font-weight:800;line-height:1}
 [data-theme="dark"] .mastered-status .mastered-tick{color:#6ee79b}
 .topic-button .topic-stats{display:flex;flex-direction:column;gap:3px;flex-shrink:0;margin-left:auto;text-align:right;white-space:nowrap;font-size:10px;line-height:1.4}
+.challenge-prize{margin-top:20px;padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--accent-soft);text-align:center}
+.prize-present{display:inline-grid;justify-items:center;border:0;background:transparent;color:var(--ink);font:inherit;cursor:pointer;padding:12px}
+.prize-present svg{width:150px;height:150px;overflow:visible;animation:gift-wiggle 3s ease-in-out infinite}
+.gift-box{fill:var(--green);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
+.gift-ribbon{fill:#ffd66b}.gift-bow{fill:none;stroke:#ffd66b;stroke-width:9;stroke-linecap:round}
+.prize-present.opening .gift-lid,.prize-present.opened .gift-lid{transform:translateY(-30px) rotate(-12deg);transform-origin:80px 48px;transition:transform .6s ease-out}
+.prize-present.opened svg{animation:none}.prize-present:disabled{opacity:1}.prize-result{font-weight:700;min-height:1.6em}
+@keyframes gift-wiggle{0%,75%,100%{transform:rotate(0)}80%,90%{transform:rotate(-5deg)}85%,95%{transform:rotate(5deg)}}
+@media(prefers-reduced-motion:reduce){.prize-present svg{animation:none}.prize-present .gift-lid{transition:none!important}}
+.prize-icon{display:block;font-size:48px;margin-bottom:10px;animation:prize-reveal .45s ease-out}
+@keyframes prize-reveal{from{opacity:0;transform:translateY(15px) scale(.7)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.prize-icon{animation:none}}

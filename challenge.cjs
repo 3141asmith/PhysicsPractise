@@ -1,16 +1,18 @@
-const {randomInt}=require('node:crypto');
+const {randomInt,randomUUID}=require('node:crypto');
 const {parseNumber}=require('./bank.cjs');
 const questionPool=(bank,includeOptional)=>bank.questions.filter(q=>(q.type==='numeric'||q.type==='choice')&&(includeOptional||q.topic<8||q.topic===13));
 
 function createChallenge(db){
  db.exec(`CREATE TABLE IF NOT EXISTS challenges(user_id TEXT PRIMARY KEY REFERENCES users(id),score INTEGER NOT NULL DEFAULT 0,extreme INTEGER NOT NULL DEFAULT 0,question_id TEXT NOT NULL,answered INTEGER NOT NULL DEFAULT 0,correct INTEGER,answer TEXT NOT NULL DEFAULT '')`);
  if(!db.prepare('PRAGMA table_info(challenges)').all().some(column=>column.name==='include_optional'))db.exec('ALTER TABLE challenges ADD COLUMN include_optional INTEGER NOT NULL DEFAULT 0');
+ if(!db.prepare('PRAGMA table_info(challenges)').all().some(column=>column.name==='round_id'))db.exec("ALTER TABLE challenges ADD COLUMN round_id TEXT NOT NULL DEFAULT ''");
  const fail=message=>Object.assign(new Error(message),{status:400});
  return (user,bank,body)=>{
   let state=db.prepare('SELECT * FROM challenges WHERE user_id=?').get(user.id);
   let pool=questionPool(bank,!!state?.include_optional);
   const pick=previous=>{const candidates=pool.filter(q=>q.id!==previous);return candidates[randomInt(candidates.length)].id;};
   if(!state){db.prepare('INSERT INTO challenges(user_id,question_id) VALUES(?,?)').run(user.id,pick());state=db.prepare('SELECT * FROM challenges WHERE user_id=?').get(user.id);}
+  if(!state.round_id){state.round_id=randomUUID();db.prepare('UPDATE challenges SET round_id=? WHERE user_id=?').run(state.round_id,user.id);}
   function replaceExcluded(){
    if(!pool.some(q=>q.id===state.question_id)){
     db.prepare("UPDATE challenges SET question_id=?,answered=0,correct=NULL,answer='' WHERE user_id=?").run(pick(state.question_id),user.id);
@@ -29,7 +31,7 @@ function createChallenge(db){
     db.prepare('UPDATE challenges SET extreme=? WHERE user_id=?').run(body.extreme?1:0,user.id);
    }else if(body.action==='restart'){
     pool=questionPool(bank,false);
-    db.prepare("UPDATE challenges SET score=0,include_optional=0,question_id=?,answered=0,correct=NULL,answer='' WHERE user_id=?").run(pick(state.question_id),user.id);
+    db.prepare("UPDATE challenges SET round_id=?,score=0,include_optional=0,question_id=?,answered=0,correct=NULL,answer='' WHERE user_id=?").run(randomUUID(),pick(state.question_id),user.id);
    }else if(body.action==='next'){
     if(!state.answered||state.score===100||body.questionId!==state.question_id)throw fail('Finish the current question first.');
     db.prepare("UPDATE challenges SET question_id=?,answered=0,correct=NULL,answer='' WHERE user_id=?").run(pick(state.question_id),user.id);
@@ -59,7 +61,7 @@ function createChallenge(db){
    state=db.prepare('SELECT * FROM challenges WHERE user_id=?').get(user.id);
   }
   const {answer,steps,hints,...question}=pool.find(q=>q.id===state.question_id);
-  return {score:state.score,includeOptional:!!state.include_optional,extreme:!!state.extreme,answered:!!state.answered,correct:state.correct===null?null:!!state.correct,answer:state.answer,question,progressRecord};
+  return {roundId:state.round_id,score:state.score,includeOptional:!!state.include_optional,extreme:!!state.extreme,answered:!!state.answered,correct:state.correct===null?null:!!state.correct,answer:state.answer,question,progressRecord};
  };
 }
 module.exports={createChallenge,questionPool};

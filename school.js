@@ -54,10 +54,11 @@ const School = {
     if(url==='/api/challenge'){
       const pool=()=>bank.questions.filter(q=>(q.type==='numeric'||q.type==='choice')&&(stored.challenge?.includeOptional||q.topic<8||q.topic===13));
       if(!stored.challenge){const options=pool();stored.challenge={score:0,includeOptional:false,extreme:false,answered:false,correct:null,answer:'',questionId:options[Math.floor(Math.random()*options.length)].id};}
+      stored.challenge.roundId ||= crypto.randomUUID();
       const state=stored.challenge,q=bank.questions.find(item=>item.id===state.questionId);
       if(body?.action==='options'){state.includeOptional=!!body.includeOptional;if(!pool().some(item=>item.id===state.questionId))state.questionId=pool()[0].id;state.answered=false;state.correct=null;state.answer='';}
       else if(body?.action==='mode')state.extreme=!!body.extreme;
-      else if(body?.action==='restart'){state.score=0;state.includeOptional=false;state.answered=false;state.correct=null;state.answer='';state.questionId=pool()[0].id;}
+      else if(body?.action==='restart'){state.roundId=crypto.randomUUID();state.score=0;state.includeOptional=false;state.answered=false;state.correct=null;state.answer='';state.questionId=pool()[0].id;}
       else if(body?.action==='next'){if(!state.answered||state.score===100)throw new Error('Finish the current question first.');const options=pool().filter(item=>item.id!==state.questionId);state.questionId=options[Math.floor(Math.random()*options.length)].id;state.answered=false;state.correct=null;state.answer='';}
       else if(body?.action==='answer'){
         if(state.answered||state.score===100||body.questionId!==state.questionId)throw new Error('This question has already been submitted.');
@@ -66,7 +67,7 @@ const School = {
         state.score=correct?Math.min(100,state.score+5):state.extreme?0:Math.max(0,state.score-10);state.answered=true;state.correct=correct;state.answer=answer;
         const progress=record(q.id);progress.draft=answer;progress.attempted=true;progress.attempts++;progress.mastered=progress.mastered||correct;progress.updated=new Date().toISOString();
       }
-      save();return Promise.resolve({score:state.score,includeOptional:state.includeOptional,extreme:state.extreme,answered:state.answered,correct:state.correct,answer:state.answer,question:q,progressRecord:state.answered?stored.progress[q.id]:undefined});
+      save();return Promise.resolve({roundId:state.roundId,score:state.score,includeOptional:state.includeOptional,extreme:state.extreme,answered:state.answered,correct:state.correct,answer:state.answer,question:bank.questions.find(item=>item.id===state.questionId),progressRecord:state.answered?stored.progress[state.questionId]:undefined});
     }
     const match=url.match(/^\/api\/(answer|draft|hints|solution|self-assess)\/([\w-]+)$/);if(!match)return Promise.reject(new Error('This feature requires the school server.'));
     const [,action,id]=match,q=bank.questions.find(item=>item.id===id),progress=record(id);if(!q)return Promise.reject(new Error('Question not found.'));

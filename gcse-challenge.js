@@ -27,7 +27,7 @@ const GCSEChallenge=(()=>{
     $('challenge-course').value=state.course;$('challenge-tier').value=state.tier;
     for(const id of ['challenge-course','challenge-tier'])$(id).onchange=()=>action({action:'options',course:$('challenge-course').value,tier:$('challenge-tier').value});
     $('gcse-extreme').onchange=e=>action({action:'mode',extreme:e.target.checked});
-    if(done){$('gcse-challenge-restart').onclick=()=>action({action:'restart'});return;}
+    if(done){Rewards.mountPrize($('gcse-challenge-view').querySelector('.challenge-complete'),state);$('gcse-challenge-restart').onclick=()=>action({action:'restart'});return;}
     if(state.answered)$('gcse-challenge-next').onclick=()=>action({action:'next'});
     $('gcse-challenge-form').onsubmit=e=>{e.preventDefault();action({action:'answer',questionId:q.id,answer:$('gcse-challenge-answer').value});};
   }

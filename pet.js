@@ -30,9 +30,10 @@ const ForgePet=(()=>{
     return {completed,exp,stage,level,health:100,nextLevel:level===0?10:25*level*level,nextEvolution:milestones[stage+1]??null};
   }
   function creature(stage,p=profile()){
+    const scarf=p.scarf?'<path class="pet-scarf" d="M77 128Q120 146 163 128L161 143Q136 155 84 143ZM144 144L166 146 176 171 151 169Z"/><path fill="#fff1ab" d="M155 148L158 155 166 155 160 160 162 167 155 163 149 167 151 160 146 155 153 155Z"/>':'';
     if(stage<0){
       const decoration=p.starter==='spark'?'<path class="pet-mark" d="M108 145Q85 126 112 96Q104 118 123 111Q150 137 130 149Z"/><path class="pet-detail" d="M96 89L106 79M142 96L151 86"/>':p.starter==='ripple'?'<path class="pet-detail" d="M80 118Q93 108 106 118T132 118T158 118M78 134Q91 124 104 134T130 134T156 134"/><circle class="pet-pearl" cx="117" cy="91" r="8"/><circle class="pet-pearl" cx="137" cy="153" r="5"/>':'<path class="pet-leaf" d="M119 144Q82 149 88 113Q118 112 119 144Q120 102 148 102Q158 137 119 144Z"/><path class="pet-detail" d="M120 154V132"/>';
-      return '<svg viewBox="0 0 240 200" data-pet-family="'+p.starter+'" data-pet-branch="'+p.branch+'" data-pet-stage="0" data-pet-egg="true" aria-hidden="true" focusable="false"><ellipse class="pet-shadow" cx="120" cy="179" rx="51" ry="8"/><g class="pet-bob"><path class="pet-body" d="M72 140C72 105 100 49 120 49S168 105 168 140Q168 178 120 178Q72 178 72 140Z"/><path d="M87 104Q96 75 110 68" fill="none" stroke="#fff" stroke-width="7" opacity=".45" stroke-linecap="round"/>'+decoration+'</g></svg>';
+      return '<svg viewBox="0 0 240 200" data-pet-family="'+p.starter+'" data-pet-branch="'+p.branch+'" data-pet-stage="0" data-pet-egg="true" aria-hidden="true" focusable="false"><ellipse class="pet-shadow" cx="120" cy="179" rx="51" ry="8"/><g class="pet-bob"><path class="pet-body" d="M72 140C72 105 100 49 120 49S168 105 168 140Q168 178 120 178Q72 178 72 140Z"/><path d="M87 104Q96 75 110 68" fill="none" stroke="#fff" stroke-width="7" opacity=".45" stroke-linecap="round"/>'+decoration+scarf+'</g></svg>';
     }
     const grown=stage>=2,elder=stage>=4,final=stage===5,size=[.58,.69,.76,.84,.91,.96][stage];
     const path=(d,cls='pet-ear')=>'<path class="'+cls+'" d="'+d+'"/>';
@@ -96,7 +97,7 @@ const ForgePet=(()=>{
     return '<svg viewBox="0 0 240 200" data-pet-family="'+p.starter+'" data-pet-branch="'+p.branch+'" data-pet-stage="'+stage+'" aria-hidden="true" focusable="false">'+
       '<ellipse cx="120" cy="184" rx="65" ry="8" class="pet-shadow"/><g class="pet-bob"><g transform="translate(120 180) scale('+size+') translate(-120 -180)">'+back+path(body,'pet-body')+
       (p.starter==='spark'?'<ellipse class="pet-belly" cx="122" cy="143" rx="27" ry="24"/>':'')+front+
-      '<g class="pet-gaze"><g class="pet-eyes"><ellipse cx="95" cy="103" rx="'+(p.starter==='pebble'?7:8)+'" ry="'+(p.starter==='pebble'?8:12)+'"/><ellipse cx="145" cy="103" rx="8" ry="'+(p.starter==='pebble'?8:12)+'"/><circle class="pet-glint" cx="98" cy="99" r="3"/><circle class="pet-glint" cx="148" cy="99" r="3"/></g></g>'+path('M110 123Q120 133 130 123','pet-smile pet-mouth')+feet+'</g></g></svg>';
+      '<g class="pet-gaze"><g class="pet-eyes"><ellipse cx="95" cy="103" rx="'+(p.starter==='pebble'?7:8)+'" ry="'+(p.starter==='pebble'?8:12)+'"/><ellipse cx="145" cy="103" rx="8" ry="'+(p.starter==='pebble'?8:12)+'"/><circle class="pet-glint" cx="98" cy="99" r="3"/><circle class="pet-glint" cx="148" cy="99" r="3"/></g></g>'+path('M110 123Q120 133 130 123','pet-smile pet-mouth')+scarf+feet+'</g></g></svg>';
   }
   function habitat(p,stage){
     const branch=stage>=2?p.branch:'';
@@ -122,7 +123,7 @@ const ForgePet=(()=>{
   function renderDialog(){
     if(!current)return;
     const s=current,course=s.course==='gcse'?'GCSE':'A Level',start=s.level===0?0:s.level===1?10:25*(s.level-1)**2;
-    const stages=journey(s.profile),previousArt=dialog.querySelector('.pet-habitat svg'),artKey=[s.stage,s.profile.starter,s.profile.branch].join(':');
+    const stages=journey(s.profile),previousArt=dialog.querySelector('.pet-habitat svg'),artKey=[s.stage,s.profile.starter,s.profile.branch,s.profile.scarf].join(':');
     const locked=!!s.profile.name,rename= s.freeEdits||!locked||s.renameTokens>0,reclass= s.freeEdits||!locked||s.reclassTokens>0;
     dialog.innerHTML=`<div class="pet-room-header"><div><p class="section-label">${course} COMPANION</p><h2 id="pet-title">${esc(s.profile.name||stages[s.stage])}</h2></div>${locked?`<button class="secondary" id="pet-settings" type="button" aria-expanded="${settingsOpen}" aria-controls="pet-customise">Settings</button>`:''}<button class="secondary" id="pet-close" type="button" autofocus>Close</button></div>
       <div class="pet-habitat">${creature(s.stage,s.profile)}${habitat(s.profile,s.stage)}<span class="pet-form-label">${stages[s.stage]} · Evolution ${s.stage+1} of ${stages.length}</span></div>
@@ -132,6 +133,7 @@ const ForgePet=(()=>{
         <label for="pet-branch">Evolution branch</label><select id="pet-branch" ${!s.freeEdits&&(s.exp<150||(s.branchChosen&&!reclass))?'disabled':''}></select><p id="pet-branch-preview" class="answer-help"></p>
         <label for="pet-form">Displayed evolution</label><select id="pet-form" ${s.freeEdits?'':'disabled'}><option value="">Use earned evolution</option>${milestones.map((_,i)=>`<option value="${i}" ${s.stageOverride===i?'selected':''}>Evolution ${i+1}</option>`).join('')}</select>
         <p class="answer-help">Your first name and starter choice are free and lock when saved. Branches unlock at 150 EXP; your first branch choice is free. Later changes use a rename token (100 coins) or a re-class token (500 coins). Tokens are spent only when a saved value changes. EXP is preserved.</p><p>Tokens: ${s.renameTokens} rename · ${s.reclassTokens} re-class</p><button id="pet-open-shop" class="secondary" type="button">Open shop</button> <button class="primary" type="submit">${locked?'Save changes':'Choose companion'}</button></form><p id="pet-save-status" role="status"></p>
+      <section class="pet-inventory"><h3>Challenge prizes</h3><p>${s.food} pet treats ? ${s.scarves} starlight scarves</p><button id="pet-feed" class="secondary" type="button" ${s.food>0?'':'disabled'}>Feed a treat</button> <button id="pet-equip" class="secondary" type="button" ${s.scarves>0?'':'disabled'}>${s.profile.scarf?'Remove scarf':'Wear scarf'}</button><p class="answer-help">Treats given: ${s.fed}. Mood: ${s.fed?'Delighted':'Curious'}. Treats are for enjoyment and do not change EXP.</p><p id="pet-item-status" role="status"></p></section>
       <dl class="pet-stats"><div><dt>Level</dt><dd>${s.level}</dd></div><div><dt>Total EXP</dt><dd>${s.exp}</dd></div><div><dt>Health</dt><dd>${s.health}/100</dd></div><div><dt>Questions mastered</dt><dd>${s.completed}</dd></div></dl>
       <label for="pet-level-progress">Level ${s.level+1}: ${s.nextLevel-s.exp} EXP to go</label><progress id="pet-level-progress" max="${s.nextLevel-start}" value="${s.exp-start}"></progress>
       <p>${s.nextEvolution===null?'Final form reached! Your companion keeps gaining levels.':`Next evolution: <strong>${stages[s.earnedStage+1]}</strong> at ${s.nextEvolution} EXP (${Math.ceil((s.nextEvolution-s.exp)/10)} new correct answers away).`}</p>
@@ -144,6 +146,7 @@ const ForgePet=(()=>{
     document.getElementById('pet-animation').onchange=event=>{motionPreference=event.target.checked;try{localStorage.setItem('physics-forge-pet-animation',JSON.stringify(motionPreference));}catch{}applyMotion();};
     document.getElementById('pet-free-edits').onchange=async event=>{try{await Rewards.savePetSettings({freeEdits:event.target.checked});}catch(error){event.target.checked=current.freeEdits;document.getElementById('pet-save-status').textContent=error.message;}};
     document.getElementById('pet-close').onclick=()=>dialog.close();
+    for(const [id,action] of [['pet-feed','feed'],['pet-equip',s.profile.scarf?'remove':'equip']])document.getElementById(id).onclick=async()=>{try{await Rewards.petItem(action);document.getElementById('pet-item-status').textContent=action==='feed'?'Your companion enjoyed the treat!':action==='equip'?'Scarf equipped!':'Scarf removed.';}catch(error){document.getElementById('pet-item-status').textContent=error.message;}};
     const settings=document.getElementById('pet-settings');
     if(settings)settings.onclick=()=>{settingsOpen=!settingsOpen;document.getElementById('pet-customise').hidden=!settingsOpen;settings.setAttribute('aria-expanded',String(settingsOpen));};
     document.getElementById('pet-open-shop').onclick=()=>{dialog.close();document.getElementById('shop-open').click();};
@@ -167,7 +170,8 @@ const ForgePet=(()=>{
   function sync(data,course){
     mount();
     const previous=current;
-    current={...stats(Object.values(data.completed).filter(Boolean).length),course,freeEdits:data.petSettings?.freeEdits===true,stageOverride:data.pet?.stageOverride,profile:profile(data.pet||{}),renameTokens:data.renameTokens||0,reclassTokens:data.reclassTokens||0,branchChosen:data.pet?.branchChosen??(!!data.pet?.name&&Object.values(data.completed).filter(Boolean).length>=15)};
+    current={...stats(Object.values(data.completed).filter(Boolean).length),course,food:data.petFood||0,scarves:data.petScarves||0,fed:data.petFed||0,freeEdits:data.petSettings?.freeEdits===true,stageOverride:data.pet?.stageOverride,profile:profile(data.pet||{}),renameTokens:data.renameTokens||0,reclassTokens:data.reclassTokens||0,branchChosen:data.pet?.branchChosen??(!!data.pet?.name&&Object.values(data.completed).filter(Boolean).length>=15)};
+    current.profile.scarf=data.petScarfEquipped===true;
     current.earnedStage=current.stage;
     if(current.freeEdits&&Number.isInteger(current.stageOverride)&&current.stageOverride>=0&&current.stageOverride<6)current.stage=current.stageOverride;
     const stages=journey(current.profile),name=current.profile.name||stages[current.stage];
@@ -177,6 +181,7 @@ const ForgePet=(()=>{
     if(widget.dataset.artwork!==artwork){widget.innerHTML=artwork+copy;widget.dataset.artwork=artwork;}else widget.querySelector('.pet-widget-copy').outerHTML=copy;
     applyMotion();
     if(dialog.open)renderDialog();
+    if(previous&&previous.course===course&&current.fed>previous.fed){widget.classList.add('pet-celebrating');clearTimeout(celebrationTimer);celebrationTimer=setTimeout(()=>widget.classList.remove('pet-celebrating'),2600);}
     if(previous&&previous.course===course&&current.exp>previous.exp){
       if(current.level>previous.level||current.earnedStage>previous.earnedStage){
         widget.classList.remove('pet-celebrating');void widget.offsetWidth;widget.classList.add('pet-celebrating');

@@ -21,11 +21,12 @@ const GCSEPractice = (() => {
       const key='physics-forge-gcse-challenge-v1',params=new URLSearchParams(location.search);
       let state=JSON.parse(localStorage.getItem(key)||'null');
       if(!state)state={score:0,extreme:false,answered:false,answer:'',correct:null,course:params.get('course')==='combined'?'combined':'physics',tier:params.get('tier')==='foundation'?'foundation':'higher',questionId:null};
+      state.roundId ||= crypto.randomUUID();
       const pool=()=>questions.filter(q=>q.type==='numeric'&&(state.course==='physics'||!q.physicsOnly)&&(state.tier==='higher'||!q.higher));
       const next=()=>{const choices=pool().filter(q=>q.id!==state.questionId);state.questionId=choices[Math.floor(Math.random()*choices.length)].id;state.answered=false;state.answer='';state.correct=null;};
       if(!pool().some(q=>q.id===state.questionId))next();
       let record;
-      if(body.action==='restart'){state.score=0;next();}
+      if(body.action==='restart'){state.roundId=crypto.randomUUID();state.score=0;next();}
       else if(body.action==='mode')state.extreme=!!body.extreme;
       else if(body.action==='options'){
         if(!['combined','physics'].includes(body.course)||!['foundation','higher'].includes(body.tier))throw Error('Choose a valid course and tier.');
