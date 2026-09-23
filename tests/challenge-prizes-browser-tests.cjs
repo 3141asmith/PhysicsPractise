@@ -55,6 +55,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
    await page.locator('#forge-pet').click();await page.locator('#pet-equip').click();await page.waitForFunction(()=>!document.querySelector('#forge-pet .pet-scarf'));
    await page.locator('#pet-close').click();
   }
+  await page.locator('[data-landing=challenge]').first().isVisible().then(async visible=>{if(visible)await page.locator('[data-landing=challenge]').first().click();});
+  await page.locator('#challenge-restart').click();await page.locator('#challenge-auto-complete').waitFor();
+  const beforeShortcut=await page.evaluate(()=>({...School.bank.progress}));
+  await page.locator('#challenge-auto-complete').click();await page.locator('.prize-present').waitFor();
+  assert.equal(await page.locator('#challenge-percent').innerText(),'100%');assert.equal(await page.locator('#challenge-auto-complete').isDisabled(),true);
+  assert.deepEqual(await page.evaluate(()=>School.bank.progress),beforeShortcut);
+  await page.locator('.prize-present').click();await page.waitForFunction(()=>document.querySelector('.prize-present').classList.contains('opened'));
   assert.deepEqual(errors,[]);
   console.log('Challenge prizes passed: three outcomes in both courses, unique rounds, reload/replay protection, feeding and wearable persistence.');
  }finally{if(browser)await browser.close();await new Promise(r=>app.server.close(r));app.db.close();fs.rmSync(dir,{recursive:true,force:true});}

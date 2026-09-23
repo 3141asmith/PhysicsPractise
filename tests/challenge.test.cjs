@@ -54,6 +54,9 @@ test('challenge scores, bounds, extreme mode, persistence, marking and replay pr
   state=await call('/api/challenge',{action:'restart'});assert.equal(state.score,0);assert.equal(state.answered,false);assert.equal(state.extreme,true);
   await call('/api/challenge',{action:'options',includeOptional:true});
   state=await call('/api/challenge',{action:'restart'});assert.equal(state.includeOptional,false);assert.ok(state.question.topic<8||state.question.topic===13);
+  const shortcutRound=state.roundId,progressBefore=(await call('/api/questions')).progress;
+  state=await call('/api/challenge',{action:'auto-complete'});assert.equal(state.score,100);assert.equal(state.roundId,shortcutRound);
+  assert.deepEqual((await call('/api/questions')).progress,progressBefore);assert.equal((await call('/api/challenge',{action:'auto-complete'})).roundId,shortcutRound);
   await call('/api/logout',{});assert.equal(app.db.prepare('SELECT COUNT(*) AS n FROM challenges').get().n,0);
  }finally{await app.close();fs.rmSync(dir,{recursive:true,force:true});}
 });

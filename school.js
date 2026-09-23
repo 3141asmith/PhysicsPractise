@@ -57,6 +57,7 @@ const School = {
       stored.challenge.roundId ||= crypto.randomUUID();
       const state=stored.challenge,q=bank.questions.find(item=>item.id===state.questionId);
       if(body?.action==='options'){state.includeOptional=!!body.includeOptional;if(!pool().some(item=>item.id===state.questionId))state.questionId=pool()[0].id;state.answered=false;state.correct=null;state.answer='';}
+      else if(body?.action==='auto-complete'){state.score=100;state.answered=true;state.correct=null;}
       else if(body?.action==='mode')state.extreme=!!body.extreme;
       else if(body?.action==='restart'){state.roundId=crypto.randomUUID();state.score=0;state.includeOptional=false;state.answered=false;state.correct=null;state.answer='';state.questionId=pool()[0].id;}
       else if(body?.action==='next'){if(!state.answered||state.score===100)throw new Error('Finish the current question first.');const options=pool().filter(item=>item.id!==state.questionId);state.questionId=options[Math.floor(Math.random()*options.length)].id;state.answered=false;state.correct=null;state.answer='';}
