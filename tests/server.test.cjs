@@ -126,6 +126,7 @@ test('all personalised questions and topic notes contain valid LaTeX',()=>{
   assert.ok(notes[13].sections.some(section=>section.title==='Required practicals 9-12: fields and radiation'));
   for(const seed of ['test-alice','test-bob','test-carol']){
     const bank=loadBank(seed);assert.equal(new Set(bank.questions.map(q=>q.id)).size,1470);
+    for(const q of bank.questions)assert.doesNotMatch(q.title,/: (short response|extended response|explain|calculation|interpretation)$/i);
     for(const q of bank.questions){
       if(q.type==='numeric')assert.ok(Number.isFinite(q.answer),q.id);
       for(const text of [q.prompt,...q.steps,...q.hints,...(q.options||[])])assert.doesNotThrow(()=>format(text),q.id+': '+text);

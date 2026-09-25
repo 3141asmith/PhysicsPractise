@@ -4,8 +4,8 @@
  const scale=1+Math.floor(typeof STUDENT_VARIANT==='function'?STUDENT_VARIANT(3,'diagram-scale',1):2);
  const graph=(title,xLabel,yLabel,points)=>({kind:'graph',title,xLabel,yLabel,points});
  function pair(key,topic,diagram,prompt,answer,unit,steps,explain,marking,hints){
-  QUESTIONS.push({id:'diagram-'+key+'-calc',topic,level:'Challenge',title:diagram.title+': calculation',type:'numeric',marks:4,prompt,answer,unit,steps,hints,diagram});
-  QUESTIONS.push({id:'diagram-'+key+'-explain',topic,level:'Challenge',title:diagram.title+': interpretation',type:'written',marks:4,prompt:explain,steps:marking,hints:[hints[0],'Refer to a specific feature of the diagram.','Connect that feature to the physical principle, including any assumptions.'],diagram});
+  QUESTIONS.push({id:'diagram-'+key+'-calc',topic,level:'Challenge',title:diagram.title,type:'numeric',marks:4,prompt,answer,unit,steps,hints,diagram});
+  QUESTIONS.push({id:'diagram-'+key+'-explain',topic,level:'Challenge',title:diagram.title,type:'written',marks:4,prompt:explain,steps:marking,hints:[hints[0],'Refer to a specific feature of the diagram.','Connect that feature to the physical principle, including any assumptions.'],diagram});
  }
  const v=2*scale;
  pair('motion',3,graph('Reversing motion','Time / s','Velocity / m per s',[[0,0],[2,v],[4,v],[6,-v],[8,0]]),

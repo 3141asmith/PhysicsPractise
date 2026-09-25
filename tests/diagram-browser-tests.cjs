@@ -24,11 +24,18 @@ const {screenshots}=require('./artifacts.cjs');
   await page.waitForFunction(()=>School.practice&&School.bank);
   const ids=await page.evaluate(()=>School.bank.questions.filter(q=>q.id.startsWith('diagram-')).map(q=>q.id));
   assert.equal(ids.length,12);
+  for(const [type,label] of Object.entries({numeric:'Numerical',choice:'Multiple choice',written:'Written response'})){
+   const id=await page.evaluate(type=>School.bank.questions.find(q=>q.type===type).id,type);
+   await page.evaluate(id=>School.practice.open(id),id);
+   assert.equal(await page.locator('#question .question-type').innerText(),label);
+   assert.equal(await page.locator('[data-id="'+id+'"] .question-type').innerText(),label);
+  }
   for(const width of [1440,390])for(const theme of ['light','dark']){
    await page.setViewportSize({width,height:900});await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);
    for(const id of ids){
     await page.evaluate(id=>School.practice.open(id),id);
     assert.equal(await page.locator('.question-diagram svg').count(),1);
+    assert.equal(await page.locator('#question .question-type').innerText(),id.endsWith('-calc')?'Numerical':'Written response');
     assert.ok((await page.locator('.question-diagram svg').getAttribute('aria-label')).length>50);
     assert.equal(await page.locator('.katex-error').count(),0);
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
@@ -50,6 +57,7 @@ const {screenshots}=require('./artifacts.cjs');
    try{await Challenge.open();}finally{School.api=api;}
   });
   assert.equal(await page.locator('#challenge-view .question-diagram svg').count(),1);
+  assert.equal(await page.locator('#challenge-view .question-type').innerText(),'Numerical');
   assert.deepEqual(errors,[]);console.log('Diagram questions passed: bank, area calculations, all 12 diagrams, marking, challenge rendering, accessible descriptions and responsive themes.');
  }finally{await browser?.close();await app.close();fs.rmSync(dir,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});

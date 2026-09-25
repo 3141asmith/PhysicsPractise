@@ -7,7 +7,7 @@
       ['extended','Challenge',`${shortPrompt}\n\n${reasoningPrompt}`,[...shortPoints,...reasoningPoints]]
     ];
     for (const [part,level,prompt,steps] of variants) {
-      QUESTIONS.push({id:`explain-${topic}-${key}-${part}`,topic,level,title:`${title}: ${part === 'short' ? 'short response' : part === 'reason' ? 'explain' : 'extended response'}`,prompt,steps,type:'written',marks:steps.length,family:key,variant:part});
+      QUESTIONS.push({id:`explain-${topic}-${key}-${part}`,topic,level,title,prompt,steps,type:'written',marks:steps.length,family:key,variant:part});
     }
   }
   add(0,'random','Random uncertainty','Describe random measurement error and its effect on repeated readings.',['Unpredictable variations cause readings to scatter about a central value.','Readings can be above or below that value.'],'Explain why repeating and averaging readings reduces random uncertainty but cannot guarantee an accurate result.',['Independent positive and negative deviations partly cancel in the mean.','A systematic offset remains in the average, so improved precision does not guarantee accuracy.']);
