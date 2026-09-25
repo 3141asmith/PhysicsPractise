@@ -45,7 +45,7 @@ test('accounts, teacher permissions, personal questions and persistent progress'
     const session2=await request('/api/login',{...credentials('teacher2'),role:'teacher'});
     assert.equal((await request('/api/gradebook',undefined,session2)).students.length,0);
     const bank=await request('/api/questions',undefined,student),bank2=await request('/api/questions',undefined,other);
-    assert.equal(bank.questions.length,1458);
+    assert.equal(bank.questions.length,1470);
     assert.equal(bank.topics[13],'Practical Skills');
     assert.ok(bank.questions.every(q=>!('answer' in q)&&!('steps' in q)&&!('hints' in q)));
     const q=bank.questions.find(q=>q.type==='numeric');
@@ -90,7 +90,7 @@ test('guest preview works before setup, restricts access and removes temporary p
   assert.equal((await request('/api/gradebook',undefined,guest)).status,403);
   assert.equal((await request('/api/microsoft/start',{link:true},guest)).status,403);
   assert.equal((await request('/api/teachers',{},guest)).status,403);
-  const bank=await request('/api/questions',undefined,guest);assert.equal(bank.questions.length,1458);
+  const bank=await request('/api/questions',undefined,guest);assert.equal(bank.questions.length,1470);
   const id=bank.questions[0].id;
   await request('/api/draft/'+id,{answer:'temporary answer'},guest);
   await request('/api/hints/'+id,{},guest);
@@ -125,7 +125,7 @@ test('all personalised questions and topic notes contain valid LaTeX',()=>{
   }
   assert.ok(notes[13].sections.some(section=>section.title==='Required practicals 9-12: fields and radiation'));
   for(const seed of ['test-alice','test-bob','test-carol']){
-    const bank=loadBank(seed);assert.equal(new Set(bank.questions.map(q=>q.id)).size,1458);
+    const bank=loadBank(seed);assert.equal(new Set(bank.questions.map(q=>q.id)).size,1470);
     for(const q of bank.questions){
       if(q.type==='numeric')assert.ok(Number.isFinite(q.answer),q.id);
       for(const text of [q.prompt,...q.steps,...q.hints,...(q.options||[])])assert.doesNotThrow(()=>format(text),q.id+': '+text);

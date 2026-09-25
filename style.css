@@ -43,6 +43,7 @@ aside{align-self:start;position:sticky;top:0;max-height:100vh;overflow-y:auto}
   aside{position:static;max-height:none;overflow:visible}
 }
 [hidden]{display:none!important}
+.question-diagram{margin:20px 0;max-width:680px;color:inherit}.question-diagram svg{display:block;width:100%;height:auto;aspect-ratio:600/340;background:#fff;color:#203d36;border:1px solid #b9cac4;border-radius:4px}.question-diagram text{font:20px Arial;fill:currentColor}.qd-grid{stroke:#ccd6d3;stroke-width:1;fill:none}.qd-axis{stroke:#334f45;stroke-width:2;fill:none}.qd-line{stroke:#126a80;stroke-width:3;fill:none}.qd-point{fill:#126a80}.qd-block{fill:#e2eee8;stroke:#334f45}.question-diagram figcaption,.question-diagram details{font-size:13px;line-height:1.7;margin-top:8px}.question-diagram details p{overflow-wrap:anywhere}
 .static-host #account-screen{display:none!important}
 .view-tabs{flex-wrap:wrap}
 .landing-screen{padding:42px 18px 60px;max-width:1200px;margin:0 auto}

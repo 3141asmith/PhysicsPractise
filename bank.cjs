@@ -11,7 +11,7 @@ function loadBank(seed) {
       return discrete.includes(key) ? 1+hash%10 : 1+(hash%7201)/800;
     }
   });
-  for (const file of ['questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js']) {
+  for (const file of ['questions.js','extra-calculations.js','extra-explanations.js','practical-questions.js','diagram-questions.js']) {
     vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),context,{timeout:5000,filename:file});
   }
   const bank = vm.runInContext('({topics:TOPICS,questions:QUESTIONS})',context);

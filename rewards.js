@@ -8,6 +8,11 @@ const Rewards = (() => {
     const data = JSON.parse(localStorage.getItem(key) || 'null') || empty();
     if (!Number.isSafeInteger(data.coins) || data.coins < 0 || !Number.isSafeInteger(data.credits) || data.credits < 0 || !data.completed || !data.hints) throw new Error('The saved coin balance could not be read.');
     for(const token of ['renameTokens','reclassTokens']){data[token]??=0;if(!Number.isSafeInteger(data[token])||data[token]<0)throw new Error('Invalid pet token balance.');}
+    // Retire the temporary preview without changing earned balances or ownership.
+    data.petSettings={...data.petSettings,freeEdits:false};
+    if(data.pet)delete data.pet.stageOverride;
+    for(const slot of Object.keys(data.petOutfit||{}))if(!(data.petCosmetics?.[data.petOutfit[slot]]>0))delete data.petOutfit[slot];
+    if(!(data.petScarves>0))data.petScarfEquipped=false;
     return data;
   }
   function save(data) { localStorage.setItem(key, JSON.stringify(data)); update(data); }
@@ -140,6 +145,7 @@ const Rewards = (() => {
   }
   async function savePetSettings(settings){
     if(!key)throw new Error('Open your course first.');
+    if(settings.freeEdits===true)throw new Error('Free pet changes are disabled.');
     await locked(()=>{const data=read();data.petSettings={freeEdits:settings.freeEdits===true};if(!data.petSettings.freeEdits){if(data.pet)delete data.pet.stageOverride;for(const slot of Object.keys(data.petOutfit||{}))if(!(data.petCosmetics?.[data.petOutfit[slot]]>0))delete data.petOutfit[slot];if(!(data.petScarves>0))data.petScarfEquipped=false;}save(data);});
   }
   async function buyPetToken(kind){
