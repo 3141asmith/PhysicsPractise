@@ -11,6 +11,21 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base+'/gcse.html');await page.locator('#gcse-question-list .question-link').first().waitFor();
   assert.equal(await page.locator('#gcse-question-list .question-link').count(),800);
+  for(const [type,count] of [['numeric',455],['written',265],['graph-numeric',40],['graph-written',40]]){
+    await page.selectOption('#gcse-type',type);
+    assert.equal(await page.locator('#gcse-question-list .question-link').count(),count);
+  }
+  await page.reload();await page.locator('#gcse-type').waitFor();
+  assert.equal(await page.locator('#gcse-type').inputValue(),'graph-written');
+  await page.locator('#gcse-clear').click();
+  await page.locator('#gcse-search').fill('graph numeric');
+  // Text search also finds five numerical tasks that discuss a graph in the prompt.
+  assert.equal(await page.locator('#gcse-question-list .question-link').count(),45);
+  await page.locator('#gcse-search').fill('written explanation');
+  assert.equal(await page.locator('#gcse-question-list .question-link').count(),305);
+  await page.locator('#gcse-search').fill('graph written energy');
+  assert.equal(await page.locator('#gcse-question-list .question-link').count(),5);
+  await page.locator('#gcse-clear').click();
   await page.locator('[data-question="gcse-5-wave-period-read-1"]').click();
   assert.ok((await page.locator('#gcse-question').innerText()).includes('Standard'));
   await page.locator('#gcse-question svg[role="img"]').waitFor();

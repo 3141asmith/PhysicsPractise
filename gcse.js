@@ -81,8 +81,14 @@ const GCSEPractice = (() => {
   }
   const api=(url,body)=>Rewards.perform(url,body,()=>request(url,body),()=>request('/api/questions'));
   function eligible(q){return ($('gcse-course').value==='physics'||!q.physicsOnly)&&($('gcse-tier').value==='higher'||!q.higher)&&($('gcse-paper').value==='all'||Number($('gcse-paper').value)===q.paper);}
-  function matches(q){return eligible(q)&&(topic==='all'||q.topic===Number(topic))&&(!$('gcse-unfinished').checked||!progress[q.id]?.mastered)&&(q.title+' '+q.prompt+' '+topics[q.topic]).toLowerCase().includes($('gcse-search').value.trim().toLowerCase());}
-  const tags=q=>`<span class="gcse-tag">Paper ${q.paper}</span><span class="gcse-tag">${esc(q.difficulty)}</span><span class="gcse-tag ${q.physicsOnly?'extra':''}">${q.physicsOnly?'Physics only':'Both courses'}</span><span class="gcse-tag ${q.higher?'higher':''}">${q.higher?'Higher only':'Foundation & Higher'}</span>`;
+  const questionType=q=>(q.diagram?'Graph ':'')+(q.type==='numeric'?'calculation':'written explanation');
+  const typeKey=q=>(q.diagram?'graph-':'')+q.type;
+  function matches(q){
+    const searchText=[q.title,q.prompt,topics[q.topic],questionType(q),q.type,q.difficulty].join(' ').toLowerCase();
+    const terms=$('gcse-search').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return eligible(q)&&(topic==='all'||q.topic===Number(topic))&&($('gcse-type').value==='all'||$('gcse-type').value===typeKey(q))&&(!$('gcse-unfinished').checked||!progress[q.id]?.mastered)&&terms.every(term=>searchText.includes(term));
+  }
+  const tags=q=>`<span class="gcse-tag">${esc(questionType(q))}</span><span class="gcse-tag">Paper ${q.paper}</span><span class="gcse-tag">${esc(q.difficulty)}</span><span class="gcse-tag ${q.physicsOnly?'extra':''}">${q.physicsOnly?'Physics only':'Both courses'}</span><span class="gcse-tag ${q.higher?'higher':''}">${q.higher?'Higher only':'Foundation & Higher'}</span>`;
   const topicStats=pool=>'<small class="topic-stats"><span>'+pool.length+' questions</span><span>'+pool.filter(q=>progress[q.id]?.mastered).length+' correct</span></small>';
   function sidebar(){
     const pool=questions.filter(eligible);
@@ -93,7 +99,7 @@ const GCSEPractice = (() => {
   }
   function locationState(){
     const url=new URL(location.href);
-    for(const name of ['course','tier','paper'])url.searchParams.set(name,$('gcse-'+name).value);
+    for(const name of ['course','tier','paper','type'])url.searchParams.set(name,$('gcse-'+name).value);
     url.searchParams.set('topic',topic);
     if(selected)url.searchParams.set('question',selected);else url.searchParams.delete('question');
     try{history.replaceState(null,'',url);}catch{}
@@ -149,16 +155,17 @@ const GCSEPractice = (() => {
       }
     }catch{}
     const params=new URLSearchParams(location.search);
-    for(const name of ['course','tier','paper']){const control=$('gcse-'+name);if([...control.options].some(o=>o.value===params.get(name)))control.value=params.get(name);}
+    for(const name of ['course','tier','paper','type']){const control=$('gcse-'+name);if([...control.options].some(o=>o.value===params.get(name)))control.value=params.get(name);}
     topic=/^[0-7]$/.test(params.get('topic'))?params.get('topic'):'all';selected=params.get('question');
     try{progress=(await api('/api/questions')).progress;}catch(error){showError(error);}
     if(topic!=='all'&&!questions.some(q=>q.topic===Number(topic)&&eligible(q)))topic='all';
     $('gcse-topic-nav').onclick=event=>{const button=event.target.closest('[data-topic]');if(button){topic=button.dataset.topic;selected=null;render();}};
     $('gcse-question-list').onclick=event=>{const button=event.target.closest('[data-question]');if(button){selected=button.dataset.question;render();$('gcse-answer').focus();}};
     for(const name of ['course','tier','paper'])$('gcse-'+name).onchange=()=>{topic='all';selected=null;render();};
+    $('gcse-type').onchange=()=>{selected=null;render();};
     $('gcse-search').oninput=()=>{selected=null;render();};$('gcse-unfinished').onchange=()=>{selected=null;render();};
     $('gcse-back').onclick=()=>{selected=null;render();};
-    $('gcse-clear').onclick=()=>{topic='all';selected=null;$('gcse-search').value='';$('gcse-unfinished').checked=false;$('gcse-paper').value='all';render();};
+    $('gcse-clear').onclick=()=>{topic='all';selected=null;$('gcse-search').value='';$('gcse-unfinished').checked=false;$('gcse-paper').value='all';$('gcse-type').value='all';render();};
     window.addEventListener('storage',event=>{if(event.key===storageKey&&!busy){try{progress=read();render();}catch(error){showError(error);}}});
     render();
   });
