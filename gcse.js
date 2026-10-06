@@ -82,7 +82,7 @@ const GCSEPractice = (() => {
   const api=(url,body)=>Rewards.perform(url,body,()=>request(url,body),()=>request('/api/questions'));
   function eligible(q){return ($('gcse-course').value==='physics'||!q.physicsOnly)&&($('gcse-tier').value==='higher'||!q.higher)&&($('gcse-paper').value==='all'||Number($('gcse-paper').value)===q.paper);}
   function matches(q){return eligible(q)&&(topic==='all'||q.topic===Number(topic))&&(!$('gcse-unfinished').checked||!progress[q.id]?.mastered)&&(q.title+' '+q.prompt+' '+topics[q.topic]).toLowerCase().includes($('gcse-search').value.trim().toLowerCase());}
-  const tags=q=>`<span class="gcse-tag">Paper ${q.paper}</span><span class="gcse-tag ${q.physicsOnly?'extra':''}">${q.physicsOnly?'Physics only':'Both courses'}</span><span class="gcse-tag ${q.higher?'higher':''}">${q.higher?'Higher only':'Foundation & Higher'}</span>`;
+  const tags=q=>`<span class="gcse-tag">Paper ${q.paper}</span><span class="gcse-tag">${esc(q.difficulty)}</span><span class="gcse-tag ${q.physicsOnly?'extra':''}">${q.physicsOnly?'Physics only':'Both courses'}</span><span class="gcse-tag ${q.higher?'higher':''}">${q.higher?'Higher only':'Foundation & Higher'}</span>`;
   const topicStats=pool=>'<small class="topic-stats"><span>'+pool.length+' questions</span><span>'+pool.filter(q=>progress[q.id]?.mastered).length+' correct</span></small>';
   function sidebar(){
     const pool=questions.filter(eligible);
@@ -111,7 +111,7 @@ const GCSEPractice = (() => {
   }
   function renderQuestion(q){
     const p=progress[q.id]||blank(),number=questions.filter(matches).findIndex(x=>x.id===q.id)+1;
-    $('gcse-question').innerHTML=`<article class="question-sheet"><div>${tags(q)}</div><h2>${esc(q.title)}</h2><p class="prompt">${esc(q.prompt)}</p>
+    $('gcse-question').innerHTML=`<article class="question-sheet"><div>${tags(q)}</div><h2>${esc(q.title)}</h2><p class="prompt">${esc(q.prompt)}</p>${QuestionDiagrams.render(q.diagram)}
       <form id="gcse-answer-form"><label class="answer-label" for="gcse-answer">${q.type==='numeric'?'Answer in '+esc(q.unit):'Your explanation'}</label>
       ${q.type==='numeric'?`<input id="gcse-answer" inputmode="decimal" autocomplete="off" maxlength="12000" value="${esc(p.draft)}">`:`<textarea id="gcse-answer" rows="5" maxlength="12000">${esc(p.draft)}</textarea>`}
       <p class="answer-help">${q.type==='numeric'?'Numerical answers allow 1.5% rounding tolerance. Enter the number without units.':'Written work is self-assessed against marking points; it is not automatically graded.'}</p>

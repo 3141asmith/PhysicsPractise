@@ -8,7 +8,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
  try{
   browser=await chromium.launch({executablePath:'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',headless:true});
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base+'/combined-science.html');await page.locator('a[href="gcse.html?course=combined#notes"]').click();
+  await page.goto(base+'/combined-science.html');await page.getByRole('link',{name:'Topic Notes',exact:true}).click();
   await page.locator('#notes-content .note-section').first().waitFor();
   assert.equal(await page.locator('#gcse-practice-view').isVisible(),false);
   assert.equal(await page.locator('#notes-course').inputValue(),'combined');
