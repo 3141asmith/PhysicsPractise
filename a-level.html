@@ -70,6 +70,7 @@
     </form>
     <p id="server-help" class="answer-help" hidden>Open the running app: <a id="local-app-link" href="http://127.0.0.1:3001/a-level.html">http://127.0.0.1:3001/a-level.html</a>. If it is unavailable, run start.ps1 with PORT set to 3001.</p>
     <button id="skip-login" type="button" class="secondary">Skip for now</button>
+    <p><a href="practicals.html">Browse required practicals without signing in</a></p>
   </div>
 </section>
 <section id="landing-screen" class="landing-screen" hidden>
@@ -88,6 +89,7 @@
     <div class="landing-actions">
       <button type="button" class="primary" data-landing="practice">Start questions</button>
       <button type="button" class="secondary" data-landing="notes">Browse topic notes</button>
+      <a class="secondary" href="practicals.html">Explore the 12 required practicals</a>
       <button type="button" class="secondary" data-landing="challenge">Try challenge mode</button>
     </div>
     <div class="landing-metrics" aria-label="Study statistics">
@@ -134,7 +136,7 @@
   </div>
 </section>
 <div id="school-screen" hidden>
-  <nav class="view-tabs" aria-label="Study views"><button data-view="practice" aria-current="page">Questions</button><button data-view="notes">Topic notes</button><button data-view="challenge">Challenge mode</button><button data-view="gradebook" id="gradebook-tab" hidden>Gradebook</button></nav>
+  <nav class="view-tabs" aria-label="Study views"><button data-view="practice" aria-current="page">Questions</button><button data-view="notes">Topic notes</button><a href="practicals.html" class="secondary">Required practicals</a><button data-view="challenge">Challenge mode</button><button data-view="gradebook" id="gradebook-tab" hidden>Gradebook</button></nav>
   <div class="layout">
     <aside aria-label="Topic filters"><div class="section-label">AQA A LEVEL &middot; 7408</div><h2>Topics</h2><nav id="topics" aria-label="Physics topics"></nav><div class="aside-note">Independent practice resource.<br>Original questions, not official AQA papers.</div></aside>
     <main>

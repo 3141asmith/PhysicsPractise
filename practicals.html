@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Required practicals | Physics Forge</title>
+  <meta name="description" content="Study all 12 AQA A Level Physics required practicals: theory, illustrated methods, exemplar data, uncertainty and exam-style questions.">
+  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="practicals.css">
+  <script defer src="home.js?v=5"></script>
+  <script defer src="practicals-data.js"></script>
+  <script defer src="practicals.js"></script>
+</head>
+<body>
+<header>
+  <a class="brand" href="./"><span class="brand-symbol" aria-hidden="true">PF</span><span>Physics Forge</span></a>
+  <div class="header-actions">
+    <a class="secondary" href="a-level.html">A Level study space</a>
+    <div class="theme-picker"><button id="theme-palette-button" type="button" class="secondary" aria-expanded="false">Colour palette</button><div id="theme-palette-menu" class="theme-palette-menu" role="menu" hidden><button class="palette-option" data-palette="forge" role="menuitemradio" aria-checked="true">Forge</button><button class="palette-option" data-palette="amber" role="menuitemradio" aria-checked="false">Amber</button><button class="palette-option" data-palette="ocean" role="menuitemradio" aria-checked="false">Ocean</button><button class="palette-option" data-palette="violet" role="menuitemradio" aria-checked="false">Violet</button></div></div>
+    <button id="theme-toggle" data-text-label="true" type="button" class="secondary">Dark mode</button>
+  </div>
+</header>
+<main class="practicals-shell">
+  <div class="section-label">AQA A LEVEL PHYSICS · 7408</div>
+  <h1>Required practicals</h1>
+  <p class="practicals-intro">Understand the physics, plan the experiment and practise interpreting the results. Explore all 12 activities, from your first measurement to an exam-ready explanation.</p>
+  <p class="practicals-source">Original teaching material and exam-style questions, not official AQA questions. Data are illustrative, not laboratory measurements. Activity coverage follows the <a href="https://www.aqa.org.uk/subjects/physics/a-level/physics-7408/specification/practical-assessment">AQA practical specification</a>. Use your teacher’s approved apparatus and risk assessment for laboratory work.</p>
+  <div class="practicals-layout">
+    <aside class="practicals-nav" aria-label="Choose a required practical">
+      <label for="practical-search">Find a practical</label>
+      <input type="search" id="practical-search" placeholder="Search title, topic or number">
+      <p id="practical-count" role="status"></p>
+      <nav id="practical-list" aria-label="The 12 required practicals"></nav>
+    </aside>
+    <article id="practical-content" aria-labelledby="practical-title"></article>
+  </div>
+  <noscript><p>Enable JavaScript to browse the practical guides and practice questions.</p></noscript>
+</main>
+</body>
+</html>

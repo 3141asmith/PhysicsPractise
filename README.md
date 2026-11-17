@@ -1,5 +1,11 @@
 # Physics Practice
 
+## Required practicals
+
+Open `practicals.html` from the A Level navigation, landing page or sign-in screen. The searchable section covers all 12 AQA 7408 required activities, including both interference methods, both SHM systems, both gas laws and all three magnetic-force variables. Each guide includes theory, an accessible SVG apparatus diagram, detailed method, controls and safety, illustrative data, worked analysis, uncertainty and three original exam-style questions with revealable marking points. Written responses are self-assessed and remain only while that guide is open. These guides work without an account and are included in the static/mobile asset build.
+
+Run `node tests/practicals-browser-tests.cjs` for all-guide navigation, content, answer reveal, section-link answer retention, search, deep-link reload, theme, browser history and mobile overflow checks.
+
 ## Course coins and hint shops
 
 Course pages include a browser-local **digital pet** in the bottom-right corner. Click it to open the pet room with an enlarged animated creature, level, EXP, health, mastered-question count and evolution journey. Each unique completion in the course wallet counts for 10 EXP, including previously recorded completions. The same completion ledger handles practice, challenge and written self-assessment, so replaying questions or spending coins cannot farm or remove EXP. A Level account wallets and the GCSE browser wallet produce separate pets. No additional server or storage is required; clearing the wallet resets its pet.
