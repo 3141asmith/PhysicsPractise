@@ -3,6 +3,10 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
+    "mobile:prepare": "node tools/build-mobile.cjs",
+    "mobile:sync": "npm run mobile:prepare && cap sync",
+    "mobile:android": "npm run mobile:sync && cap open android",
+    "mobile:ios": "npm run mobile:sync && cap open ios",
     "start": "node --env-file-if-exists=.env server.cjs",
     "test": "node --test --test-isolation=none tests/server.test.cjs tests/microsoft.test.cjs tests/challenge.test.cjs tests/gcse-bank.test.cjs tests/gcse-notes.test.cjs",
     "test:gcse": "node tests/gcse-browser-tests.cjs && node tests/gcse-challenge-browser-tests.cjs && node tests/gcse-notes-browser-tests.cjs",
@@ -17,6 +21,13 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
     "openid-client": "^6.8.8"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2"
   }
 }

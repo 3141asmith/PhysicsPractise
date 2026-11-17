@@ -6,6 +6,10 @@ Open `practicals.html` from the A Level navigation, landing page or sign-in scre
 
 Run `node tests/practicals-browser-tests.cjs` for all-guide navigation, content, answer reveal, section-link answer retention, search, deep-link reload, theme, browser history and mobile overflow checks.
 
+## Mobile App
+
+Android and iOS Capacitor projects are available under `mobile/`. The Android test APK is built to `artifacts/mobile/Physics-Forge-debug.apk`. This is an offline/local-progress version of the public site, not a school-account client. iOS compilation and signing require a Mac and Xcode. See [mobile build and installation instructions](mobile/README.md).
+
 ## Course coins and hint shops
 
 Course pages include a browser-local **digital pet** in the bottom-right corner. Click it to open the pet room with an enlarged animated creature, level, EXP, health, mastered-question count and evolution journey. Each unique completion in the course wallet counts for 10 EXP, including previously recorded completions. The same completion ledger handles practice, challenge and written self-assessment, so replaying questions or spending coins cannot farm or remove EXP. A Level account wallets and the GCSE browser wallet produce separate pets. No additional server or storage is required; clearing the wallet resets its pet.

@@ -1,5 +1,14 @@
 .browser-*/
 artifacts/
+mobile/www/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/**/build/
+mobile/ios/App/Pods/
+mobile/ios/App/App/public/
+mobile/ios/DerivedData/
+*.keystore
+*.jks
 test-output.txt
 bank-output.txt
 browser-log.txt

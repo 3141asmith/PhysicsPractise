@@ -1,0 +1,7 @@
+{
+  "appId": "uk.co.physicsforge.app",
+  "appName": "Physics Forge",
+  "webDir": "mobile/www",
+  "android": { "path": "mobile/android" },
+  "ios": { "path": "mobile/ios" }
+}

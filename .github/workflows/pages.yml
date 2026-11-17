@@ -27,10 +27,16 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Prepare public files only
+        run: node tools/build-mobile.cjs --web
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: artifacts/site
       - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@v4
