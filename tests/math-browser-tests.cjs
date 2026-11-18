@@ -15,6 +15,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
    assert.ok(await page.locator(`#rp-${id}-theory .katex-display`).count()>0);
    assert.ok(await page.locator(`#rp-${id}-data .katex-display`).count()>0);
    assert.equal(await page.locator('.katex-error').count(),0);
+   assert.equal(await page.locator('.practical-section .katex').evaluateAll(nodes=>nodes.some(node=>['auto','scroll'].includes(getComputedStyle(node).overflowX)||['auto','scroll'].includes(getComputedStyle(node).overflowY))),false,`RP ${id}: nested maths scrollbar`);
+   assert.equal(await page.locator('.practical-section .katex-display').evaluateAll(nodes=>nodes.some(node=>node.scrollWidth>node.clientWidth+1)),false,`RP ${id}: unnecessary desktop equation scrollbar`);
   }
   await page.goto(base+'/practicals.html#rp-9-theory');
   await page.locator('#rp-9-theory').screenshot({path:path.join(out,'capacitor-theory.png')});

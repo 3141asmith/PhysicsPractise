@@ -64,3 +64,8 @@
 @media(max-width:500px){.diagram-toolbar{padding:10px 12px}.practical-diagram figcaption{padding:12px}.diagram-text{padding:6px 12px 12px}.diagram-dialog{padding:12px}.diagram-dialog-heading{gap:12px}}
 .practical-diagram figcaption .diagram-mobile-help{display:none}@media(max-width:700px){.practical-diagram figcaption .diagram-mobile-help{display:block;color:var(--diagram-blue)}}
 .practical-table-wrap{position:relative}
+/* Only the outer display equation may scroll. Giving each KaTeX span its own
+   scroll container creates bars around ordinary fractions and superscripts. */
+.practical-section .katex{display:inline;position:relative;max-width:none;overflow:visible;padding:0;vertical-align:baseline}
+.practical-section .katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:8px 2px}
+.practical-section .katex-display>.katex{display:block;width:max-content;min-width:100%;max-width:none;overflow:visible;padding:2px 0}
