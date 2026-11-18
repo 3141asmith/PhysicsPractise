@@ -3,7 +3,7 @@ const path=require('node:path');
 const root=path.resolve(__dirname,'..'),web=process.argv.includes('--web');
 const relative=web?path.join('artifacts','site'):path.join('mobile','www'),out=path.join(root,relative);
 // Explicit public asset list: never package accounts, environment files or server code.
-const files=['practicals.html','practicals.css','practicals.js','practicals-data.js','index.html','a-level.html','combined-science.html','gcse.html','gcse-biology.html','gcse-chemistry.html',
+const files=['practicals-diagrams.js','practicals.html','practicals.css','practicals.js','practicals-data.js','index.html','a-level.html','combined-science.html','gcse.html','gcse-biology.html','gcse-chemistry.html',
  'style.css','courses.css','pet.css','home.js','math-format.js','notes.js','notes-view.js','question-random.js','questions.js',
  'extra-calculations.js','extra-explanations.js','practical-questions.js','diagram-questions.js','question-diagrams.js','static-bank.js',
  'pet-cosmetics.js','pet.js','rewards.js','app.js','challenge.js','school.js','gcse.js','gcse-bank.js','gcse-challenge.js',

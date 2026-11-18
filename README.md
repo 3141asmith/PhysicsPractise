@@ -2,9 +2,9 @@
 
 ## Required practicals
 
-Open `practicals.html` from the A Level navigation, landing page or sign-in screen. The searchable section covers all 12 AQA 7408 required activities, including both interference methods, both SHM systems, both gas laws and all three magnetic-force variables. Each guide includes theory, an accessible SVG apparatus diagram, detailed method, controls and safety, illustrative data, worked analysis, uncertainty and three original exam-style questions with revealable marking points. Written responses are self-assessed and remain only while that guide is open. These guides work without an account and are included in the static/mobile asset build.
+Open `practicals.html` from the A Level navigation, landing page or sign-in screen. The searchable section covers all 12 AQA 7408 required activities, including both interference methods, both SHM systems, both gas laws and all three magnetic-force variables. Each guide includes theory, accessible SVG apparatus diagrams, detailed method, controls and safety, illustrative data, worked analysis, uncertainty and three original exam-style questions with revealable marking points. Written responses are self-assessed and remain only while that guide is open. The 17 apparatus figures separate multi-part setups, use explicit measurement references and circuit connections, and include enlargement controls and full text descriptions. On small screens, figures scroll horizontally to keep labels legible. These guides work without an account and are included in the static/mobile asset build.
 
-Run `node tests/practicals-browser-tests.cjs` for all-guide navigation, content, answer reveal, section-link answer retention, search, deep-link reload, theme, browser history and mobile overflow checks.
+Run `node tests/practicals-browser-tests.cjs` for all-guide navigation, diagram label bounds and overlaps, accessible descriptions, enlargement, answer reveal, section-link answer retention, search, deep-link reload, theme, browser history and mobile overflow checks. Add `--screenshots` to save diagram previews under `artifacts/practical-diagrams/`.
 
 ## Mobile App
 

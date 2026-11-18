@@ -1,3 +1,65 @@
 .practicals-shell{max-width:1440px;margin:auto;padding:40px 32px}.practicals-intro{max-width:800px;font-size:18px;line-height:1.7}.practicals-source{max-width:950px;font-size:13px;line-height:1.7;color:var(--muted,#60736c)}.practicals-shell a{color:var(--green)}.practicals-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:32px;margin-top:32px}.practicals-nav{position:sticky;top:16px;padding:18px;border:1px solid var(--line);border-radius:12px;max-height:calc(100vh - 32px);overflow:auto}.practicals-nav input{width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--paper,#fff);color:inherit}.practicals-nav label{display:block;margin-bottom:8px;font-weight:600}.practicals-nav p{font-size:12px}.practicals-nav nav{display:grid;gap:6px}.practicals-nav a{display:flex;gap:10px;align-items:baseline;text-decoration:none;padding:11px 9px;border-radius:6px;font-size:14px;line-height:1.4}.practicals-nav a[aria-current=page]{background:var(--green);color:white}.practicals-nav a span{font-size:11px;opacity:.8;white-space:nowrap}.practical-heading{padding:24px;background:var(--paper,#fff);border:1px solid var(--line);border-radius:12px}.practical-heading h2{font-size:30px;margin:10px 0 18px;line-height:1.2}.practical-jumps{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13px}.practical-section{scroll-margin-top:20px;margin:22px 0;padding:26px;border:1px solid var(--line);border-radius:12px;background:var(--paper,#fff);line-height:1.8}.practical-section h3{font-size:22px;margin:0 0 16px}.practical-section h4{margin:22px 0 6px}.practical-section li{margin:0 0 14px;padding-left:5px}.practical-section ol{padding-left:22px}.practical-callout{border-left:3px solid var(--green);padding:12px 18px;margin:18px 0;background:var(--bg,#f4f7f5)}.practical-diagram{margin:22px 0}.practical-diagram svg{display:block;width:100%;height:auto;background:var(--bg,#f4f7f5);border-radius:8px;color:inherit}.practical-diagram svg path,.practical-diagram svg rect,.practical-diagram svg circle,.practical-diagram svg ellipse{stroke:currentColor;stroke-width:2;fill:none}.practical-diagram svg text{fill:currentColor;font:16px Arial,sans-serif}.practical-diagram figcaption{font-size:13px;margin-top:8px}.practical-table-wrap{max-width:100%;overflow:auto;margin:20px 0}.practical-section table{border-collapse:collapse;width:100%;font-size:14px}.practical-section caption{text-align:left;font-weight:600;margin-bottom:10px;line-height:1.5}.practical-section th,.practical-section td{text-align:left;border-bottom:1px solid var(--line);padding:10px 12px;min-width:90px}.practical-question{border-top:1px solid var(--line);padding-top:16px;margin-top:22px}.practical-question label{display:block;font-weight:600}.practical-question textarea{margin:12px 0;background:var(--bg,#f4f7f5);color:inherit}.practical-question summary{cursor:pointer;font-weight:600;color:var(--green);padding:10px 0}.practical-question details p{padding:14px;border-left:3px solid var(--green);background:var(--bg,#f4f7f5)}.practical-question small{display:block;color:var(--muted,#60736c)}.practical-pager{display:flex;justify-content:space-between;gap:18px;margin:24px 0}.practical-pager a{line-height:1.5}.practical-section a:focus-visible,.practicals-nav a:focus-visible,summary:focus-visible{outline:3px solid var(--green);outline-offset:3px}[data-theme=dark] .practical-heading,[data-theme=dark] .practical-section,[data-theme=dark] .practicals-nav input{background:#192823}[data-theme=dark] .practical-callout,[data-theme=dark] .practical-question textarea,[data-theme=dark] .practical-question details p,[data-theme=dark] .practical-diagram svg{background:#14201c}[data-theme=dark] .practicals-source,[data-theme=dark] .practical-question small{color:#b2c5bb}@media(max-width:850px){.practicals-layout{grid-template-columns:1fr}.practicals-nav{position:static;max-height:none}.practicals-nav nav{grid-template-columns:repeat(2,minmax(0,1fr))}.practicals-shell{padding:28px 18px}}@media(max-width:500px){.practicals-nav nav{grid-template-columns:1fr}.practical-section,.practical-heading{padding:18px}.practical-heading h2{font-size:25px}.practical-pager{flex-direction:column}header{height:auto;min-height:72px;flex-wrap:wrap;gap:12px;padding:16px}.header-actions{flex-wrap:wrap}}
 
 #practical-content{min-width:0;overflow-wrap:anywhere}.practicals-nav{min-width:0}.practicals-shell{width:100%;box-sizing:border-box}
+
+/* Diagrams retain readable type on phones; their own viewport scrolls rather
+   than shrinking the labels or overflowing the page. */
+.practical-diagram{--diagram-ink:#213f4a;--diagram-muted:#607884;--diagram-blue:#146cb0;--diagram-orange:#b64d12;--diagram-paper:#fbfdff;--diagram-soft:#edf3f7;--diagram-line:#c9d7df;margin:28px 0;border:1px solid var(--diagram-line);border-radius:12px;overflow:hidden;background:var(--diagram-paper);color:var(--diagram-ink)}
+.diagram-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid var(--diagram-line);background:var(--diagram-soft)}
+.diagram-toolbar>span{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--diagram-muted)}
+.diagram-toolbar button{font-size:12px;padding:7px 12px}
+.diagram-scroll{overflow:auto;max-width:100%;overscroll-behavior-x:contain}
+.practical-diagram svg{width:100%;min-width:640px;max-width:none;display:block;background:var(--diagram-paper);border-radius:0;color:var(--diagram-ink)}
+.practical-diagram svg text{font:17px Arial,sans-serif;fill:var(--diagram-ink)}
+.practical-diagram svg .small{font-size:15px}
+.practical-diagram svg .eyebrow{font-size:12px;font-weight:700;letter-spacing:1.6px;fill:var(--diagram-muted)}
+.practical-diagram svg .diagram-title{font-size:21px;font-weight:700}
+.practical-diagram svg .measure-label{font-size:18px;font-style:italic;font-weight:600;fill:var(--diagram-blue)}
+.practical-diagram svg .meter-label,.practical-diagram svg .pole-label{font-size:22px;font-weight:700}
+.practical-diagram svg path,.practical-diagram svg rect,.practical-diagram svg circle,.practical-diagram svg ellipse{stroke:var(--diagram-ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;fill:none}
+.practical-diagram svg .equipment,.practical-diagram svg .meter,.practical-diagram svg .component{fill:var(--diagram-paper)}
+.practical-diagram svg .equipment{fill:var(--diagram-soft)}
+.practical-diagram svg .wire,.practical-diagram svg .string{stroke-width:2.5}
+.practical-diagram svg .support{stroke-width:4}
+.practical-diagram svg .mass,.practical-diagram svg .piston{fill:#c9d7df}
+.practical-diagram svg .wave,.practical-diagram svg .test-wire,.practical-diagram svg .coil,.practical-diagram svg .spring{stroke:var(--diagram-blue);stroke-width:3.5}
+.practical-diagram svg .ghost-wave{stroke:var(--diagram-blue);stroke-dasharray:6 6;opacity:.55}
+.practical-diagram svg .reference,.practical-diagram svg .ghost,.practical-diagram svg .cell-boundary,.practical-diagram svg .normal{stroke:var(--diagram-muted);stroke-dasharray:5 6;stroke-width:1.5}
+.practical-diagram svg .normal{stroke:var(--diagram-orange);stroke-width:2}
+.practical-diagram svg .leader,.practical-diagram svg .fine{stroke:var(--diagram-muted);stroke-width:1.2}
+.practical-diagram svg .measurement,.practical-diagram svg .direction,.practical-diagram svg .current{stroke:var(--diagram-blue);stroke-width:1.8}
+.practical-diagram svg .ray,.practical-diagram svg .gamma{stroke:var(--diagram-orange);stroke-width:1.8}
+.practical-diagram svg .screen{stroke-width:4}
+.practical-diagram svg .fringe{stroke:var(--diagram-orange);stroke-width:5}
+.practical-diagram svg .bright-dot,.practical-diagram svg .source{fill:var(--diagram-orange);stroke:var(--diagram-orange)}
+.practical-diagram svg .junction{fill:var(--diagram-ink);stroke:none}
+.practical-diagram svg .terminal{fill:var(--diagram-paper)}
+.practical-diagram svg .ruler,.practical-diagram svg .note-box{fill:var(--diagram-soft);stroke:var(--diagram-line);stroke-width:1}
+.practical-diagram svg .glass,.practical-diagram svg .tube{stroke:var(--diagram-blue);stroke-width:2.5}
+.practical-diagram svg .water,.practical-diagram svg .field-region{fill:#d9ecf6;fill-opacity:.5;stroke:none}
+.practical-diagram svg .oil{fill:#d99b35;stroke:#966916}
+.practical-diagram svg .thermometer{fill:var(--diagram-orange);stroke:var(--diagram-orange)}
+.practical-diagram svg .north{fill:#f5dfd9}.practical-diagram svg .south{fill:#d6e7f7}
+.practical-diagram svg .field{stroke:var(--diagram-blue);opacity:.7;stroke-width:1.7}
+.practical-diagram svg .force{stroke:var(--diagram-orange);stroke-width:2.5}
+.practical-diagram svg .wire-section{fill:var(--diagram-paper);stroke:var(--diagram-blue);stroke-width:2.5}
+.practical-diagram svg .display,.practical-diagram svg .scope-screen{fill:var(--diagram-paper);stroke:var(--diagram-muted)}
+.practical-diagram svg .drive-coil{fill:var(--diagram-soft);stroke:var(--diagram-muted)}
+.practical-diagram svg .signal,.practical-diagram svg .trace{stroke:var(--diagram-blue);stroke-width:2.3}
+.practical-diagram svg .scope-grid{stroke:var(--diagram-line);stroke-width:1}
+.practical-diagram figcaption{padding:14px 18px 6px;margin:0;font-size:14px;line-height:1.5}
+.practical-diagram figcaption strong,.practical-diagram figcaption span{display:block}
+.practical-diagram figcaption span{font-size:12px;color:var(--diagram-muted);margin-top:6px}
+.diagram-text{padding:6px 18px 14px;font-size:13px;line-height:1.7}
+.diagram-text summary{cursor:pointer;color:var(--diagram-blue)}
+.diagram-dialog{width:min(1200px,96vw);max-width:96vw;max-height:94vh;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--paper,#fff);color:inherit}
+.diagram-dialog::backdrop{background:#071823bb}
+.diagram-dialog-heading{display:flex;justify-content:space-between;align-items:start;gap:24px}.diagram-dialog-heading h2{font-size:20px;line-height:1.4;margin:0}.diagram-dialog-heading button{flex-shrink:0}.diagram-dialog .practical-diagram{margin:18px 0 0}
+[data-theme=dark] .practical-diagram{--diagram-ink:#e2eaf1;--diagram-muted:#a2b6c5;--diagram-blue:#7ac9ff;--diagram-orange:#ffb27e;--diagram-paper:#14232e;--diagram-soft:#203442;--diagram-line:#3a5261}
+[data-theme=dark] .practical-diagram svg{background:var(--diagram-paper)}
+[data-theme=dark] .practical-diagram svg .mass,[data-theme=dark] .practical-diagram svg .piston{fill:#526a7c}
+[data-theme=dark] .practical-diagram svg .north{fill:#693f3b}[data-theme=dark] .practical-diagram svg .south{fill:#284f73}
+[data-theme=dark] .practical-diagram svg .water,[data-theme=dark] .practical-diagram svg .field-region{fill:#295e7b}
+[data-theme=dark] .diagram-dialog{background:#192823}
+@media(max-width:500px){.diagram-toolbar{padding:10px 12px}.practical-diagram figcaption{padding:12px}.diagram-text{padding:6px 12px 12px}.diagram-dialog{padding:12px}.diagram-dialog-heading{gap:12px}}
+.practical-diagram figcaption .diagram-mobile-help{display:none}@media(max-width:700px){.practical-diagram figcaption .diagram-mobile-help{display:block;color:var(--diagram-blue)}}
