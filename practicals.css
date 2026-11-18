@@ -63,3 +63,4 @@
 [data-theme=dark] .diagram-dialog{background:#192823}
 @media(max-width:500px){.diagram-toolbar{padding:10px 12px}.practical-diagram figcaption{padding:12px}.diagram-text{padding:6px 12px 12px}.diagram-dialog{padding:12px}.diagram-dialog-heading{gap:12px}}
 .practical-diagram figcaption .diagram-mobile-help{display:none}@media(max-width:700px){.practical-diagram figcaption .diagram-mobile-help{display:block;color:var(--diagram-blue)}}
+.practical-table-wrap{position:relative}

@@ -58,7 +58,7 @@ const NotesView=(()=>{
     if(!section.groups)return '';
     return '<p class="note-practical-source">'+esc(section.sourceReference)+'</p>'+section.groups.map(group=>{
       const tag=group.ordered?'ol':'ul';
-      return '<div class="note-practical-group"><h3>'+esc(group.title)+'</h3><'+tag+'>'+group.points.map(point=>'<li>'+PhysicsMath.format(point)+'</li>').join('')+'</'+tag+'></div>';
+      return '<div class="note-practical-group"><h3>'+esc(group.title)+'</h3><'+tag+'>'+group.points.map(point=>'<li>'+PhysicsMath.prose(point)+'</li>').join('')+'</'+tag+'></div>';
     }).join('');
   }
   function index(topics){
@@ -76,9 +76,9 @@ const NotesView=(()=>{
       const diffraction=topic===1&&section.title==='Energy levels and matter waves';
       const guide=practicalGuide(section)+(diffraction?'<figure class="note-diffraction"><h3>Electron diffraction: an interactive experiment</h3><p>Electron diffraction demonstrates wave behaviour. Try changing the wavelength and number of slits, then measure the path to compare the patterns. This ideal slit model illustrates matter-wave interference; the usual electron diffraction tube uses a crystal lattice.</p><iframe class="electron-diffraction-frame" src="assets/electron-diffraction/index.html?embedded" title="Interactive single-electron diffraction experiment" loading="lazy" style="display:block;width:100%;height:1200px;border:0;border-radius:12px"></iframe></figure>':'');
       const controls=visual&&visual.interactive==='capacitor'?'<div class="note-controls" data-capacitor-controls><div class="note-control-row"><label>Resistance <output data-cap-output="r">10 kΩ</output><input type="range" min="1" max="100" value="10" step="1" data-cap-input="r"></label><label>Capacitance <output data-cap-output="c">100 μF</output><input type="range" min="10" max="1000" value="100" step="10" data-cap-input="c"></label></div><div class="note-control-row note-control-actions"><span>Mode</span><div class="segmented"><button type="button" data-cap-mode="charge" aria-pressed="true">Charge</button><button type="button" data-cap-mode="discharge" aria-pressed="false">Discharge</button></div><strong data-cap-output="tau">τ = 1.00 s</strong></div></div>':'';
-      const fieldControls=visual&&visual.interactive==='field'?'<div class="note-controls" data-field-controls><label>Source mass <output data-field-output="mass">10 × 10²⁴ kg</output><input type="range" min="1" max="100" value="10" step="1" data-field-input="mass"></label><p class="answer-help">Newton&rsquo;s law: <span class="note-equation-inline">a = GM/r²</span>. Place the test mass in the field, then change the source mass to compare the motion.</p></div>':'';
-      const levelControls=visual&&visual.interactive==='levels'?'<div class="note-controls" data-level-controls><label>Energy difference <output data-level-output="gap">3.0 eV</output><input type="range" min="1" max="10" value="3" step="0.5" data-level-input="gap"></label><div class="note-control-row note-control-actions"><strong data-level-output="energy">Ephoton = 3.0 eV</strong><strong data-level-output="frequency">f = 7.25 × 10^14 Hz</strong></div></div>':'';
-      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.format(point)+'</div>').join('')+guide+(visual?'<figure class="note-figure '+(visual.interactive?'note-interactive':'')+'"><h3>'+esc(visual.title)+'</h3>'+controls+fieldControls+levelControls+'<canvas data-note-diagram="'+visual.kind+'"'+(visual.interactive?' data-note-interactive="'+visual.interactive+'"':'')+' role="img" aria-label="'+esc(visual.title+'. '+visual.caption)+'"></canvas><figcaption>'+esc(visual.caption)+'</figcaption></figure>':'')+'</div></section>';
+      const fieldControls=visual&&visual.interactive==='field'?'<div class="note-controls" data-field-controls><label>Source mass <output data-field-output="mass">10 × 10²⁴ kg</output><input type="range" min="1" max="100" value="10" step="1" data-field-input="mass"></label><p class="answer-help">Newton&rsquo;s law: <span class="note-equation-inline">'+PhysicsMath.format(String.raw`\(a=\frac{GM}{r^2}\)` )+'</span>. Place the test mass in the field, then change the source mass to compare the motion.</p></div>':'';
+      const levelControls=visual&&visual.interactive==='levels'?'<div class="note-controls" data-level-controls><label>Energy difference <output data-level-output="gap">3.0 eV</output><input type="range" min="1" max="10" value="3" step="0.5" data-level-input="gap"></label><div class="note-control-row note-control-actions"><strong data-level-output="energy">E_photon = 3.0 eV</strong><strong data-level-output="frequency">f = 7.25 × 10^14 Hz</strong></div></div>':'';
+      return '<section class="note-section '+(example?'note-example':'')+'" id="note-section-'+i+'"><div class="note-section-heading"><span class="note-number">'+String(i+1).padStart(2,'0')+'</span><h2>'+esc(section.title)+'</h2></div><div class="note-body">'+(section.reference?'<p class="note-reference">Specification '+esc(section.reference)+'</p>':'')+section.points.map(point=>'<div class="'+(point.startsWith('\\(')?'note-equation':'note-point')+'">'+PhysicsMath.prose(point)+'</div>').join('')+guide+(visual?'<figure class="note-figure '+(visual.interactive?'note-interactive':'')+'"><h3>'+esc(visual.title)+'</h3>'+controls+fieldControls+levelControls+'<canvas data-note-diagram="'+visual.kind+'"'+(visual.interactive?' data-note-interactive="'+visual.interactive+'"':'')+' role="img" aria-label="'+esc(visual.title+'. '+visual.caption)+'"></canvas><figcaption>'+esc(visual.caption)+'</figcaption></figure>':'')+'</div></section>';
     }).join('')+poster(topic,title)+'</div><details class="notes-source"><summary>Sources and further reading</summary><p>'+esc(note.source)+'</p></details>';
   }
   function draw(canvas,now=0){
@@ -186,12 +186,15 @@ const NotesView=(()=>{
     render(0);
   };
   function bindControls(){
+    document.querySelectorAll('[data-cap-output],[data-field-output],[data-level-output]').forEach(output=>{
+      output.innerHTML=PhysicsMath.format(output.textContent);
+    });
     document.querySelectorAll('[data-capacitor-controls]').forEach(controls=>{
       controls.querySelectorAll('[data-cap-input]').forEach(input=>input.oninput=()=>{
         const r=Number(controls.querySelector('[data-cap-input="r"]').value),c=Number(controls.querySelector('[data-cap-input="c"]').value);
-        controls.querySelector('[data-cap-output="r"]').textContent=r+' kΩ';
-        controls.querySelector('[data-cap-output="c"]').textContent=c+' μF';
-        controls.querySelector('[data-cap-output="tau"]').textContent='τ = '+(r*c/1000).toFixed(2)+' s';
+        controls.querySelector('[data-cap-output="r"]').innerHTML=PhysicsMath.format(r+' kΩ');
+        controls.querySelector('[data-cap-output="c"]').innerHTML=PhysicsMath.format(c+' μF');
+        controls.querySelector('[data-cap-output="tau"]').innerHTML=PhysicsMath.format('τ = '+(r*c/1000).toFixed(2)+' s');
         drawAll();
       });
       controls.querySelectorAll('[data-cap-mode]').forEach(button=>button.onclick=()=>{
@@ -202,7 +205,7 @@ const NotesView=(()=>{
     document.querySelectorAll('[data-field-controls]').forEach(controls=>{
       const input=controls.querySelector('[data-field-input="mass"]');
       input.oninput=()=>{
-        controls.querySelector('[data-field-output="mass"]').textContent=input.value+' × 10²⁴ kg';
+        controls.querySelector('[data-field-output="mass"]').innerHTML=PhysicsMath.format(input.value+' × 10²⁴ kg');
         drawAll();
       };
     });
@@ -210,9 +213,9 @@ const NotesView=(()=>{
       const input=controls.querySelector('[data-level-input="gap"]');
       input.oninput=()=>{
         const gap=Number(input.value),frequency=gap*1.602e-19/6.626e-34;
-        controls.querySelector('[data-level-output="gap"]').textContent=gap.toFixed(1)+' eV';
-        controls.querySelector('[data-level-output="energy"]').textContent='Ephoton = '+gap.toFixed(1)+' eV';
-        controls.querySelector('[data-level-output="frequency"]').textContent='f = '+(frequency/1e14).toFixed(2)+' × 10^14 Hz';
+        controls.querySelector('[data-level-output="gap"]').innerHTML=PhysicsMath.format(gap.toFixed(1)+' eV');
+        controls.querySelector('[data-level-output="energy"]').innerHTML=PhysicsMath.format('E_photon = '+gap.toFixed(1)+' eV');
+        controls.querySelector('[data-level-output="frequency"]').innerHTML=PhysicsMath.format('f = '+(frequency/1e14).toFixed(2)+' × 10^14 Hz');
         drawAll();
       };
     });

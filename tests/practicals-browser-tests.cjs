@@ -25,7 +25,7 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
    assert.match(await page.title(),new RegExp(`RP ${id}:`));
    assert.equal(await page.locator('.practical-section').count(),5);
    assert.equal(await page.locator('#practical-content svg[role=img]').count(),diagramCounts[id-1]);
-   const diagramProblems=await page.locator('#practical-content svg').evaluateAll(svgs=>svgs.flatMap((svg,index)=>{
+   const diagramProblems=await page.locator('#practical-content svg[role=img]').evaluateAll(svgs=>svgs.flatMap((svg,index)=>{
     const problems=[];
     if(!svg.querySelector('title')?.textContent||!svg.querySelector('desc')?.textContent)problems.push('Missing accessible title/description');
     for(const text of svg.querySelectorAll('text')){

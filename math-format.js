@@ -292,6 +292,78 @@ const PhysicsMath = (() => {
   formula('1 - T_cold/T_hot', S`1-\frac{T_c}{T_h}`);
   formula('E/B', S`\frac{E}{B}`);
 
+  // Exact Unicode notation used by the GCSE bank. Do not guess algebra from prose.
+  [
+    ['Eₖ = ½mv²',S`E_k=\frac12mv^2`],['ΔEₚ = mgΔh',S`\Delta E_p=mg\Delta h`],
+    ['Eₑ = ½ke²',S`E_e=\frac12ke^2`],['ΔE = mcΔθ',S`\Delta E=mc\Delta\theta`],
+    ['P = E/t = W/t',S`P=\frac{E}{t}=\frac{W}{t}`],
+    ['efficiency = useful energy output / total energy input',S`\text{efficiency}=\frac{\text{useful energy output}}{\text{total energy input}}`],
+    ['efficiency = useful power output / total power input',S`\text{efficiency}=\frac{\text{useful power output}}{\text{total power input}}`],
+    ['Rtotal = R₁ + R₂ + …',S`R_{\mathrm{total}}=R_1+R_2+\cdots`],
+    ['Itotal = I₁ + I₂ + …',S`I_{\mathrm{total}}=I_1+I_2+\cdots`],
+    ['P = I²R',S`P=I^2R`],['E = Pt',S`E=Pt`],['E = VIt',S`E=VIt`],
+    ['ρ = m/V',S`\rho=\frac{m}{V}`],['E = mL',S`E=mL`],
+    ['pV = constant',S`pV=\text{constant}`],['p₁V₁ = p₂V₂',S`p_1V_1=p_2V_2`],
+    ['remaining fraction = (½)ⁿ',S`\text{remaining fraction}=\left(\frac12\right)^n`],
+    ['n = elapsed time / half-life',S`n=\frac{\text{elapsed time}}{\text{half-life}}`],
+    ['W = Fs',S`W=Fs`],['F = ke',S`F=ke`],['M = Fd',S`M=Fd`],
+    ['p = F/A',S`p=\frac{F}{A}`],['p = hρg',S`p=h\rho g`],
+    ['speed = distance/time',S`\text{speed}=\frac{\text{distance}}{\text{time}}`],
+    ['a = (v − u)/t',S`a=\frac{v-u}{t}`],['v² − u² = 2as',S`v^2-u^2=2as`],
+    ['m = F/a',S`m=\frac{F}{a}`],
+    ['thinking distance = speed × reaction time',S`\text{thinking distance}=\text{speed}\times\text{reaction time}`],
+    ['F = Δp/Δt = mΔv/Δt',S`F=\frac{\Delta p}{\Delta t}=\frac{m\Delta v}{\Delta t}`],
+    ['v = fλ',S`v=f\lambda`],['T = 1/f',S`T=\frac{1}{f}`],
+    ['distance to reflector = wave speed × echo time / 2',S`\text{distance to reflector}=\frac{\text{wave speed}\times\text{echo time}}{2}`],
+    ['magnification = image height / object height',S`\text{magnification}=\frac{\text{image height}}{\text{object height}}`],
+    ['F = BIl',S`F=BIl`],['Vₚ/Vₛ = Nₚ/Nₛ',S`\frac{V_p}{V_s}=\frac{N_p}{N_s}`],
+    ['VₚIₚ = VₛIₛ',S`V_pI_p=V_sI_s`],['c = E/(mΔθ)',S`c=\frac{E}{m\Delta\theta}`],
+    ['1 cm³ = 10⁻⁶ m³',S`1\,\mathrm{cm^3}=10^{-6}\,\mathrm{m^3}`],
+    ['1 g/cm³ = 1000 kg/m³',S`1\,\mathrm{g\,cm^{-3}}=1000\,\mathrm{kg\,m^{-3}}`],
+    ['Eₚ = mgh',S`E_p=mgh`],['P = E / t',S`P=\frac Et`],
+    ['Efficiency = useful output / total input × 100%',S`\text{efficiency}=\frac{\text{useful output}}{\text{total input}}\times100\%`],
+    ['R = V / I',S`R=\frac VI`],['Rtotal = R₁ + R₂',S`R_{\mathrm{total}}=R_1+R_2`],
+    ['ρ = m / V',S`\rho=\frac mV`],['m = ρV',S`m=\rho V`],
+    ['Displaced volume = final reading − initial reading',S`V_{\mathrm{displaced}}=V_{\mathrm{final}}-V_{\mathrm{initial}}`],
+    ['c = E / (mΔθ)',S`c=\frac E{m\Delta\theta}`],
+    ['Neutrons = mass number − atomic number',S`N=A-Z`],['Protons = mass number − neutron number',S`Z=A-N`],
+    ['For a neutral atom, electrons = protons',S`N_{\mathrm{electrons}}=N_{\mathrm{protons}}\quad\text{(neutral atom)}`],
+    ['Activity after n half-lives = initial activity / 2ⁿ',S`A_n=\frac{A_0}{2^n}`],
+    ['a = (v − u) / t',S`a=\frac{v-u}t`],['Moment = force × perpendicular distance',S`M=Fd_\perp`],
+    ['f = v / λ',S`f=\frac v\lambda`],['T = 1 / f',S`T=\frac1f`],
+    ['f = number of oscillations / time',S`f=\frac{\text{number of oscillations}}{\text{time}}`],
+    ['Magnification = image height / object height',S`\text{magnification}=\frac{\text{image height}}{\text{object height}}`],
+    ['Distance = wave speed × echo time / 2',S`d=\frac{vt_{\mathrm{echo}}}2`],
+    ['I = F / (Bl)',S`I=\frac F{Bl}`],['Vₛ / Vₚ = Nₛ / Nₚ',S`\frac{V_s}{V_p}=\frac{N_s}{N_p}`],
+    ['B = F / (Il)',S`B=\frac F{Il}`],['B = F/(Il)',S`B=\frac F{Il}`],
+    ['Distance = speed × time',S`d=vt`],
+    ['Increase = observed wavelength − reference wavelength',S`\Delta\lambda=\lambda_{\mathrm{observed}}-\lambda_{\mathrm{reference}}`],
+    ['Useful power = efficiency × input power',S`P_{\mathrm{useful}}=\eta P_{\mathrm{input}}`],
+    ['L = E / m',S`L=\frac Em`],['Density = mass / volume',S`\rho=\frac mV`],
+    ['Source count rate = measured rate − background rate',S`C_{\mathrm{source}}=C_{\mathrm{measured}}-C_{\mathrm{background}}`],
+    ['Remaining fraction = (1/2)^number of half-lives',S`\text{remaining fraction}=\left(\frac12\right)^n`],
+    ['Speed = distance / time',S`v=\frac dt`],['Stopping distance = thinking distance + braking distance',S`d_{\mathrm{stopping}}=d_{\mathrm{thinking}}+d_{\mathrm{braking}}`],
+    ['Wavelength = wave speed / frequency',S`\lambda=\frac vf`],['Time = distance / speed',S`t=\frac dv`],
+    ['l = F / (BI)',S`l=\frac F{BI}`],['Input power = output power = VI',S`P_{\mathrm{in}}=P_{\mathrm{out}}=VI`],
+    ['Power = change in energy / change in time',S`P=\frac{\Delta E}{\Delta t}`],['Resistance = V / I',S`R=\frac VI`],
+    ['frequency = 1 / period',S`f=\frac1T`],['P = mgh/t',S`P=\frac{mgh}t`],
+    ['Temperature rise = E/(mc)',S`\Delta T=\frac E{mc}`],['Input energy = mgh / efficiency',S`E_{\mathrm{in}}=\frac{mgh}\eta`],
+    ['t = mcΔθ / useful power',S`t=\frac{mc\Delta\theta}{P_{\mathrm{useful}}}`],
+    ['Total current = sum of branch currents',S`I_{\mathrm{total}}=\sum I_{\mathrm{branch}}`],
+    ['Supply voltage = sum of component voltages',S`V_{\mathrm{supply}}=\sum V_{\mathrm{component}}`],
+    ['E = (V²/R)t',S`E=\frac{V^2}R t`],['Q = E/V = Pt/V',S`Q=\frac EV=\frac{Pt}V`],
+    ['ρ = (filled mass − empty mass)/volume',S`\rho=\frac{m_{\mathrm{filled}}-m_{\mathrm{empty}}}V`],
+    ['V = m/ρ',S`V=\frac m\rho`],['t = mL/P',S`t=\frac{mL}P`],['E = mcΔθ + mL',S`E=mc\Delta\theta+mL`],
+    ['Counts = count rate × time',S`N=Ct`],['Electrons = proton number − positive charge number',S`N_{\mathrm{electrons}}=Z-z`],
+    ['Time = number of half-lives × half-life',S`t=nT_{1/2}`],['F = W/s',S`F=\frac Ws`],['k = F/e',S`k=\frac Fe`],
+    ['Displacement = average velocity × time',S`s=\bar v t`],['Total momentum before = total momentum after',S`\sum p_{\mathrm{before}}=\sum p_{\mathrm{after}}`],
+    ['Wavelength = measured distance / number of spacings',S`\lambda=\frac{\text{measured distance}}{\text{number of spacings}}`],
+    ['Distance to reflector = vt/2',S`d=\frac{vt}2`],['F is proportional to I for fixed B and l',S`F\propto I\quad\text{(fixed }B,l\text{)}`],
+    ['Vs = Vp Ns/Np; Is = Vs/R',S`V_s=V_p\frac{N_s}{N_p},\qquad I_s=\frac{V_s}R`],['VpIp = VsIs',S`V_pI_p=V_sI_s`],
+    ['Reference = observed wavelength − wavelength increase',S`\lambda_{\mathrm{reference}}=\lambda_{\mathrm{observed}}-\Delta\lambda`],
+    ['Average speed = distance / period',S`\bar v=\frac dT`],['Observed wavelength = reference + shift',S`\lambda_{\mathrm{observed}}=\lambda_{\mathrm{reference}}+\Delta\lambda`]
+  ].forEach(([plain,tex])=>formula(plain,tex));
+
   const units = {
     'ohm':S`\Omega`,'kilo-ohm':S`\mathrm{k}\Omega`,'microfarad':S`\mu\mathrm{F}`,'microseconds':S`\mu\mathrm{s}`,
     'degrees':S`{}^\circ`,'%':S`\%`,'counts':S`\mathrm{counts}`,
@@ -299,7 +371,10 @@ const PhysicsMath = (() => {
     'neutrons':S`\text{neutrons}`,'decimal':S`\text{decimal}`,'revolutions':S`\text{revolutions}`,'hours':S`\mathrm{h}`,'years':S`\mathrm{yr}`,'dioptres':S`\mathrm{D}`
   };
   const unitSymbols = ['kg','cm','mm','nm','km','mol','MeV','keV','eV','MW','MHz','kV','Wb','Hz','Bq','Pa','Mpc','pc','rad','min','m','s','N','J','C','V','A','W','K','T','u','F','dB'];
+  Object.assign(units,{'Ω':S`\Omega`,'kΩ':S`\mathrm{k}\Omega`,'μF':S`\mu\mathrm{F}`,'μs':S`\mu\mathrm{s}`,'°C':S`{}^\circ\mathrm{C}`,'m/s':S`\mathrm{m\,s^{-1}}`,'m/s²':S`\mathrm{m\,s^{-2}}`,'kg/m³':S`\mathrm{kg\,m^{-3}}`,'g/cm³':S`\mathrm{g\,cm^{-3}}`,'N/kg':S`\mathrm{N\,kg^{-1}}`,'N/m':S`\mathrm{N\,m^{-1}}`,'J/kg':S`\mathrm{J\,kg^{-1}}`,'J/kg °C':S`\mathrm{J\,kg^{-1}\,{}^\circ C^{-1}}`});
+  unitSymbols.push('g','kPa','mN','mT','kHz','μm');
   for (const symbol of unitSymbols) units[symbol]=S`\mathrm{${symbol}}`;
+  for(const symbol of ['m','s','kg','cm','mm','Hz','N','A','V','Ω','K'])for(const [power,tex] of [['²','2'],['³','3'],['⁻¹','-1'],['⁻²','-2'],['⁻³','-3'],['⁻⁴','-4']])units[symbol+power]=`${units[symbol]}^{${tex}}`;
   const escapePattern = text => text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   const unitAtom = S`(?:${Object.keys(units).filter(key=>!key.includes(' ')).sort((a,b)=>b.length-a.length).map(escapePattern).join('|')})(?:\^-?\d+| squared| cubed)?`;
   const unitPattern = new RegExp(`^(?:${unitAtom})(?: ${unitAtom})*$`);
@@ -312,10 +387,17 @@ const PhysicsMath = (() => {
       return units[symbol]+(power ? `^{${power}}` : '');
     }).join(S`\,`);
   }
-  const numberPattern = '[+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+)(?:(?: [x*] 10\\^|e)[+-]?\\d+)?';
+  const numberPattern = '[+−-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+)(?: [x*×] 10(?:\\^[+-]?\\d+|[⁻⁺⁰¹²³⁴⁵⁶⁷⁸⁹]+)|e[+-]?\\d+)?';
   const quantityPattern = new RegExp(`(?<![\\w.^+-])(${numberPattern}) (${unitAtom}(?: ${unitAtom})*)(?![\\w^])|(?<![\\w.^+-])(${numberPattern})(?![\\w])`,'g');
-  const assignmentPattern = new RegExp(S`(?<![\w])((?:[a-zA-Z](?:_[a-zA-Z0-9]+)?)) = (${numberPattern})(?: (${unitAtom}(?: ${unitAtom})*))?(?![\w^])`,'g');
-  function numberTex(value) {return value.replace(/ [x*] 10\^([+-]?\d+)/g,S`\times10^{$1}`).replace(/e([+-]?\d+)/gi,S`\times10^{$1}`);}
+  const assignmentPattern = new RegExp(S`(?<![\w])((?:Δ?[a-zA-ZμρλθτεσΦω](?:_[a-zA-Z0-9]+|[₀₁₂₃₄₅₆₇₈₉ₖₚₑₛᵥ]+)?)) = (${numberPattern})(?: (${unitAtom}(?: ${unitAtom})*))?(?![\w^])`,'g');
+  const symbolTex=symbol=>symbol.replace(/Δ/g,S`\Delta `).replace(/[μρλθτεσΦω]/g,c=>({μ:S`\mu`,ρ:S`\rho`,λ:S`\lambda`,θ:S`\theta`,τ:S`\tau`,ε:S`\varepsilon`,σ:S`\sigma`,Φ:S`\Phi`,ω:S`\omega`}[c])).replace(/[₀₁₂₃₄₅₆₇₈₉ₖₚₑₛᵥ]+/g,s=>'_{'+[...s].map(c=>'0123456789kpesv'['₀₁₂₃₄₅₆₇₈₉ₖₚₑₛᵥ'.indexOf(c)]).join('')+'}').replace(/_([a-zA-Z0-9]+)/g,'_{$1}');
+  const scientificPattern=new RegExp(S`(?<![\w])([+−-]?(?:\d+(?:\.\d+)?|\.\d+)(?: [x*×] 10(?:\^[+-]?\d+|[⁻⁺⁰¹²³⁴⁵⁶⁷⁸⁹]+)|e[+-]?\d+))(?: (${unitAtom}(?: ${unitAtom})*))?(?![\w])`,'g');
+  // Arithmetic-only working may be typeset safely without inferring symbolic
+  // expressions from English. Thousands groups are retained as thin spaces.
+  const arithmeticNumber=S`(?:\(?[+−-]?(?:\d{1,3}(?: \d{3})+|\d+)(?:\.\d+)?[²³]?\)?|½)`;
+  const arithmeticPattern=new RegExp(S`(?<![\w])(${arithmeticNumber}(?:\s*[×÷+−*/=≈]\s*${arithmeticNumber})+)(?: (${unitAtom}(?: ${unitAtom})*))?(?![\w])`,'g');
+  const arithmeticTex=value=>value.replace(/(\d) (?=\d{3}(?:\D|$))/g,'$1\\,').replace(/×/g,S`\times `).replace(/÷/g,S`\div `).replace(/−/g,'-').replace(/≈/g,S`\approx `).replace(/½/g,S`\tfrac12 `).replace(/²/g,'^{2}').replace(/³/g,'^{3}');
+  function numberTex(value) {return value.replace(/−/g,'-').replace(/ [x*×] 10([⁻⁺⁰¹²³⁴⁵⁶⁷⁸⁹]+)/g,(_,power)=>S`\times10^{${[...power].map(c=>'⁻⁺⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c)).map(i=>'-+0123456789'[i]).join('')}}`).replace(/ [x*×] 10\^([+-]?\d+)/g,S`\times10^{$1}`).replace(/e([+-]?\d+)/gi,S`\times10^{$1}`);}
   const lookup = new Map(entries);
   const formulaPattern = new RegExp(`(?<![A-Za-z])(?:${[...lookup.keys()].sort((a,b)=>b.length-a.length).map(escapePattern).join('|')})(?![A-Za-z])`,'g');
   const html = text => String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -324,15 +406,22 @@ const PhysicsMath = (() => {
     if(!window.katex) return html(`\\(${tex}\\)`);
     return katex.renderToString(tex,{displayMode,throwOnError:true,trust:false,strict:'error',output:'htmlAndMathml'});
   }
-  function format(text) {
+  function format(text,displayEquations=false) {
     text=String(text);
-    if(cache.has(text))return cache.get(text);
+    const key=String(displayEquations)+':'+text;
+    if(cache.has(key))return cache.get(key);
     const chunks=[];
-    const stash=(tex,display=false)=>{chunks.push(renderTex(tex,display));return `\uE000${chunks.length-1}\uE001`;};
+    const stash=(tex,display=false)=>{
+      const relation=/[=]|\\(?:approx|propto)/.test(tex);
+      chunks.push(renderTex(tex,display||(displayEquations&&relation)));
+      return `\uE000${chunks.length-1}\uE001`;
+    };
     // Protect authored LaTeX before applying exact legacy-notation replacements.
     let marked=text.replace(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g,(_,inline,display)=>stash(inline??display,display!==undefined));
     marked=marked.replace(formulaPattern,plain=>stash(lookup.get(plain)));
-    marked=marked.replace(assignmentPattern,(_,symbol,value,unit)=>stash(symbol.replace(/_([a-zA-Z0-9]+)/g,'_{$1}')+'='+numberTex(value)+(unit?S`\,${unitTex(unit)}`:'')));
+    marked=marked.replace(assignmentPattern,(_,symbol,value,unit)=>stash(symbolTex(symbol)+'='+numberTex(value)+(unit?S`\,${unitTex(unit)}`:'')));
+    marked=marked.replace(scientificPattern,(_,value,unit)=>stash(numberTex(value)+(unit?S`\,${unitTex(unit)}`:'')));
+    marked=marked.replace(arithmeticPattern,(_,value,unit)=>stash(arithmeticTex(value)+(unit?S`\,${unitTex(unit)}`:'')));
     const result=marked.split(/(\uE000\d+\uE001)/).map(part=>{
       if(part.startsWith('\uE000'))return chunks[Number(part.slice(1,-1))];
       const tokens=[];
@@ -341,8 +430,20 @@ const PhysicsMath = (() => {
       part=part.replace(poweredUnitPattern,unit=>/\^| squared| cubed/.test(unit)?protect(unitTex(unit)):unit);
       return part.split(/(\uE002\d+\uE003)/).map(item=>item.startsWith('\uE002')?tokens[Number(item.slice(1,-1))]:html(item)).join('');
     }).join('');
-    cache.set(text,result);
+    cache.set(key,result);
     return result;
   }
-  return {format,unit:unit=>renderTex(unitTex(unit)),unitTex,renderTex};
+  function prose(text) {
+    text=String(text);
+    // A list of key equations belongs together, with one equation per row.
+    // Keep incidental variables and conditions inline within complete sentences.
+    text=text.replace(/\\\(((?:(?!\\\))[\s\S])*?)\\\)((?:\s*(?:,\s*(?:and\s+)?|;\s*|and\s+)\\\((?:(?!\\\))[\s\S])*?\\\))+)([.;])?/g,(whole,first,rest,punctuation)=>{
+      const equations=[first,...[...rest.matchAll(/\\\(([\s\S]*?)\\\)/g)].map(m=>m[1])];
+      if(!equations.every(tex=>/[=]|\\(?:approx|propto)/.test(tex)))return whole;
+      return S`\[\begin{gathered}${equations.join(S`\\[6pt]`)}${punctuation||''}\end{gathered}\]`;
+    });
+    text=text.replace(/^\\\(([\s\S]*?)\\\)([.;])?/, (whole,tex,punctuation)=>/[=]|\\(?:approx|propto)/.test(tex)?S`\[${tex}${punctuation||''}\]`:whole);
+    return format(text);
+  }
+  return {format,prose,equation:text=>format(text,true),unit:unit=>renderTex(unitTex(unit)),unitTex,renderTex};
 })();

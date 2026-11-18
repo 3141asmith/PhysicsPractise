@@ -12,10 +12,10 @@ const GCSENotes=(()=>{
     $('notes-count').textContent=`Paper ${selected.paper} · ${sections.length} of ${selected.sections.length} sections shown`;
     $('notes-content').innerHTML=sections.length?`<nav class="notes-toc" aria-label="Sections in this topic">${sections.map(s=>`<a href="#notes/${selected.id}/${s.id}">${esc(s.title)}</a>`).join('')}</nav>`+sections.map(s=>`<section class="note-section gcse-note-section ${s.physicsOnly?'physics-only':''} ${s.higher?'higher-only':''}" id="note-${s.id}" data-physics-only="${s.physicsOnly}" data-higher="${s.higher}">
       <div>${badges(s)}</div><h2>${esc(s.title)}</h2><p class="note-reference">AQA Physics ${esc(s.spec)}</p>
-      ${s.paragraphs.map(p=>'<p>'+esc(p)+'</p>').join('')}
-      ${s.equations.length?'<div class="note-equation" aria-label="Key equations">'+s.equations.map(e=>'<p>'+esc(e)+'</p>').join('')+'</div>':''}
-      ${s.example?'<div class="gcse-note-example"><h3>Worked example</h3><p>'+esc(s.example)+'</p></div>':''}
-      ${s.practical?'<div class="gcse-note-practical"><h3>Required practical: method and evaluation</h3><p>'+esc(s.practical)+'</p></div>':''}
+      ${s.paragraphs.map(p=>'<p>'+PhysicsMath.prose(p)+'</p>').join('')}
+      ${s.equations.length?'<div class="note-equation" aria-label="Key equations">'+s.equations.map(e=>'<p>'+PhysicsMath.equation(e)+'</p>').join('')+'</div>':''}
+      ${s.example?'<div class="gcse-note-example"><h3>Worked example</h3><p>'+PhysicsMath.prose(s.example)+'</p></div>':''}
+      ${s.practical?'<div class="gcse-note-practical"><h3>Required practical: method and evaluation</h3><p>'+PhysicsMath.prose(s.practical)+'</p></div>':''}
       </section>`).join(''):'<p class="empty">No notes match these filters in this topic. Choose another topic, clear your search, or change course/tier. Space physics is only available for separate GCSE Physics.</p>';
     if(sections.length){
       const poster=`assets/gcse-posters/${selected.id}.png`;

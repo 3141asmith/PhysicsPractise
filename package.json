@@ -8,14 +8,15 @@
     "mobile:android": "npm run mobile:sync && cap open android",
     "mobile:ios": "npm run mobile:sync && cap open ios",
     "start": "node --env-file-if-exists=.env server.cjs",
-    "test": "node --test --test-isolation=none tests/server.test.cjs tests/microsoft.test.cjs tests/challenge.test.cjs tests/gcse-bank.test.cjs tests/gcse-notes.test.cjs",
+    "test": "node --test --test-isolation=none tests/server.test.cjs tests/microsoft.test.cjs tests/challenge.test.cjs tests/gcse-bank.test.cjs tests/gcse-notes.test.cjs tests/math-format.test.cjs",
     "test:gcse": "node tests/gcse-browser-tests.cjs && node tests/gcse-challenge-browser-tests.cjs && node tests/gcse-notes-browser-tests.cjs",
     "test:themes": "node tests/themes-browser-tests.cjs",
     "test:prizes": "node tests/challenge-prizes-browser-tests.cjs",
     "test:cosmetics": "node tests/pet-cosmetics-browser-tests.cjs",
     "test:pet": "node tests/pet-browser-tests.cjs",
     "test:randomised": "node tests/randomised-browser-tests.cjs",
-    "test:browser": "node tests/browser-tests.cjs && node tests/challenge-browser-tests.cjs && node tests/microsoft-browser-tests.cjs"
+    "test:browser": "node tests/browser-tests.cjs && node tests/challenge-browser-tests.cjs && node tests/microsoft-browser-tests.cjs",
+    "test:math": "node tests/math-browser-tests.cjs"
   },
   "engines": {
     "node": ">=24.0.0"
