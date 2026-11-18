@@ -86,6 +86,38 @@
     leader('M351 163 H475',475,158,'Steel ball')+
     note('h is a distance travelled: bottom of ball → top of detector, not ball centre → floor.'))];
 
+  diagrams[3].push(
+    fig('Hand-timed ball drop: measure height and start/stop events',
+      'A ball is released from rest above a fixed landing surface. Height h is measured from the bottom of the ball to the landing surface, with reference lines to a vertical ruler. A separate observer starts a hand-held stopwatch on release and stops it on first contact. No electronic triggering is used; human reaction delays affect both endpoints.',
+      heading('RP 03B · HAND TIMING','Ball and stopwatch: reaction time limits the result')+
+      circle(315,145,17,'mass')+path('M296 128 Q285 119 275 131 L264 140 M296 128 H333','apparatus')+
+      path('M315 166 V293','reference')+arrow(315,192,315,260)+
+      rect(245,310,140,12,'equipment')+path('M225 322 V345 H410 V322','apparatus')+
+      rect(150,110,20,220,'ruler')+Array.from({length:22},(_,i)=>path(`M150 ${110+i*10} h${i%5===0?14:7}`,'fine')).join('')+
+      path('M145 162 H298 M145 310 H245','reference')+dim(205,162,205,310,'h',186,240)+
+      circle(600,221,48,'meter')+rect(588,158,24,15,'equipment',3)+rect(567,211,66,25,'display',3)+text(600,229,'0.56 s','small','middle')+
+      text(498,129,'Start: observe release','small')+text(498,153,'Stop: observe first contact','small')+
+      text(520,300,'Hand-held stopwatch','label')+text(494,328,'Observer times both events','small')+
+      text(245,365,'Fixed landing surface','small')+
+      note('Repeat each height. A 0.01 s display does not remove human start/stop delays.')),
+    fig('Cart on an inclined ramp with two light gates',
+      'A cart carries a short opaque card parallel to the ramp. It moves down a supported ramp through light gate 1 and then light gate 2, connected to a logger. Theta is measured between the ramp and horizontal. H is the vertical rise and L is the corresponding length along the ramp, so sin theta equals H/L. A cushioned stop lies beyond gate 2. Acceleration along the ramp is less than g.',
+      heading('RP 03C · INCLINED-PLANE ALTERNATIVE','Find a along the ramp, then use g = a / sin θ')+
+      path('M125 150 L660 315 M125 150 V315 H660','apparatus')+
+      path('M125 315 H700','reference')+
+      path('M591 294 A72 72 0 0 0 588 315','measurement')+text(571,311,'θ','measure-label')+
+      dim(88,150,88,315,'H',65,239)+dim(140,128,675,293,'L',435,205)+
+      `<g transform="translate(185 169) rotate(17.14)">${rect(0,-29,67,23,'equipment',4)+circle(13,-7,7,'mass')+circle(54,-7,7,'mass')+path('M18 -29 V-65 H56 V-29','test-wire')+dim(18,-76,56,-76,'ℓ',37,-86)}</g>`+
+      path('M310 207 V147 H340 V216 M480 259 V200 H510 V269','glass')+
+      path('M310 170 H340 M480 224 H510','reference')+
+      text(282,131,'Gate 1','small')+text(453,184,'Gate 2','small')+
+      path('M340 147 H680 V131 M510 200 H730 V165','lead')+
+      rect(635,95,140,70,'equipment',7)+text(705,123,'Data logger','label','middle')+text(705,148,'Two gate inputs','small','middle')+
+      arrow(375,237,433,255,'direction')+text(353,287,'Down the ramp','small')+
+      rect(643,281,17,33,'mass',3)+text(560,354,'Cushioned end stop','small')+
+      note('Card blocking times give speeds; use the time between blocking-event midpoints.'))
+  );
+
   diagrams[4] = [fig('Loaded test wire and independent extension reference',
     'A long test wire hangs from a rigid clamp above a mass hanger and catching tray. Original gauge length L ends at a marker attached to the wire. A travelling microscope, supported separately from the wire, observes movement of that marker from its preloaded position. Diameter is measured independently with a micrometer.',
     heading('RP 04 · LONGITUDINAL SECTION','Measure extension relative to the preloaded wire')+

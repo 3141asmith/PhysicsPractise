@@ -310,6 +310,244 @@ window.requiredPracticals = [
         3,
         "Example: height measured from the top rather than the bottom of the ball (1); every height is overestimated by a similar offset (1); repeating the same reference repeats the bias rather than removing it (1)."
       ]
+    ],
+    "setups": [
+      {
+        "slug": "electronic",
+        "title": "1. Electronic free fall",
+        "diagramIndex": 0
+      },
+      {
+        "slug": "hand-timed",
+        "title": "2. Ball and hand-held timer",
+        "diagramIndex": 1,
+        "theory": [
+          "A ball released from rest accelerates downwards. Neglecting air resistance,\n\\[h=\\frac12gt^2,\\qquad g=\\frac{2h}{t^2}.\\]\nVarying drop height and plotting \\(h\\) against \\(t^2\\) gives gradient \\(g/2\\). The ball’s vertical distance runs from its lower surface at release to its first contact with the landing surface.",
+          "This setup uses a ball and a hand-held stopwatch, with a ruler or tape to measure height. It is a simple demonstration and an estimate of g, but human reaction time is a large fraction of the fall time. A stopwatch displaying hundredths of a second does not mean the measurement is accurate to hundredths. Compare this limitation with the electronic setup."
+        ],
+        "apparatus": "Small dense ball, hand-held stopwatch, metre rule or tape measure, height markers, and a tray or clearly defined landing surface with a soft surrounding catch area. No electronic release or light gates are needed.",
+        "method": [
+          "Clear the landing area and choose a safe range of heights available while standing on the floor. Measure each height from the bottom of the ball to the top of the landing surface; do not measure from your hand or the ball centre.",
+          "One person holds the ball still at a marked height and releases it without throwing or pushing. A second person uses the stopwatch, starting on seeing the release and stopping on seeing first contact. Keep the observer’s view of both events clear and use the same event definitions throughout.",
+          "Record at least five independent timings at each height. Do not reject a reading merely because it differs from the expected value; record a reason for excluding a clear mishap such as a dropped stopwatch or a misread height.",
+          "Repeat over at least five well-spaced safe heights. Keep the same ball, observer and landing surface, and avoid drafts. Retrieve the ball only after it has come to rest.",
+          "Calculate mean time at each height, then square the mean. Plot \\(h\\) vertically against \\(\\bar t^{\\,2}\\) horizontally; draw a best-fit line and calculate \\(g=2\\times\\text{gradient}\\). Inspect the intercept and compare with the electronic method.",
+          "Estimate timing uncertainty from the spread and from the observer’s start/stop reactions. Use longer safe drops to reduce relative timing uncertainty; do not climb onto furniture or use unsafe drop heights to improve a result."
+        ],
+        "controls": "Keep ball, observer, release technique and landing surface the same. Release from rest, keep the path vertical and use consistent release and impact definitions.",
+        "safety": "Keep the landing area clear, use a small ball with a catching tray or soft surround, and keep feet away from impact. Work from floor level; do not climb onto desks, chairs or stairs.",
+        "tables": [
+          {
+            "caption": "Illustrative hand timings: five independent drops per height",
+            "headers": [
+              "h / m",
+              "t₁ / s",
+              "t₂ / s",
+              "t₃ / s",
+              "t₄ / s",
+              "t₅ / s",
+              "Mean t / s",
+              "Mean t squared / s²"
+            ],
+            "rows": [
+              [
+                0.8,
+                0.45,
+                0.39,
+                0.43,
+                0.38,
+                0.42,
+                0.414,
+                0.1714
+              ],
+              [
+                1,
+                0.48,
+                0.41,
+                0.44,
+                0.49,
+                0.45,
+                0.454,
+                0.2061
+              ],
+              [
+                1.2,
+                0.53,
+                0.46,
+                0.51,
+                0.48,
+                0.52,
+                0.5,
+                0.25
+              ],
+              [
+                1.4,
+                0.57,
+                0.49,
+                0.56,
+                0.52,
+                0.55,
+                0.538,
+                0.2894
+              ],
+              [
+                1.6,
+                0.61,
+                0.54,
+                0.59,
+                0.56,
+                0.58,
+                0.576,
+                0.3318
+              ]
+            ]
+          }
+        ],
+        "analysis": "The data have much more scatter than the electronic timings. Using widely separated points only to illustrate the calculation,\n\\[\\text{gradient}\\approx\\frac{1.60-0.80}{0.3318-0.1714}=4.99\\,\\mathrm{m\\,s^{-2}},\\]\n\\[g\\approx2(4.99)=9.98\\,\\mathrm{m\\,s^{-2}}.\\]\nUse an actual best-fit line in your experiment. Agreement with the accepted value does not establish high accuracy: start and stop delays can partially cancel by chance. Quote a realistic uncertainty rather than treating the displayed stopwatch resolution as the timing uncertainty.",
+        "uncertainty": "Both starting and stopping introduce human timing errors. Repeats reveal random scatter, but a consistent difference between the observer’s start and stop delays can bias every time. As an illustrative estimate, if \\(h=(1.60\\pm0.02)\\,\\mathrm m\\) and \\(t=(0.576\\pm0.10)\\,\\mathrm s\\),\n\\[\\frac{\\Delta g}{g}\\approx\\frac{\\Delta h}{h}+2\\frac{\\Delta t}{t}\\approx0.36.\\]\nThat is roughly 36% uncertainty for this individual estimate. The assumed 0.10 s must be justified for the observer; it is not a universal reaction-time correction. Fitting a line can reduce random scatter but cannot remove a systematic timing bias.",
+        "questions": [
+          [
+            "A ball falls \\(1.50\\,\\mathrm m\\) in a measured \\(0.56\\,\\mathrm s\\). Calculate an estimate of \\(g\\).",
+            3,
+            "\\[g=\\frac{2h}{t^2}\\quad(1)\\]\n\\[g=\\frac{2(1.50)}{0.56^2}\\quad(1)\\]\n\\[g=9.57\\,\\mathrm{m\\,s^{-2}}\\quad(1).\\]"
+          ],
+          [
+            "A stopwatch displays 0.01 s increments. Explain why the uncertainty in a hand-timed fall can be much larger.",
+            2,
+            "Resolution is only the display increment (1); the observer’s start and stop reactions introduce additional timing error, potentially much larger than that increment (1)."
+          ],
+          [
+            "Explain one benefit and one limitation of repeating the hand-timed drops.",
+            2,
+            "Repeats reveal scatter and averaging reduces random error in the mean (1); repetition does not remove a consistent timing bias such as unequal start and stop delays (1)."
+          ]
+        ]
+      },
+      {
+        "slug": "ramp",
+        "title": "3. Cart, ramp and light gates",
+        "diagramIndex": 2,
+        "theory": [
+          "A cart on a ramp is not in free fall: the track supplies a normal force. If resistance and wheel rotational inertia are negligible, the component of gravity along the ramp gives\n\\[ma=mg\\sin\\theta,\\qquad a=g\\sin\\theta.\\]\nThus \\(g=a/\\sin\\theta\\). Measure the ramp angle \\(\\theta\\) to the horizontal, or use \\(\\sin\\theta=H/L\\), where \\(H\\) is the vertical rise and \\(L\\) the matching length along the ramp. Do not take the cart’s along-ramp acceleration as \\(g\\).",
+          "A card of known length \\(\\ell\\), parallel to the cart’s motion, interrupts each gate. If its blocking durations are \\(\\tau_1\\) and \\(\\tau_2\\),\n\\[v_1=\\frac{\\ell}{\\tau_1},\\qquad v_2=\\frac{\\ell}{\\tau_2}.\\]\nFor uniform acceleration these average speeds correspond to the midpoints in time of the blocking events. With \\(\\Delta t\\) measured between those midpoint times,\n\\[a=\\frac{v_2-v_1}{\\Delta t}.\\]\nIf the logger reports leading-edge event times, add half the appropriate blocking duration to each before finding \\(\\Delta t\\). A logger may perform this calculation automatically; check its definitions.",
+          "Repeat at several angles and plot \\(a\\) against \\(\\sin\\theta\\). The ideal gradient is \\(g\\). Approximately constant opposing force gives\n\\[a\\approx g\\sin\\theta-\\frac{F_{\\mathrm{res}}}{m}.\\]\nIt produces a negative intercept. This correction assumes resistance is approximately constant across the chosen angles. Wheel rotational inertia can reduce the gradient as well; use a low-friction dynamics cart with light wheels and treat \\(g\\) as an estimate if these effects are appreciable. This is an inclined-plane alternative, not the AQA required activity’s free-fall method."
+        ],
+        "apparatus": "Straight dynamics ramp, secure stand or blocks, low-friction cart with a short opaque interrupt card, two light gates and data logger, ruler or callipers for card length, tape measure for ramp rise and length (or an angle instrument), and a cushioned end stop.",
+        "method": [
+          "Secure the ramp at a small angle and place a cushioned stop at its lower end. Fit the cart with a short opaque card aligned parallel to the track. Measure the card length along the direction of motion.",
+          "Place gate 1 higher up the track and gate 2 farther down. Align both beams at card height so that the card alone blocks them cleanly. Leave room for the cart to pass fully through gate 2 before reaching the stop.",
+          "Measure \\(\\theta\\) relative to horizontal. Alternatively measure vertical rise \\(H\\) and the corresponding along-track length \\(L\\), then calculate \\(\\sin\\theta=H/L\\). Keep the same endpoints for these two measurements; horizontal run is not \\(L\\).",
+          "Release the cart from a marked position above gate 1 without a push. It does not need to be at rest at gate 1. Log the two blocking durations and the time between their midpoint events. Check whether the logger gives midpoint times, leading-edge times or its own acceleration output.",
+          "Calculate \\(v_1=\\ell/\\tau_1\\), \\(v_2=\\ell/\\tau_2\\), and \\(a=(v_2-v_1)/\\Delta t\\). If you recorded leading-edge times \\(t_1,t_2\\), use \\(\\Delta t=(t_2+\\tau_2/2)-(t_1+\\tau_1/2)\\).",
+          "Repeat at least three times at the same angle and find mean acceleration. Repeat for at least six suitable angles, keeping the same cart, card and gate positions along the track. Remeasure the angle after every adjustment.",
+          "Plot mean acceleration against \\(\\sin\\theta\\). Determine \\(g\\) from the gradient if the assumptions are justified; inspect the intercept and scatter for resistance or alignment problems. A single-angle estimate \\(g=a/\\sin\\theta\\) will generally be too small when resistance is significant."
+        ],
+        "controls": "Use the same cart, card, ramp surface, gate positions and release point. Keep the track straight and avoid a sideways push. Change only the ramp angle between series and recheck gate alignment.",
+        "safety": "Secure the ramp and support, keep the runout clear and use a cushioned stop. Catch or restrain the cart after it has passed the second gate; keep fingers clear of wheels and falling supports.",
+        "tables": [
+          {
+            "caption": "One illustrative run at 10°: card length 0.0500 m; midpoint-event interval",
+            "headers": [
+              "τ₁ / s",
+              "τ₂ / s",
+              "v₁ / m s⁻¹",
+              "v₂ / m s⁻¹",
+              "Δt / s",
+              "a / m s⁻²"
+            ],
+            "rows": [
+              [
+                0.125,
+                0.03704,
+                0.4,
+                1.35,
+                0.572,
+                1.661
+              ]
+            ]
+          },
+          {
+            "caption": "Angle series: three repeated accelerations per angle",
+            "headers": [
+              "θ / degrees",
+              "sin θ",
+              "a₁ / m s⁻²",
+              "a₂ / m s⁻²",
+              "a₃ / m s⁻²",
+              "Mean a / m s⁻²"
+            ],
+            "rows": [
+              [
+                4,
+                0.06976,
+                0.634,
+                0.644,
+                0.654,
+                0.644
+              ],
+              [
+                6,
+                0.10453,
+                0.974,
+                0.984,
+                0.994,
+                0.984
+              ],
+              [
+                8,
+                0.13917,
+                1.314,
+                1.324,
+                1.334,
+                1.324
+              ],
+              [
+                10,
+                0.17365,
+                1.652,
+                1.662,
+                1.672,
+                1.662
+              ],
+              [
+                12,
+                0.20791,
+                1.988,
+                1.998,
+                2.008,
+                1.998
+              ],
+              [
+                14,
+                0.24192,
+                2.321,
+                2.331,
+                2.341,
+                2.331
+              ]
+            ]
+          }
+        ],
+        "analysis": "For the sample run,\n\\[v_1=\\frac{0.0500}{0.1250}=0.400\\,\\mathrm{m\\,s^{-1}},\\qquad v_2=\\frac{0.0500}{0.03704}\\approx1.350\\,\\mathrm{m\\,s^{-1}},\\]\n\\[a=\\frac{1.350-0.400}{0.572}\\approx1.66\\,\\mathrm{m\\,s^{-2}}.\\]\nThe simple single-angle estimate is \\(g\\approx1.66/\\sin10^\\circ=9.56\\,\\mathrm{m\\,s^{-2}}\\), low because of resistance in this illustrative model. For the angle series, an endpoint gradient illustrates the best-fit calculation:\n\\[\\text{gradient}\\approx\\frac{2.331-0.644}{0.24192-0.06976}\\approx9.80\\,\\mathrm{m\\,s^{-2}}.\\]\nThe intercept is about \\(-0.040\\,\\mathrm{m\\,s^{-2}}\\), consistent with approximately constant opposing acceleration. In an experiment use a best-fit line and judge whether the resistance and wheel-inertia assumptions hold.",
+        "uncertainty": "Light gates remove human reaction-time error, but card length, event definitions and ramp angle remain important. In \\(g=a/\\sin\\theta\\), a small absolute angle error causes a large percentage error at shallow angles. Use a long rise/length baseline and repeat angle measurements. Gate misalignment or a tilted card biases the inferred speeds. A long card averages motion over a longer interval, so use a short card and consistent midpoint timing. Rolling resistance, bearing friction and wheel inertia can lower the measured acceleration; repeats alone do not remove them. A fitted intercept can diagnose approximately constant resistance, but cannot automatically correct every systematic effect.",
+        "questions": [
+          [
+            "A cart accelerates at \\(1.70\\,\\mathrm{m\\,s^{-2}}\\) on a \\(10.0^\\circ\\) ramp. Neglect resistance and wheel inertia. Estimate \\(g\\).",
+            3,
+            "\\[a=g\\sin\\theta\\quad(1)\\]\n\\[g=\\frac{1.70}{\\sin10.0^\\circ}\\quad(1)\\]\n\\[g=9.79\\,\\mathrm{m\\,s^{-2}}\\quad(1).\\]"
+          ],
+          [
+            "A \\(0.0500\\,\\mathrm m\\) card blocks gate 1 for \\(0.100\\,\\mathrm s\\) and gate 2 for \\(0.0500\\,\\mathrm s\\). The blocking-event midpoints are \\(0.400\\,\\mathrm s\\) apart. Find the acceleration.",
+            3,
+            "\\(v_1=0.500\\,\\mathrm{m\\,s^{-1}}\\) (1); \\(v_2=1.00\\,\\mathrm{m\\,s^{-1}}\\) (1).\n\\[a=\\frac{1.00-0.500}{0.400}=1.25\\,\\mathrm{m\\,s^{-2}}\\quad(1).\\]"
+          ],
+          [
+            "Why might a cart experiment give a low estimate of g even with accurate light-gate timing?",
+            3,
+            "Friction or rolling resistance opposes motion (1); wheel rotation also requires energy and can reduce acceleration below the simple point-mass prediction (1); neither effect is removed just by repeating timing measurements, so evaluate the model and apparatus (1)."
+          ]
+        ]
+      }
     ]
   },
   {

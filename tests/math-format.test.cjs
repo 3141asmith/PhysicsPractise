@@ -34,3 +34,22 @@ test('Unicode quantities and arithmetic preserve powers, units and numerical val
  const grouped=math.prose(String.raw`\(v=f\lambda\), \(T=1/f\), and \(\Delta\phi=2\pi x/\lambda\).`);
  assert.equal((grouped.match(/class="katex-display"/g)||[]).length,1);
 });
+
+test('g alternatives have consistent timing data and an angle-corrected ramp model',()=>{
+ const setups=practicals.find(p=>p.id===3).setups;
+ assert.equal(setups.length,3);
+ const hand=setups.find(s=>s.slug==='hand-timed');
+ for(const row of hand.tables[0].rows){
+  const mean=row.slice(1,6).reduce((a,b)=>a+b,0)/5;
+  assert.ok(Math.abs(mean-row[6])<1e-9);
+  assert.ok(Math.abs(mean**2-row[7])<.0001);
+ }
+ const ramp=setups.find(s=>s.slug==='ramp'),row=ramp.tables[0].rows[0];
+ assert.ok(Math.abs(.0500/row[0]-row[2])<.001);
+ assert.ok(Math.abs(.0500/row[1]-row[3])<.001);
+ assert.ok(Math.abs((row[3]-row[2])/row[4]-row[5])<.002);
+ for(const [angle,sine,,, ,mean] of ramp.tables[1].rows){
+  assert.ok(Math.abs(Math.sin(angle*Math.PI/180)-sine)<.00001);
+  assert.ok(Math.abs(mean-(9.80*sine-.040))<.002);
+ }
+});

@@ -5,7 +5,7 @@
   const search = document.getElementById('practical-search');
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const math = PhysicsMath.format;
-  let selected;
+  let selected, selectedSetup;
   const paragraphs = values => values.map(value => `<p>${math(value)}</p>`).join('');
   function renderDiagram(diagram,id,index) {
     const key = `diagram-${id}-${index}`;
@@ -32,29 +32,35 @@
   });
   function navigation() {
     const term = search.value.trim().toLowerCase();
-    const filtered = practicals.filter(p => `${p.id} ${p.title} ${p.topic}`.toLowerCase().includes(term));
+    const filtered = practicals.filter(p => `${p.id} ${p.title} ${p.topic} ${(p.setups||[]).map(setup=>setup.title).join(' ')}`.toLowerCase().includes(term));
     list.innerHTML = filtered.map(p => `<a href="#rp-${p.id}" ${p.id === selected.id ? 'aria-current="page"' : ''}><span>RP ${p.id}</span>${escape(p.title)}</a>`).join('');
     document.getElementById('practical-count').textContent = `${filtered.length} of 12 practicals${filtered.length ? '' : ' — try another search'}`;
   }
   function render() {
-    const match = /^#rp-(\d+)(?:-(theory|method|data|evaluation|questions))?$/.exec(location.hash);
+    const match = /^#rp-(\d+)(?:-setup-(electronic|hand-timed|ramp))?(?:-(theory|method|data|evaluation|questions))?$/.exec(location.hash);
     selected = practicals.find(p => p.id === Number(match?.[1])) || practicals[0];
-    const p = selected;
+    selectedSetup = selected.setups ? (match?.[2] || 'electronic') : '';
+    const setup = selected.setups?.find(item=>item.slug===selectedSetup);
+    const p = setup ? {...selected,...setup} : selected;
+    const sectionPrefix = `rp-${p.id}`+(selectedSetup && selectedSetup!=='electronic' ? `-setup-${selectedSetup}` : '');
     document.title = `RP ${p.id}: ${p.title} | Physics Forge`;
     navigation();
-    content.innerHTML = `<div class="practical-heading"><div class="section-label">REQUIRED PRACTICAL ${p.id} · ${escape(p.topic)} · ${p.id <= 6 ? 'AS AND A LEVEL' : 'A LEVEL'}</div><h2 id="practical-title" tabindex="-1">${escape(p.title)}</h2><nav class="practical-jumps" aria-label="Sections of this practical">${['Theory','Method','Data','Evaluation','Questions'].map(section => `<a href="#rp-${p.id}-${section.toLowerCase()}">${section === 'Data' ? 'Exemplar data' : section === 'Questions' ? 'Exam practice' : section}</a>`).join('')}</nav></div>
-      <section class="practical-section" id="rp-${p.id}-theory"><h3>The theory</h3>${paragraphs(p.theory)}</section>
-      <section class="practical-section" id="rp-${p.id}-method"><h3>Apparatus and detailed method</h3><p>${math(p.apparatus)}</p>${p.diagrams.map((diagram,index) => renderDiagram(diagram,p.id,index)).join('')}<ol>${p.method.map(step => `<li>${math(step)}</li>`).join('')}</ol><div class="practical-callout"><strong>Control variables</strong><p>${math(p.controls)}</p></div><h4>Safety</h4><p>${math(p.safety)}</p></section>
-      <section class="practical-section" id="rp-${p.id}-data"><h3>Exemplar data and worked analysis</h3><p>Illustrative values for learning the analysis. Record your own raw readings, units, repeats and instrument uncertainties in the laboratory.</p>${p.tables.map(table => `<div class="practical-table-wrap" tabindex="0" role="region" aria-label="${escape(table.caption)}"><table><caption>${math(table.caption)}</caption><thead><tr>${table.headers.map(h => `<th scope="col">${math(h)}</th>`).join('')}</tr></thead><tbody>${table.rows.map(row => `<tr>${row.map(v => `<td>${math(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`).join('')}<h4>How to process the results</h4><p>${math(p.analysis)}</p></section>
-      <section class="practical-section" id="rp-${p.id}-evaluation"><h3>Uncertainty and evaluation</h3><p>${math(p.uncertainty)}</p><p>For a graph, label axes with units, plot a suitable spread of readings and use a best-fit line rather than joining points. Quote an uncertainty and assess whether the expected relationship is consistent with the data. Repeating measurements helps assess random scatter; a consistent calibration or zero error needs a separate correction.</p></section>
-      <section class="practical-section" id="rp-${p.id}-questions"><h3>Exam-style practice</h3><p>Write your answer before revealing the marking points. These original questions are self-assessed; the bracketed marks indicate the available points.</p>${p.questions.map(([question,marks,answer],i) => `<div class="practical-question"><label for="rp-${p.id}-answer-${i}">${i+1}. ${math(question)} [${marks} marks]</label><textarea id="rp-${p.id}-answer-${i}" rows="4" placeholder="Include equations, working and units where appropriate."></textarea><details><summary>Reveal mark scheme · ${marks} marks</summary><p>${math(answer)}</p></details></div>`).join('')}<small>Answers are kept while this guide is open. They are not saved when you change practical or reload, and do not award course coins or completion credit.</small></section>
+    content.innerHTML = `<div class="practical-heading"><div class="section-label">REQUIRED PRACTICAL ${p.id} · ${escape(p.topic)} · ${p.id <= 6 ? 'AS AND A LEVEL' : 'A LEVEL'}</div><h2 id="practical-title" tabindex="-1">${escape(selected.title)}</h2><nav class="practical-jumps" aria-label="Sections of this practical">${['Theory','Method','Data','Evaluation','Questions'].map(section => `<a href="#${sectionPrefix}-${section.toLowerCase()}">${section === 'Data' ? 'Exemplar data' : section === 'Questions' ? 'Exam practice' : section}</a>`).join('')}</nav></div>
+      ${selected.setups ? `<nav class="setup-picker" aria-label="Experimental setups">${selected.setups.map(item=>`<a href="#rp-${p.id}${item.slug==='electronic'?'':'-setup-'+item.slug}-theory" ${item.slug===selectedSetup?'aria-current="page"':''}>${escape(item.title)}</a>`).join('')}</nav><h3 class="setup-title">${escape(p.title)}</h3><p class="setup-context">Three ways to investigate g. The ramp is an inclined-plane alternative; it is not a free-fall experiment.</p>` : ''}
+      <section class="practical-section" id="${sectionPrefix}-theory"><h3>The theory</h3>${paragraphs(p.theory)}</section>
+      <section class="practical-section" id="${sectionPrefix}-method"><h3>Apparatus and detailed method</h3><p>${math(p.apparatus)}</p>${(p.diagramIndex===undefined ? p.diagrams.map((_,index)=>index) : [p.diagramIndex]).map(index=>renderDiagram(selected.diagrams[index],p.id,index)).join('')}<ol>${p.method.map(step => `<li>${math(step)}</li>`).join('')}</ol><div class="practical-callout"><strong>Control variables</strong><p>${math(p.controls)}</p></div><h4>Safety</h4><p>${math(p.safety)}</p></section>
+      <section class="practical-section" id="${sectionPrefix}-data"><h3>Exemplar data and worked analysis</h3><p>Illustrative values for learning the analysis. Record your own raw readings, units, repeats and instrument uncertainties in the laboratory.</p>${p.tables.map(table => `<div class="practical-table-wrap" tabindex="0" role="region" aria-label="${escape(table.caption)}"><table><caption>${math(table.caption)}</caption><thead><tr>${table.headers.map(h => `<th scope="col">${math(h)}</th>`).join('')}</tr></thead><tbody>${table.rows.map(row => `<tr>${row.map(v => `<td>${math(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`).join('')}<h4>How to process the results</h4><p>${math(p.analysis)}</p></section>
+      <section class="practical-section" id="${sectionPrefix}-evaluation"><h3>Uncertainty and evaluation</h3><p>${math(p.uncertainty)}</p><p>For a graph, label axes with units, plot a suitable spread of readings and use a best-fit line rather than joining points. Quote an uncertainty and assess whether the expected relationship is consistent with the data. Repeating measurements helps assess random scatter; a consistent calibration or zero error needs a separate correction.</p></section>
+      <section class="practical-section" id="${sectionPrefix}-questions"><h3>Exam-style practice</h3><p>Write your answer before revealing the marking points. These original questions are self-assessed; the bracketed marks indicate the available points.</p>${p.questions.map(([question,marks,answer],i) => `<div class="practical-question"><label for="${sectionPrefix}-answer-${i}">${i+1}. ${math(question)} [${marks} marks]</label><textarea id="${sectionPrefix}-answer-${i}" rows="4" placeholder="Include equations, working and units where appropriate."></textarea><details><summary>Reveal mark scheme · ${marks} marks</summary><p>${math(answer)}</p></details></div>`).join('')}<small>Answers are kept while this guide is open. They are not saved when you change practical or reload, and do not award course coins or completion credit.</small></section>
       <nav class="practical-pager" aria-label="Previous and next practical">${p.id > 1 ? `<a href="#rp-${p.id-1}">← RP ${p.id-1}: ${escape(practicals[p.id-2].title)}</a>` : '<span></span>'}${p.id < 12 ? `<a href="#rp-${p.id+1}">RP ${p.id+1}: ${escape(practicals[p.id].title)} →</a>` : '<a href="a-level.html">Back to A Level study space →</a>'}</nav>`;
-    if (match?.[2]) document.getElementById(`rp-${p.id}-${match[2]}`).scrollIntoView();
+    if (match?.[3]) document.getElementById(`${sectionPrefix}-${match[3]}`).scrollIntoView();
   }
   search.addEventListener('input',navigation);
   window.addEventListener('hashchange', () => {
-    const id = Number(/^#rp-(\d+)/.exec(location.hash)?.[1]);
-    if (id !== selected.id) { render(); document.getElementById('practical-title').focus({preventScroll:true}); content.scrollIntoView(); }
+    const destination = /^#rp-(\d+)(?:-setup-(electronic|hand-timed|ramp))?/.exec(location.hash);
+    const id = Number(destination?.[1]);
+    const setup = id===3 ? (destination?.[2] || 'electronic') : '';
+    if (id !== selected.id || setup !== selectedSetup) { render(); document.getElementById('practical-title').focus({preventScroll:true}); content.scrollIntoView(); }
     else document.getElementById(location.hash.slice(1))?.scrollIntoView();
   });
   render();

@@ -52,6 +52,32 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
    const mark=page.locator('.practical-question details').first();await mark.locator('summary').click();
    assert.ok(await mark.locator('p').isVisible());
   }
+  // RP 3 has three distinct experiments, not three diagrams sharing one method.
+  await page.goto(base+'/practicals.html#rp-3-theory');
+  assert.equal(await page.locator('.setup-picker a').count(),3);
+  for(const [slug,title] of [['hand-timed','Ball and hand-held timer'],['ramp','Cart, ramp and light gates']]){
+   await page.locator(`.setup-picker a[href="#rp-3-setup-${slug}-theory"]`).click();
+   await page.waitForFunction(title=>document.title.includes(title),title);
+   assert.equal(await page.locator('#practical-content svg[role=img]').count(),1);
+   assert.equal(await page.locator('.practical-question').count(),3);
+   assert.ok(await page.locator('tbody tr').count()>=5);
+   const issues=await page.locator('#practical-content svg[role=img]').evaluateAll(svgs=>svgs.flatMap(svg=>{
+    const bounds=svg.getBoundingClientRect(),labels=[...svg.querySelectorAll('text')],issues=[];
+    for(const label of labels){const r=label.getBoundingClientRect();if(r.left<bounds.left-.5||r.top<bounds.top-.5||r.right>bounds.right+.5||r.bottom>bounds.bottom+.5)issues.push('Clipped: '+label.textContent);}
+    for(let a=0;a<labels.length;a++)for(let b=a+1;b<labels.length;b++){
+     const x=labels[a].getBoundingClientRect(),y=labels[b].getBoundingClientRect();
+     if(Math.min(x.right,y.right)-Math.max(x.left,y.left)>2&&Math.min(x.bottom,y.bottom)-Math.max(x.top,y.top)>2)issues.push('Overlap: '+labels[a].textContent+' / '+labels[b].textContent);
+    }
+    return issues;
+   }));
+   assert.deepEqual(issues,[],title);
+   await page.getByRole('button',{name:/Enlarge diagram:/}).click();assert.ok(await page.locator('dialog[open] svg').isVisible());await page.keyboard.press('Escape');
+   await page.getByRole('link',{name:'Exam practice',exact:true}).click();
+   await page.locator('.practical-question textarea').first().fill('My setup-specific answer.');
+   assert.equal(await page.locator('.practical-question label').first().getAttribute('for'),await page.locator('.practical-question textarea').first().getAttribute('id'));
+   await page.reload();assert.ok((await page.title()).includes(title));
+   if(screenshots)await page.locator('#practical-content .practical-diagram').screenshot({path:path.join(screenshotDir,`rp-3-${slug}.png`)});
+  }
   await page.locator('#practical-search').fill('waves');assert.equal(await page.locator('#practical-list a').count(),2);
   await page.locator('#practical-search').fill('nothing-matches');assert.match(await page.locator('#practical-count').innerText(),/0 of 12/);
   await page.locator('#practical-search').fill('');
@@ -66,12 +92,17 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
    await page.waitForFunction(id=>document.title.startsWith(`RP ${id}:`),id);
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Mobile overflow RP ${id}`);
   }
+  for(const slug of ['hand-timed','ramp']){
+   await page.goto(base+`/practicals.html#rp-3-setup-${slug}-theory`);
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Mobile overflow RP 3 ${slug}`);
+  }
+  await page.goto(base+'/practicals.html#rp-12');
   await page.getByRole('button',{name:/Enlarge diagram:/}).first().click();
   assert.ok(await page.locator('dialog[open] svg').isVisible());
   await page.getByRole('button',{name:'Close diagram'}).click();
   if(screenshots)await page.locator('.practical-diagram').first().screenshot({path:path.join(screenshotDir,'mobile-dark.png')});
-  await page.goBack();await page.waitForFunction(()=>document.title.startsWith('RP 11:'));
+  await page.goBack();await page.waitForFunction(()=>document.title.includes('Cart, ramp and light gates'));
   assert.deepEqual(errors,[]);
-  console.log('All 12 guides and 17 diagrams: labels, accessible descriptions, enlargement, navigation, tables, questions, search, history, theme and mobile layout passed.');
+  console.log('All 12 guides and 19 diagrams, including three g setups: labels, descriptions, enlargement, tables, questions, setup bookmarks, history and mobile layout passed.');
  } finally {if(browser)await browser.close();app.server.close();app.db.close();fs.rmSync(dir,{recursive:true,force:true});}
 })().catch(error=>{console.error(error);process.exitCode=1;});
