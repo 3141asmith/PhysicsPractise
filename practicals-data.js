@@ -673,24 +673,27 @@ window.requiredPracticals = [
     "title": "Gas laws: Boyle and Charles",
     "topic": "Thermal physics",
     "theory": [
-      "For a fixed amount of ideal gas,\n \\[pV=nRT,\\]\n where \\(p\\) is absolute pressure and \\(T\\) is kelvin temperature. At constant temperature, Boyle’s law gives\n \\[pV=\\text{constant},\\qquad p\\propto\\frac1V.\\]\n Rapid compression heats the gas; wait for it to cool back to the original temperature before taking a reading.",
+      "For a fixed amount of ideal gas,\n\\[pV=nRT,\\]\nwhere \\(p\\) is absolute pressure and \\(T\\) is kelvin temperature. At constant temperature, Boyle’s law gives\n\\[pV=\\text{constant},\\qquad p\\propto\\frac1V.\\]\nIn this setup, gas is trapped above a vertical piston and atmospheric pressure acts underneath. Adding hanging masses to the rod below the piston pulls it down: gas volume increases and pressure decreases. Rapid expansion cools the gas; wait for it to return to room temperature before taking a reading.",
+      "For an ideal freely moving piston at equilibrium, neglecting friction,\n\\[p_{\\mathrm{atm}}A=pA+m_{\\mathrm{total}}g,\\qquad p=p_{\\mathrm{atm}}-\\frac{m_{\\mathrm{total}}g}{A}.\\]\nHere \\(A\\) is piston area and \\(m_{\\mathrm{total}}\\) includes the piston, rod, hanger and added masses. The minus sign matters: loads below this piston reduce gas pressure. Use the pressure sensor for the main measurements; friction can make pressures inferred from this ideal force balance inaccurate.",
       "At constant pressure, Charles’s law gives\n \\[\\frac VT=\\text{constant},\\qquad V\\propto T.\\]\n A volume–kelvin-temperature graph should extrapolate to zero volume at zero kelvin for the ideal model. On a Celsius scale, its extrapolated intercept is near \\(-273\\,{}^\\circ\\mathrm C\\). This is an extrapolation, not a practical route to absolute zero; real gases condense first."
     ],
-    "apparatus": "Boyle apparatus with trapped air, calibrated volume scale and absolute pressure sensor; Charles apparatus with trapped air beneath a freely moving oil plug in a uniform capillary, thermometer and stirred water bath.",
+    "apparatus": "Boyle: securely clamped vertical cylinder with sealed upper end, airtight low-friction piston beneath the trapped gas, piston rod and mass hanger below, slotted masses, calibrated volume scale, absolute pressure sensor with short connecting tube, travel stop and catching tray. Charles: trapped air beneath a freely moving oil plug in a uniform capillary, thermometer and stirred water bath.",
     "method": [
-      "Boyle: check seals and determine whether the pressure instrument reads absolute or gauge pressure. Add atmospheric pressure to gauge readings.",
-      "Trap a fixed quantity of air. Record its volume and pressure. Include any connecting-tube dead volume in the total gas volume.",
-      "Change volume in small steps within apparatus ratings. Wait for temperature to return to room temperature at each step, then record pressure. Repeat while expanding to check for leaks or hysteresis.",
-      "Take at least six Boyle readings; plot p against \\(\\frac1V\\) and check whether pV stays constant within uncertainty.",
+      "Boyle: clamp the barrel vertically with the sealed end uppermost. Connect the pressure sensor to the gas space above the airtight piston. Leave the underside of the piston open to atmospheric pressure and attach a mass hanger to its rod below. Use an approved apparatus designed for suspended loads.",
+      "Fit a travel stop to prevent the piston leaving the barrel and place a tray beneath the hanger. Check the seals and apparatus load ratings. Determine whether the pressure instrument reads absolute or gauge pressure; add atmospheric pressure to gauge readings, which can be negative during expansion.",
+      "Trap a fixed amount of air. With the initial piston and hanger load in place, allow equilibrium and record absolute pressure and volume at the upper piston face. Include the sensor tubing dead volume in the total gas volume.",
+      "Add a small mass carefully to the hanger below the piston. Let the piston move down freely without pulling it by hand. The gas expands and initially cools; wait until it has returned to room temperature and the pressure and volume readings are stable, then record both readings and the added load.",
+      "Repeat for at least six load settings within the safe travel and load limits. Adding mass should increase volume and decrease absolute pressure. Do not use a load that could pull the piston out. Remove masses in steps and repeat readings to check for friction, sticking or leaks.",
+      "Plot absolute pressure \\(p\\) against \\(1/V\\) and check for a straight line through the origin within uncertainty. Also calculate \\(pV\\) for each reading. Keep the gas amount and temperature fixed; changing mass is the means of varying volume, not a change to the amount of gas.",
       "Charles: place the sealed-end capillary with its trapped air and movable oil plug in a stirred water bath, with the plug free to move and the setup arranged to maintain approximately atmospheric pressure. Measure trapped-air length l; \\(V=Al\\) for uniform bore.",
       "Change bath temperature gradually over at least six values. Allow the gas, glass and thermometer to reach equilibrium before reading l and temperature. Repeat while cooling.",
       "Convert °C to K by adding 273.15. Plot l (or V) against T in kelvin. Keep the same trapped gas and check that the plug neither sticks nor leaks."
     ],
-    "controls": "Boyle: fixed gas amount and temperature. Charles: fixed gas amount and pressure, uniform capillary bore.",
-    "safety": "Do not exceed pressure ratings or heat sealed rigid gas containers. Use eye protection and handle hot water and glass carefully.",
+    "controls": "Boyle: fixed amount of trapped gas and constant room temperature; keep the barrel vertical, the same piston and sensor connected, and the underside exposed to atmosphere. Charles: fixed gas amount and pressure, uniform capillary bore.",
+    "safety": "Boyle: clamp the barrel securely, use a travel stop and catching tray, add masses gently and keep hands and feet clear of falling loads. Stay within the approved load, pressure and piston-travel limits; never allow the piston to leave the cylinder. Charles: handle hot water and glass carefully. Do not heat a sealed rigid gas container.",
     "tables": [
       {
-        "caption": "Boyle: room temperature; absolute pressure",
+        "caption": "Boyle expansion: successive larger hanging loads; room temperature; measured absolute pressure",
         "headers": [
           "V / cm³",
           "p / kPa",
@@ -698,29 +701,34 @@ window.requiredPracticals = [
         ],
         "rows": [
           [
-            60,
+            30,
             100,
-            6000
-          ],
-          [
-            50,
-            120,
-            6000
-          ],
-          [
-            40,
-            150,
-            6000
+            3000
           ],
           [
             35,
-            172,
-            6020
+            85.7,
+            3000
           ],
           [
-            30,
-            200,
-            6000
+            40,
+            75,
+            3000
+          ],
+          [
+            45,
+            66.7,
+            3000
+          ],
+          [
+            50,
+            60,
+            3000
+          ],
+          [
+            60,
+            50,
+            3000
           ]
         ]
       },
@@ -760,18 +768,18 @@ window.requiredPracticals = [
         ]
       }
     ],
-    "analysis": "The Boyle data give\n \\[pV\\approx6000\\,\\mathrm{kPa\\,cm^3}=6.00\\,\\mathrm J.\\]\n At \\(V=45\\,\\mathrm{cm^3}\\), the predicted absolute pressure is \\(p\\approx133\\,\\mathrm{kPa}\\). The Charles data give \\(l/T\\approx0.333\\,\\mathrm{mm\\,K^{-1}}\\); with constant cross-sectional area, this tests \\(V\\propto T\\).\n A Celsius fit \\(l\\approx0.333\\theta+91.0\\), with \\(l\\) in millimetres and \\(\\theta\\) in degrees Celsius, extrapolates to zero length near \\(-273\\,{}^\\circ\\mathrm C\\).",
-    "uncertainty": "Temperature lag makes Charles readings depend on whether the bath is warming or cooling. Plug friction causes pressure changes. Boyle dead volume creates a systematic volume offset; leaks change n. Use sufficiently slow changes and compare reverse runs. Extrapolating hundreds of degrees makes the absolute-zero estimate sensitive to gradient error.",
+    "analysis": "As the hanging load increases, volume rises and measured absolute pressure falls. The Boyle data give, allowing for rounding,\n\\[pV\\approx3000\\,\\mathrm{kPa\\,cm^3}=3.00\\,\\mathrm J.\\]\nFor example, at \\(V=45\\,\\mathrm{cm^3}\\),\n\\[p\\approx\\frac{3000}{45}=66.7\\,\\mathrm{kPa}.\\]\nUse absolute pressure, not the magnitude of a negative gauge reading. The \\(p\\) against \\(1/V\\) graph has gradient \\(nRT\\). The Charles data give \\(l/T\\approx0.333\\,\\mathrm{mm\\,K^{-1}}\\); with constant cross-sectional area, this tests \\(V\\propto T\\). A Celsius fit \\(l\\approx0.333\\theta+91.0\\), with length in millimetres and temperature in degrees Celsius, extrapolates to zero length near \\(-273\\,{}^\\circ\\mathrm C\\).",
+    "uncertainty": "Expansion temporarily cools the gas; taking readings too soon violates the constant-temperature condition. Piston friction or sticking can make loading and unloading readings differ, so compare both runs without forcing the piston. Tube dead volume gives a systematic volume offset; leaks change the gas amount. For Charles’s law, temperature lag, plug friction and gas leaks remain important. Extrapolating hundreds of degrees makes the absolute-zero estimate sensitive to gradient error.",
     "questions": [
       [
-        "A gas at constant temperature occupies 48 cm³ at 125 kPa absolute. Find its volume at 160 kPa.",
+        "A gas at constant temperature occupies \\(48\\,\\mathrm{cm^3}\\) at \\(100\\,\\mathrm{kPa}\\) absolute. Added hanging masses expand it until its absolute pressure is \\(80\\,\\mathrm{kPa}\\). Find its new volume.",
         3,
-        "Boyle’s law: \\(p_1V_1=p_2V_2\\) (1).\n \\[V_2=\\frac{125\\times48}{160}\\quad(1)\\]\n \\[V_2=37.5\\,\\mathrm{cm^3}\\quad(1).\\]"
+        "Boyle’s law: \\(p_1V_1=p_2V_2\\) (1).\n\\[V_2=\\frac{100\\times48}{80}\\quad(1)\\]\n\\[V_2=60\\,\\mathrm{cm^3}\\quad(1).\\]"
       ],
       [
-        "Why must a Boyle reading be delayed after compression?",
+        "Why should you wait before taking a Boyle reading after adding a hanging mass below the piston?",
         2,
-        "Compression heats the gas (1); wait for heat transfer to restore the original temperature so pV can be compared at constant T (1)."
+        "Adding the mass pulls the piston down and expands the gas, which initially cools (1); wait for heat transfer from the surroundings to restore room temperature so the readings can be compared at constant temperature (1)."
       ],
       [
         "At constant pressure, gas volume is 100 cm³ at 27 °C. Estimate its volume at 77 °C.",

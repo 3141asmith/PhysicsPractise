@@ -149,17 +149,24 @@
   ];
 
   diagrams[8] = [
-    fig('Boyle’s law: sealed gas volume with pressure sensing',
-      'A gas syringe with an airtight freely adjustable piston is connected by a short tube to a pressure sensor. The trapped gas includes the syringe and connecting-tube volume. Volume is read from the piston face. Compression is followed by waiting for the gas to return to room temperature.',
-      heading('RP 08A · CONSTANT TEMPERATURE','A fixed amount of gas: measure absolute pressure')+
-      path('M505 177 H150 V263 H505','glass')+rect(352,177,14,86,'piston')+
-      path('M366 220 H585 M585 193 V247','support')+
-      path('M150 205 H95 V130 H445','tube')+rect(445,100,245,67,'equipment',7)+
-      text(568,128,'Pressure sensor','label','middle')+text(568,151,'p (absolute)','small','middle')+
-      text(245,225,'Trapped air','label','middle')+ruler(150,276,355)+dim(150,321,352,321,'Volume read at piston face',251,344)+
-      arrow(620,220,584,220)+text(596,263,'Compress slowly','small')+
-      leader('M130 130 V91 H60',35,83,'Include tube dead volume')+
-      note('Wait for thermal equilibrium after each change. For gauge readings: p = pgauge + patm.')),
+    fig('Boyle’s law: hanging masses expand the gas above a piston',
+      'A securely clamped vertical cylinder is sealed at its upper end. Air is trapped above an airtight low-friction piston; the underside is open to atmospheric pressure. A mass hanger is attached to the piston rod below. Adding masses pulls the piston down, increasing the trapped-gas volume and lowering its pressure. A sensor connects to the sealed gas space above the piston. Read volume at the upper piston face, include tube dead volume, and wait for thermal equilibrium at each load. A tray and travel stop prevent falling masses or the piston leaving the barrel.',
+      heading('RP 08A · EXPANSION AT CONSTANT TEMPERATURE','Add masses below the piston to expand the trapped gas')+
+      support(100,100,120)+path('M180 100 V140 H260','support')+
+      path('M260 270 V115 H370 V270','glass')+
+      path('M315 115 V92 H575 V120','tube')+
+      rect(540,120,220,65,'equipment',7)+text(650,147,'Pressure sensor','label','middle')+text(650,171,'p (absolute)','small','middle')+
+      rect(262,192,106,14,'ghost')+rect(260,225,110,14,'piston')+
+      path('M315 239 V300','support')+rect(284,300,62,38,'mass',4)+text(315,325,'m','meter-label','middle')+
+      text(315,157,'Trapped','small','middle')+text(315,178,'air','small','middle')+
+      leader('M100 140 H177',36,164,'Fixed barrel clamp')+
+      path('M390 120 V250 M390 130 H404 M390 150 H399 M390 170 H399 M390 190 H404 M390 210 H399 M390 230 H399 M390 250 H404','fine')+
+      leader('M370 225 H505',515,230,'Read V at upper face')+
+      arrow(438,252,438,293)+text(457,277,'Piston moves down','small')+
+      leader('M346 319 H505',515,324,'Add masses to hanger')+
+      text(37,287,'Atmosphere acts','small')+text(37,309,'on piston underside','small')+
+      path('M250 344 V360 H380 V344','apparatus')+text(402,359,'Catching tray; use a travel stop','small')+
+      note('More hanging mass → larger V and lower p. Wait for room temperature at each load.')),
     fig('Charles’s law: movable liquid plug and constant pressure',
       'A vertical uniform-bore capillary has a sealed lower end and an open upper end. A short movable oil plug traps air below it. A water bath surrounds the entire trapped-air column and plug. Air length l runs from the sealed end to the lower meniscus of the plug. A thermometer and stirrer share the bath.',
       heading('RP 08B · APPROXIMATELY CONSTANT PRESSURE','The oil plug must be free to move; the top stays open')+
